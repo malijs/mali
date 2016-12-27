@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package argservice;
+
+service ArgService {
+  rpc ListStuff(ArgRequest) returns (stream ArgReply) {}
+}
+
+message ArgRequest {
+  string message = 1;
+}
+
+message ArgReply {
+  string message = 1;
+  string metadata = 2;
+}

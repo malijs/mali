@@ -1,0 +1,65 @@
+{
+  "name": "mali",
+  "version": "0.0.1",
+  "description": "Minimalistic gRPC microservice framework",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "ava -v",
+    "docs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code > API.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malijs/mali.git"
+  },
+  "author": {
+    "name": "Bojan D.",
+    "email": "dbojan@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/malijs/mali/issues"
+  },
+  "homepage": "https://mali.github.io",
+  "keywords": [
+    "mali",
+    "grpc",
+    "service",
+    "server",
+    "microservice"
+  ],
+  "dependencies": {
+    "ascallback": "^1.1.1",
+    "destroy": "^1.0.4",
+    "error-inject": "^1.0.0",
+    "grpc": "^1.0.1",
+    "grpc-inspect": "^0.1.0",
+    "is-stream": "^1.1.0",
+    "lodash": "^4.17.0",
+    "mali-call-types": "~0.1.0",
+    "mali-compose": "~0.1.0",
+    "on-finished": "^2.3.0",
+    "p-map": "^1.1.0",
+    "pify": "^2.3.0"
+  },
+  "devDependencies": {
+    "ava": "^0.17.0",
+    "babel-eslint": "^7.1.1",
+    "google-protobuf": "^3.1.1",
+    "highland": "^3.0.0-beta.3",
+    "jsdoc-to-markdown": "^2.0.1",
+    "md-wrap-code": "^0.1.1",
+    "standard": "^8.5.0",
+    "test-console": "^1.0.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "ava": {
+    "files": [
+      "test/*.test.js"
+    ]
+  }
+}
