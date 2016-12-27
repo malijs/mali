@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/malijs/mali/issues"
   },
-  "homepage": "https://mali.github.io",
+  "homepage": "https://malijs.github.io",
   "keywords": [
     "mali",
     "grpc",
