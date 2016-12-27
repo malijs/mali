@@ -32,7 +32,7 @@
     "destroy": "^1.0.4",
     "error-inject": "^1.0.0",
     "grpc": "^1.0.1",
-    "grpc-inspect": "^0.1.0",
+    "grpc-inspect": "^0.1.1",
     "is-stream": "^1.1.0",
     "lodash": "^4.17.0",
     "mali-call-types": "~0.1.0",
