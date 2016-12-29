@@ -103,8 +103,7 @@ test.cb('should have correct properties for req / res', t => {
     t.ifError(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 })
 
@@ -152,8 +151,7 @@ test.cb('should have correct properties res stream request', t => {
 
   function endTest () {
     t.deepEqual(resData, [ '1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC' ])
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   }
 })
 
@@ -203,8 +201,7 @@ test.cb('should have correct properties for req stream', t => {
     t.truthy(res)
     t.truthy(res.message)
     t.is(res.message, '1 FOO:2 BAR:3 ASD:4 QWE:5 RTY:6 ZXC')
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 
   async.eachSeries(ARRAY_DATA, (d, asfn) => {
@@ -279,8 +276,7 @@ test.cb('should have correct properties for duplex call', t => {
 
   function endTest () {
     t.deepEqual(resData, [ '1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC' ])
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   }
 })
 

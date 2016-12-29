@@ -18,6 +18,10 @@ const ARRAY_DATA = [
   { message: '6 zxc' }
 ]
 
+function getArrayData () {
+  return _.cloneDeep(ARRAY_DATA)
+}
+
 function crashMapper (d) {
   if (d.message.indexOf(3) >= 0) {
     // cause a crash
@@ -66,8 +70,96 @@ test.cb('should handle an error in the handler in req/res app', t => {
     t.truthy(errCtx.req)
     t.is(errCtx.name, 'SayHello')
     t.is(errCtx.type, CallType.UNARY)
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
+  })
+})
+
+test.cb('should handle an error with code in the handler in req/res app', t => {
+  t.plan(12)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    const err = new Error('crash')
+    err.code = 2000
+    throw err
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  let errMsg
+  let errCtx
+  app.on('error', (err, ctx) => {
+    errCtx = ctx
+    errMsg = err.message
+  })
+
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.truthy(err)
+    t.is(err.message, 'crash')
+    t.is(err.code, 2000)
+    t.falsy(response)
+    t.is(errMsg, 'crash')
+    t.truthy(errCtx)
+    t.truthy(errCtx.call)
+    t.truthy(errCtx.req)
+    t.is(errCtx.name, 'SayHello')
+    t.is(errCtx.type, CallType.UNARY)
+    app.close().then(() => t.end())
+  })
+})
+
+test.cb('should handle custom error in the handler in req/res app', t => {
+  class MyCustomError extends Error {
+    constructor (message, code) {
+      super(message)
+      this.code = code
+    }
+  }
+
+  t.plan(12)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    throw new MyCustomError('burn', 1234)
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  let errMsg
+  let errCtx
+  app.on('error', (err, ctx) => {
+    errCtx = ctx
+    errMsg = err.message
+  })
+
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.truthy(err)
+    t.is(err.message, 'burn')
+    t.is(err.code, 1234)
+    t.falsy(response)
+    t.is(errMsg, 'burn')
+    t.truthy(errCtx)
+    t.truthy(errCtx.call)
+    t.truthy(errCtx.req)
+    t.is(errCtx.name, 'SayHello')
+    t.is(errCtx.type, CallType.UNARY)
+    app.close().then(() => t.end())
   })
 })
 
@@ -77,7 +169,7 @@ test.cb('should handle an error in the handler in res stream app', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
-    const s = hl(ARRAY_DATA)
+    const s = hl(getArrayData())
       .map(crashMapper)
 
     ctx.res = s
@@ -131,8 +223,7 @@ test.cb('should handle an error in the handler in res stream app', t => {
     t.truthy(errCtx.req)
     t.is(errCtx.name, 'ListStuff')
     t.is(errCtx.type, CallType.RESPONSE_STREAM)
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   }
 })
 
@@ -186,11 +277,10 @@ test.cb('should handle an error in the handler in req stream app', t => {
     t.truthy(errCtx.req)
     t.is(errCtx.name, 'WriteStuff')
     t.is(errCtx.type, CallType.REQUEST_STREAM)
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 
-  async.eachSeries(ARRAY_DATA, (d, asfn) => {
+  async.eachSeries(getArrayData(), (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
@@ -261,7 +351,7 @@ test.cb('should handle an error in the handler of duplex call', t => {
     }, 200)
   })
 
-  async.eachSeries(ARRAY_DATA, (d, asfn) => {
+  async.eachSeries(getArrayData(), (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
@@ -280,8 +370,7 @@ test.cb('should handle an error in the handler of duplex call', t => {
     t.truthy(errCtx.req)
     t.is(errCtx.name, 'ProcessStuff')
     t.is(errCtx.type, CallType.DUPLEX)
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   }
 })
 
@@ -294,7 +383,6 @@ test('should set development env when NODE_ENV missing', t => {
   t.truthy(app)
   process.env.NODE_ENV = NODE_ENV
   t.is(app.env, 'development')
-  app.close()
 })
 
 test('app.inspect should return app properties', t => {
@@ -331,8 +419,7 @@ test.cb('should handle req/res request', t => {
     t.ifError(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 })
 
@@ -342,7 +429,7 @@ test.cb('should handle res stream request', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
-    ctx.res = hl(_.cloneDeep(ARRAY_DATA))
+    ctx.res = hl(getArrayData())
       .map(d => {
         d.message = d.message.toUpperCase()
         return d
@@ -372,8 +459,7 @@ test.cb('should handle res stream request', t => {
 
   function endTest () {
     t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   }
 })
 
@@ -415,11 +501,10 @@ test.cb('should handle req stream app', t => {
     t.truthy(res)
     t.truthy(res.message)
     t.is(res.message, '1 FOO:2 BAR:3 ASD:4 QWE:5 RTY:6 ZXC')
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 
-  async.eachSeries(ARRAY_DATA, (d, asfn) => {
+  async.eachSeries(getArrayData(), (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
@@ -427,7 +512,7 @@ test.cb('should handle req stream app', t => {
   })
 })
 
-test.cb('should handle an error in the handler of duplex call', t => {
+test.cb('should handle duplex call', t => {
   t.plan(3)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -472,7 +557,7 @@ test.cb('should handle an error in the handler of duplex call', t => {
     }, 200)
   })
 
-  async.eachSeries(ARRAY_DATA, (d, asfn) => {
+  async.eachSeries(getArrayData(), (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
@@ -481,8 +566,7 @@ test.cb('should handle an error in the handler of duplex call', t => {
 
   function endTest () {
     t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   }
 })
 
@@ -519,7 +603,6 @@ test.cb('should start multipe servers from same application and handle requests'
     t.is(results.req1.message, 'Hello Bob')
     t.truthy(results.req2)
     t.is(results.req2.message, 'Hello Kate')
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 })

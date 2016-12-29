@@ -272,8 +272,7 @@ test.cb('should compose middleware w/ async functions', t => {
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     t.deepEqual(calls, [1, 2, 3, 4, 5, 6])
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 })
 
@@ -315,8 +314,7 @@ test.cb('should not call middleware downstream of one that does not call next', 
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     t.deepEqual(calls, [1, 2, 5, 6])
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 })
 

@@ -81,7 +81,6 @@ test.cb('should log an error in the handler in req/res app', t => {
     const output = Array.isArray(inspect.output) ? inspect.output.join() : inspect.output
     t.true(output.indexOf('Error: boom') > 0)
     t.true(output.indexOf('at sayHello') > 0)
-    app.close()
-    t.end()
+    app.close().then(() => t.end())
   })
 })
