@@ -5,7 +5,7 @@ A minimalistic [gRPC](http://www.grpc.io) microservice framework.
 [![npm version](https://img.shields.io/npm/v/mali.svg?style=flat-square)](https://www.npmjs.com/package/mali)
 [![build status](https://img.shields.io/travis/malijs/mali/master.svg?style=flat-square)](https://travis-ci.org/malijs/mali)
 
-<div style="position: relative; padding: 15px; color: #4c4a42; background-color: #fff9ea; border: 1px solid #dfd8c2; border-radius: 3px;">
+<div background="#fff9ea" border="1px solid #dfd8c2">
 <strong>Mali is still in development and preview state. It is good for exploration, but may not
 be suitable for production use yet.
 </strong></div>
