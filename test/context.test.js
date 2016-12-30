@@ -5,6 +5,7 @@ import CallType from 'mali-call-types'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
+import pMap from 'p-map'
 
 import Mali from '../lib'
 import * as tu from './util'
@@ -280,6 +281,6 @@ test.cb('should have correct properties for duplex call', t => {
   }
 })
 
-test.after.always('guaranteed cleanup', t => {
-  apps.forEach(app => app.close())
+test.after.always('cleanup', async t => {
+  await pMap(apps, app => app.close())
 })

@@ -1,6 +1,7 @@
 import test from 'ava'
 import path from 'path'
 import grpc from 'grpc'
+import pMap from 'p-map'
 
 import Mali from '../lib'
 import * as tu from './util'
@@ -79,6 +80,6 @@ test.cb('call static service', t => {
   })
 })
 
-test.after.always('guaranteed cleanup', t => {
-  apps.forEach(app => app.close())
+test.after.always('cleanup', async t => {
+  await pMap(apps, app => app.close())
 })
