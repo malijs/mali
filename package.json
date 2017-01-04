@@ -38,7 +38,6 @@
     "lodash": "^4.17.0",
     "mali-call-types": "~0.1.0",
     "mali-compose": "~0.1.0",
-    "on-finished": "^2.3.0",
     "p-map": "^1.1.0",
     "pify": "^2.3.0"
   },
