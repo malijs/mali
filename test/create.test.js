@@ -80,6 +80,46 @@ test.cb('call static service', t => {
   })
 })
 
+test.serial('should dynamically create service using object specifying root and file', async t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const load = {
+    root: __dirname,
+    file: 'protos/helloworld.proto'
+  }
+
+  const app = new Mali(load, 'Greeter')
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+  await app.close()
+})
+
+test.serial('should dynamically create service using object specifying root and file using imports', async t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const load = {
+    root: __dirname,
+    file: 'protos/load.proto'
+  }
+
+  const app = new Mali(load, 'Greeter')
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+  await app.close()
+})
+
 test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
 })

@@ -201,14 +201,22 @@ test.cb('should handle an error in the handler in res stream app', t => {
   let errMsg2
   call.on('error', err => {
     errMsg2 = err ? err.message : ''
+    if (!endCalled) {
+      endCalled = true
+      _.delay(() => {
+        endTest()
+      }, 200)
+    }
   })
 
   let endCalled = false
   call.on('end', () => {
-    endCalled = true
-    _.delay(() => {
-      endTest()
-    }, 200)
+    if (!endCalled) {
+      endCalled = true
+      _.delay(() => {
+        endTest()
+      }, 200)
+    }
   })
 
   function endTest () {
@@ -264,9 +272,13 @@ test.cb('should handle an error in the handler in req stream app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
+  let w = true
+  let ended = false
   const proto = grpc.load(PROTO_PATH).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
+    w = false
+    ended = true
     t.truthy(err)
     t.truthy(err.message)
     t.true(errMsg1.indexOf('Unexpected token') >= 0)
@@ -280,11 +292,29 @@ test.cb('should handle an error in the handler in req stream app', t => {
     app.close().then(() => t.end())
   })
 
+  call.on('error', () => {
+    w = false
+  })
+
+  call.on('close', () => {
+    w = false
+    console.log('close')
+  })
+
+  call.on('finish', () => {
+    w = false
+    console.log('close')
+  })
+
   async.eachSeries(getArrayData(), (d, asfn) => {
-    call.write(d)
+    if (w) {
+      call.write(d)
+    }
     _.delay(asfn, _.random(10, 50))
   }, () => {
-    call.end()
+    if (!ended) {
+      call.end()
+    }
   })
 })
 
@@ -328,7 +358,6 @@ test.cb('should handle an error in the handler of duplex call', t => {
   app.use({ processStuff })
   const server = app.start(APP_HOST)
   t.truthy(server)
-
   const proto = grpc.load(PROTO_PATH).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
@@ -341,14 +370,22 @@ test.cb('should handle an error in the handler of duplex call', t => {
   let errMsg2 = ''
   call.on('error', err2 => {
     errMsg2 = err2 ? err2.message : ''
+    if (!endCalled) {
+      endCalled = true
+      _.delay(() => {
+        endTest()
+      }, 200)
+    }
   })
 
   let endCalled = false
   call.on('end', () => {
-    endCalled = true
-    _.delay(() => {
-      endTest()
-    }, 200)
+    if (!endCalled) {
+      endCalled = true
+      _.delay(() => {
+        endTest()
+      }, 200)
+    }
   })
 
   async.eachSeries(getArrayData(), (d, asfn) => {

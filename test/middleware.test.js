@@ -3,6 +3,7 @@ import path from 'path'
 import grpc from 'grpc'
 import BB from 'bluebird'
 import pMap from 'p-map'
+import _ from 'lodash'
 
 import Mali from '../lib'
 import * as tu from './util'
@@ -145,7 +146,7 @@ test.cb('single sync middleware', t => {
   t.plan(8)
   const ts = grpc.load(PROTO_PATH).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
-  const id = tu.getRandomInt(10, 10000).toString()
+  const id = _.random(10, 10000).toString()
   client.upper({ id, message: 'hello world' }, (err, response) => {
     t.ifError(err)
     t.truthy(response)
@@ -163,7 +164,7 @@ test.cb('single async middleware', t => {
   t.plan(8)
   const ts = grpc.load(PROTO_PATH).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
-  const id = tu.getRandomInt(10, 10000).toString()
+  const id = _.random(10, 10000).toString()
   client.lower({ id, message: 'HELLO WORLD' }, (err, response) => {
     t.ifError(err)
     t.truthy(response)
@@ -181,7 +182,7 @@ test.cb('sync + async middleware', t => {
   t.plan(8)
   const ts = grpc.load(PROTO_PATH).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
-  const id = tu.getRandomInt(10, 10000).toString()
+  const id = _.random(10, 10000).toString()
   client.reverse({ id, message: 'Hello WORLD' }, (err, response) => {
     t.ifError(err)
     t.truthy(response)
@@ -199,7 +200,7 @@ test.cb('multiple sync + async middleware', t => {
   t.plan(8)
   const ts = grpc.load(PROTO_PATH).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
-  const id = tu.getRandomInt(10, 10000).toString()
+  const id = _.random(10, 10000).toString()
   client.rot13({ id, message: 'HELLO world' }, (err, response) => {
     t.ifError(err)
     t.truthy(response)
@@ -217,7 +218,7 @@ test.cb('mutate + payload middleware', t => {
   t.plan(8)
   const ts = grpc.load(PROTO_PATH).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
-  const id = tu.getRandomInt(10, 10000).toString()
+  const id = _.random(10, 10000).toString()
   client.reverseRot13({ id, message: 'hello WORLD' }, (err, response) => {
     t.ifError(err)
     t.truthy(response)
