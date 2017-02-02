@@ -298,12 +298,10 @@ test.cb('should handle an error in the handler in req stream app', t => {
 
   call.on('close', () => {
     w = false
-    console.log('close')
   })
 
   call.on('finish', () => {
     w = false
-    console.log('close')
   })
 
   async.eachSeries(getArrayData(), (d, asfn) => {
