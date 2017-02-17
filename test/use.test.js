@@ -15,7 +15,7 @@ test('shoud throw on unknown function', t => {
     app.use({ saySomething })
   }, Error)
 
-  t.is(error.message, 'Unknown method: saySomething')
+  t.is(error.message, 'Unknown method: saySomething for service Greeter')
 })
 
 test('shoud throw on invalid parameter', t => {
@@ -29,7 +29,7 @@ test('shoud throw on invalid parameter', t => {
     app.use({ sayHello })
   }, Error)
 
-  t.is(error.message, 'Handler for sayHello is not a function or array')
+  t.is(error.message, 'Invalid type for handler for sayHello')
 })
 
 test('shoud add handler using object notation', t => {
@@ -76,7 +76,7 @@ test('shoud throw on duplicate handlers', t => {
     app.use('sayHello', sayHello2)
   }, Error)
 
-  t.is(error.message, 'Handler for sayHello already defined')
+  t.is(error.message, 'Handler for sayHello already defined for service Greeter')
 })
 
 test('shoud add handler and middleware when set using name', t => {
@@ -95,11 +95,11 @@ test('shoud add handler and middleware when set using name', t => {
 
   app.use('sayHello', mw1, handler)
 
-  t.truthy(app.handlers.sayHello)
-  t.true(Array.isArray(app.handlers.sayHello))
-  t.is(app.handlers.sayHello.length, 2)
-  t.is(app.handlers.sayHello[0], mw1)
-  t.is(app.handlers.sayHello[1], handler)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 2)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
 test('shoud add handler and middleware when set as array using object', t => {
@@ -118,11 +118,12 @@ test('shoud add handler and middleware when set as array using object', t => {
 
   app.use({ sayHello: [mw1, handler] })
 
-  t.truthy(app.handlers.sayHello)
-  t.true(Array.isArray(app.handlers.sayHello))
-  t.is(app.handlers.sayHello.length, 2)
-  t.is(app.handlers.sayHello[0], mw1)
-  t.is(app.handlers.sayHello[1], handler)
+  t.truthy(app.handlers.Greeter)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 2)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
 test('shoud add global middleware when set before app.use for that handler', t => {
@@ -142,11 +143,12 @@ test('shoud add global middleware when set before app.use for that handler', t =
   app.use(mw1)
   app.use({ sayHello: handler })
 
-  t.truthy(app.handlers.sayHello)
-  t.true(Array.isArray(app.handlers.sayHello))
-  t.is(app.handlers.sayHello.length, 2)
-  t.is(app.handlers.sayHello[0], mw1)
-  t.is(app.handlers.sayHello[1], handler)
+  t.truthy(app.handlers.Greeter)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 2)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
 test('shoud not add global middleware when set after app.use for that handler', t => {
@@ -166,10 +168,11 @@ test('shoud not add global middleware when set after app.use for that handler', 
   app.use({ sayHello: handler })
   app.use(mw1)
 
-  t.truthy(app.handlers.sayHello)
-  t.true(Array.isArray(app.handlers.sayHello))
-  t.is(app.handlers.sayHello.length, 1)
-  t.is(app.handlers.sayHello[0], handler)
+  t.truthy(app.handlers.Greeter)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 1)
+  t.is(app.handlers.Greeter.sayHello[0], handler)
 })
 
 test('shoud add global middleware and handler and middleware', t => {
@@ -194,12 +197,13 @@ test('shoud add global middleware and handler and middleware', t => {
   app.use(mw1)
   app.use('sayHello', mw2, handler)
 
-  t.truthy(app.handlers.sayHello)
-  t.true(Array.isArray(app.handlers.sayHello))
-  t.is(app.handlers.sayHello.length, 3)
-  t.is(app.handlers.sayHello[0], mw1)
-  t.is(app.handlers.sayHello[1], mw2)
-  t.is(app.handlers.sayHello[2], handler)
+  t.truthy(app.handlers.Greeter)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 3)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], mw2)
+  t.is(app.handlers.Greeter.sayHello[2], handler)
 })
 
 test('shoud not add global middleware if added after handler and middleware', t => {
@@ -224,9 +228,10 @@ test('shoud not add global middleware if added after handler and middleware', t 
   app.use('sayHello', mw2, handler)
   app.use(mw1)
 
-  t.truthy(app.handlers.sayHello)
-  t.true(Array.isArray(app.handlers.sayHello))
-  t.is(app.handlers.sayHello.length, 2)
-  t.is(app.handlers.sayHello[0], mw2)
-  t.is(app.handlers.sayHello[1], handler)
+  t.truthy(app.handlers.Greeter)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 2)
+  t.is(app.handlers.Greeter.sayHello[0], mw2)
+  t.is(app.handlers.Greeter.sayHello[1], handler)
 })

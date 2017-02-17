@@ -7,6 +7,7 @@ import Mali from '../lib'
 import * as tu from './util'
 
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+const PROTO_PATH_MULTI = path.resolve(__dirname, './protos/multi.proto')
 
 const apps = []
 
@@ -122,4 +123,37 @@ test.serial('should dynamically create service using object specifying root and 
 
 test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
+})
+
+test.serial.skip('should dynamically create service from defition with multiple services', t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH_MULTI, 'Greeter')
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(DYNAMIC_HOST)
+  t.truthy(server)
+})
+
+test.serial.skip('should statically create service from defition with multiple services', t => {
+  const messages = require('./static/multi_pb')
+  const services = require('./static/multi_grpc_pb')
+
+  function sayHello (ctx) {
+    const reply = new messages.HelloReply()
+    reply.setMessage('Hello ' + ctx.req.getName())
+    ctx.res = reply
+  }
+
+  const app = new Mali(services, 'GreeterService')
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(STATIC_HOST)
+  t.truthy(server)
 })
