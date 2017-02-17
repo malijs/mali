@@ -1,9 +1,11 @@
 import path from 'path'
 import test from 'ava'
+import _ from 'lodash'
 import Mali from '../lib'
 
-test('shoud throw on unknown function', t => {
+test('should throw on unknown function', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function saySomething (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -18,7 +20,7 @@ test('shoud throw on unknown function', t => {
   t.is(error.message, 'Unknown method: saySomething for service Greeter')
 })
 
-test('shoud throw on invalid parameter', t => {
+test('should throw on invalid parameter', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
   const sayHello = 'sayHello'
 
@@ -32,8 +34,9 @@ test('shoud throw on invalid parameter', t => {
   t.is(error.message, 'Invalid type for handler for sayHello')
 })
 
-test('shoud add handler using object notation', t => {
+test('should add handler using object notation', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -45,8 +48,9 @@ test('shoud add handler using object notation', t => {
   t.pass()
 })
 
-test('shoud add handler using name and function', t => {
+test('should add handler using name and function', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -58,8 +62,9 @@ test('shoud add handler using name and function', t => {
   t.pass()
 })
 
-test('shoud throw on duplicate handlers', t => {
+test('should throw on duplicate handlers', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -79,8 +84,9 @@ test('shoud throw on duplicate handlers', t => {
   t.is(error.message, 'Handler for sayHello already defined for service Greeter')
 })
 
-test('shoud add handler and middleware when set using name', t => {
+test('should add handler and middleware when set using name', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -102,8 +108,9 @@ test('shoud add handler and middleware when set using name', t => {
   t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
-test('shoud add handler and middleware when set as array using object', t => {
+test('should add handler and middleware when set as array using object', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -126,8 +133,9 @@ test('shoud add handler and middleware when set as array using object', t => {
   t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
-test('shoud add global middleware when set before app.use for that handler', t => {
+test('should add global middleware when set before app.use for that handler', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -151,8 +159,9 @@ test('shoud add global middleware when set before app.use for that handler', t =
   t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
-test('shoud not add global middleware when set after app.use for that handler', t => {
+test('should not add global middleware when set after app.use for that handler', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -175,8 +184,9 @@ test('shoud not add global middleware when set after app.use for that handler', 
   t.is(app.handlers.Greeter.sayHello[0], handler)
 })
 
-test('shoud add global middleware and handler and middleware', t => {
+test('should add global middleware and handler and middleware', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -206,8 +216,9 @@ test('shoud add global middleware and handler and middleware', t => {
   t.is(app.handlers.Greeter.sayHello[2], handler)
 })
 
-test('shoud not add global middleware if added after handler and middleware', t => {
+test('should not add global middleware if added after handler and middleware', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function handler (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -234,4 +245,136 @@ test('shoud not add global middleware if added after handler and middleware', t 
   t.is(app.handlers.Greeter.sayHello.length, 2)
   t.is(app.handlers.Greeter.sayHello[0], mw2)
   t.is(app.handlers.Greeter.sayHello[1], handler)
+})
+
+test('multi: should add handler using object notation', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use({ sayHello })
+  t.is(_.keys(app.handlers).length, 1)
+  t.truthy(app.handlers.Greeter.sayHello)
+
+  t.pass()
+})
+
+test('multi: should add handler using object notation specifying service', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use({ Greeter2: { sayHello } })
+  t.is(_.keys(app.handlers).length, 1)
+  t.truthy(app.handlers.Greeter2.sayHello)
+
+  t.pass()
+})
+
+test('multi: should add handler using object notation specifying services', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use({
+    Greeter: { sayHello },
+    Greeter2: { sayHello }
+  })
+  t.is(_.keys(app.handlers).length, 2)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.truthy(app.handlers.Greeter2.sayHello)
+
+  t.pass()
+})
+
+test('multi: should add handler using name and function', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('sayHello', handler)
+  t.is(_.keys(app.handlers).length, 1)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.pass()
+})
+
+test('multi: should add handler using name, service name and function', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('sayHello', 'Greeter2', handler)
+  t.is(_.keys(app.handlers).length, 1)
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.pass()
+})
+
+test('multi: should add handler using name, and service names and function', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('sayHello', 'Greeter', handler)
+  app.use('sayHello', 'Greeter2', handler)
+  t.is(_.keys(app.handlers).length, 2)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.pass()
+})
+
+test('multi: should throw on duplicate handlers using multimple services', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  function sayHello2 (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use({ sayHello })
+  app.use('sayHello', 'Greeter2', sayHello2)
+  t.is(_.keys(app.handlers).length, 2)
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.truthy(app.handlers.Greeter2.sayHello)
+
+  const error = t.throws(() => {
+    app.use('sayHello', 'Greeter2', sayHello2)
+  }, Error)
+
+  t.is(error.message, 'Handler for sayHello already defined for service Greeter2')
 })
