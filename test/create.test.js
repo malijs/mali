@@ -1,6 +1,5 @@
 import test from 'ava'
 import path from 'path'
-import grpc from 'grpc'
 import _ from 'lodash'
 import pMap from 'p-map'
 
