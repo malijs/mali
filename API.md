@@ -109,7 +109,7 @@ Represents a gRPC service
     * [.env](#Mali+env) : <code>String</code>
     * [.silent](#Mali+silent) : <code>Boolean</code>
     * [.init(proto, name, options)](#Mali+init)
-    * [.use(name, ...fns)](#Mali+use)
+    * [.use(service, ...fns)](#Mali+use)
     * [.onerror(err)](#Mali+onerror)
     * [.start(port, creds)](#Mali+start) ⇒ <code>Object</code>
     * [.close()](#Mali+close)
@@ -125,7 +125,7 @@ Create a gRPC service
 | Param | Type | Description |
 | --- | --- | --- |
 | proto | <code>String</code> &#124; <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - The static service proto object itself |
-| name | <code>Object</code> | Name of the service.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
+| name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
 **Example** *(Create service dynamically)*  
@@ -183,19 +183,19 @@ app construction time for some reason.
 | Param | Type | Description |
 | --- | --- | --- |
 | proto | <code>String</code> &#124; <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - The static service proto object itself |
-| name | <code>Object</code> | Name of the service.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
+| name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
 <a name="Mali+use"></a>
 
-#### mali.use(name, ...fns)
-Define midelware and handlers
+#### mali.use(service, ...fns)
+Define middleware and handlers
 
 **Kind**: instance method of <code>[Mali](#Mali)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>String</code> &#124; <code>Object</code> | Name of the function as specified in the protocol buffer definition.                             or an object of name and handlers |
+| service | <code>String</code> &#124; <code>Object</code> | name of the service as specified in protocol buffer definition                        name Name of the function as specified in the protocol buffer definition                        or an object of name and handlers                        if service name is given but name is omitted applies middleware to all                        handlers for that service                        if the service name does not match a service name in protocol definition                        and no hanler name is given takes <code>0</code>th service and applies                        middleware to that handler |
 | ...fns | <code>function</code> &#124; <code>Array</code> | Middleware and/or handler |
 
 **Example** *(Define handler for rpc function &#x27;fn1&#x27;)*  
@@ -210,17 +210,45 @@ app.use('fn1', fn1)
 app.use('fn2', mw1, mw2, fn2)
 ```
 
+**Example** *(Define handler with middleware for rpc function &#x27;fn2&#x27; in service &#x27;Service2&#x27;)*  
+
+```js
+app.use('Service2', 'fn2', mw1, mw2, fn2)
+```
+
 **Example** *(Using destructuring define handlers for rpc functions &#x27;fn1&#x27; and &#x27;fn2&#x27;)*  
 
 ```js
 app.use({ fn1, fn2 })
 ```
 
+**Example** *(Apply middleware to all handers for a service)*  
+
+```js
+app.use('Service1', mw1)
+```
+
 **Example** *(Using destructuring define handlers for rpc functions &#x27;fn1&#x27; and &#x27;fn2&#x27;)*  
 
 ```js
 // fn2 has middleware mw1 and mw2
-app.use({ fn1, fn2: [mw1, mw2, fn2] })
+app.use({ MyService: { fn1, fn2: [mw1, mw2, fn2] } })
+```
+
+**Example** *(Multiple services using object notation)*  
+
+```js
+app.use(mw1) // global for all services
+app.use('Service1', mw2) // applies to all Service1 handers
+app.use({
+  Service1: {
+    sayGoodbye: handler1, // has mw1, mw2
+    sayHello: [ mw3, handler2 ] // has mw1, mw2, mw3
+  },
+  Service2: {
+    saySomething: handler3 // only has mw1
+  }
+})
 ```
 
 <a name="Mali+onerror"></a>
