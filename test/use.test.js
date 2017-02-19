@@ -108,6 +108,30 @@ test('should add handler and middleware when set using name', t => {
   t.is(app.handlers.Greeter.sayHello[1], handler)
 })
 
+test('should add handler and middleware when set using service and call name', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  app.use('Greeter', 'sayHello', mw1, handler)
+
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 2)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], handler)
+})
+
 test('should add handler and middleware when set as array using object', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -328,7 +352,7 @@ test('multi: should add handler using name, service name and function', t => {
   const app = new Mali(PROTO_PATH)
   t.truthy(app)
 
-  app.use('sayHello', 'Greeter2', handler)
+  app.use('Greeter2', 'sayHello', handler)
   t.is(_.keys(app.handlers).length, 1)
   t.truthy(app.handlers.Greeter2.sayHello)
   t.pass()
@@ -344,8 +368,8 @@ test('multi: should add handler using name, and service names and function', t =
   const app = new Mali(PROTO_PATH)
   t.truthy(app)
 
-  app.use('sayHello', 'Greeter', handler)
-  app.use('sayHello', 'Greeter2', handler)
+  app.use('Greeter', 'sayHello', handler)
+  app.use('Greeter2', 'sayHello', handler)
   t.is(_.keys(app.handlers).length, 2)
   t.truthy(app.handlers.Greeter.sayHello)
   t.truthy(app.handlers.Greeter2.sayHello)
@@ -367,14 +391,349 @@ test('multi: should throw on duplicate handlers using multimple services', t => 
   t.truthy(app)
 
   app.use({ sayHello })
-  app.use('sayHello', 'Greeter2', sayHello2)
+  app.use('Greeter2', 'sayHello', sayHello2)
   t.is(_.keys(app.handlers).length, 2)
   t.truthy(app.handlers.Greeter.sayHello)
   t.truthy(app.handlers.Greeter2.sayHello)
 
   const error = t.throws(() => {
-    app.use('sayHello', 'Greeter2', sayHello2)
+    app.use('Greeter2', 'sayHello', sayHello2)
   }, Error)
 
   t.is(error.message, 'Handler for sayHello already defined for service Greeter2')
+})
+
+test('multi: should add handler and middleware when set using name', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('sayHello', mw1, handler)
+
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 2)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], handler)
+})
+
+test('multi: should add handler and middleware when set using service name and function name', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter2', 'sayHello', mw1, handler)
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+})
+
+test('multi: should add handler and middleware when set using service name and function name 2', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter2', 'sayHello', mw1, handler)
+  app.use('Greeter4', 'sayGoodbye', handler)
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 1)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], handler)
+})
+
+test('multi: should add service level global middleware', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter2', mw1)
+  app.use('Greeter2', 'sayHello', handler)
+  app.use('Greeter4', 'sayGoodbye', handler)
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 1)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], handler)
+})
+
+test('multi: should add service level global middleware', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter4', mw1)
+  app.use('Greeter2', 'sayHello', handler)
+  app.use('Greeter4', 'sayGoodbye', handler)
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 1)
+  t.is(app.handlers.Greeter2.sayHello[0], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 2)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], mw1)
+  t.is(app.handlers.Greeter4.sayGoodbye[1], handler)
+})
+
+test('multi: should add global middleware to all services', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use(mw1)
+  app.use('Greeter2', 'sayHello', handler)
+  app.use('Greeter4', 'sayGoodbye', handler)
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 2)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], mw1)
+  t.is(app.handlers.Greeter4.sayGoodbye[1], handler)
+})
+
+test('multi: should add global middleware to all services after the global use', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter4', 'sayGoodbye', handler)
+  app.use(mw1)
+  app.use('Greeter2', 'sayHello', handler)
+  app.use('Greeter4', 'sayHello', handler)
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 1)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], handler)
+
+  t.truthy(app.handlers.Greeter4.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter4.sayHello))
+  t.is(app.handlers.Greeter4.sayHello.length, 2)
+  t.is(app.handlers.Greeter4.sayHello[0], mw1)
+  t.is(app.handlers.Greeter4.sayHello[1], handler)
+})
+
+test('multi: should add handlers using object notation for all services', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use({
+    Greeter4: {
+      sayGoodbye: handler,
+      sayHello: [ mw1, handler ]
+    },
+    Greeter2: { sayHello: handler }
+  })
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 1)
+  t.is(app.handlers.Greeter2.sayHello[0], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 1)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], handler)
+
+  t.truthy(app.handlers.Greeter4.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter4.sayHello))
+  t.is(app.handlers.Greeter4.sayHello.length, 2)
+  t.is(app.handlers.Greeter4.sayHello[0], mw1)
+  t.is(app.handlers.Greeter4.sayHello[1], handler)
+})
+
+test('multi: should add handlers using object notation for all services with global middleware', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use(mw1)
+  app.use({
+    Greeter4: {
+      sayGoodbye: handler,
+      sayHello: handler
+    },
+    Greeter2: { sayHello: handler }
+  })
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 2)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], mw1)
+  t.is(app.handlers.Greeter4.sayGoodbye[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter4.sayHello))
+  t.is(app.handlers.Greeter4.sayHello.length, 2)
+  t.is(app.handlers.Greeter4.sayHello[0], mw1)
+  t.is(app.handlers.Greeter4.sayHello[1], handler)
+})
+
+test('multi: should add handlers using object notation for all services with service level middleware', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter2', mw1)
+  app.use({
+    Greeter4: {
+      sayGoodbye: handler,
+      sayHello: [ mw1, handler ]
+    },
+    Greeter2: { sayHello: handler }
+  })
+
+  t.truthy(app.handlers.Greeter2.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter2.sayHello))
+  t.is(app.handlers.Greeter2.sayHello.length, 2)
+  t.is(app.handlers.Greeter2.sayHello[0], mw1)
+  t.is(app.handlers.Greeter2.sayHello[1], handler)
+
+  t.truthy(app.handlers.Greeter4.sayGoodbye)
+  t.true(Array.isArray(app.handlers.Greeter4.sayGoodbye))
+  t.is(app.handlers.Greeter4.sayGoodbye.length, 1)
+  t.is(app.handlers.Greeter4.sayGoodbye[0], handler)
+
+  t.truthy(app.handlers.Greeter4.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter4.sayHello))
+  t.is(app.handlers.Greeter4.sayHello.length, 2)
+  t.is(app.handlers.Greeter4.sayHello[0], mw1)
+  t.is(app.handlers.Greeter4.sayHello[1], handler)
 })
