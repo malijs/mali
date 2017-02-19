@@ -109,7 +109,7 @@ Represents a gRPC service
     * [.env](#Mali+env) : <code>String</code>
     * [.silent](#Mali+silent) : <code>Boolean</code>
     * [.init(proto, name, options)](#Mali+init)
-    * [.use(service, ...fns)](#Mali+use)
+    * [.use(service, name, ...fns)](#Mali+use)
     * [.onerror(err)](#Mali+onerror)
     * [.start(port, creds)](#Mali+start) ⇒ <code>Object</code>
     * [.close()](#Mali+close)
@@ -188,14 +188,26 @@ app construction time for some reason.
 
 <a name="Mali+use"></a>
 
-#### mali.use(service, ...fns)
-Define middleware and handlers
+#### mali.use(service, name, ...fns)
+Define middleware and handlers.
+If <code>service</code> and name are given applies fns for that call under that service.
+If <code>service</code> name is provided and matches one of the services defined in proto,
+but no </code>name</code> is provided applies the fns as middleware as service level middleware
+for all handlers in that service.
+If <code>service</code> is provided and no <code>name</code> is provided, and service does not
+match any of the service names in the proto, assumes <code>service</code> is actually rpc call
+name. Uses <code>0</code>th property in internal services object. Useful for protos with only
+one service.
+If an <code>object</code> is provided, you can set middleware and handlers for all services.
+If <code>object</code> provided but <code>0</code>th key does not match any of the services in
+proto, assumes <code>0</code>th service. Useful for protos with only one service.
 
 **Kind**: instance method of <code>[Mali](#Mali)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| service | <code>String</code> &#124; <code>Object</code> | name of the service as specified in protocol buffer definition                        name Name of the function as specified in the protocol buffer definition                        or an object of name and handlers                        if service name is given but name is omitted applies middleware to all                        handlers for that service                        if the service name does not match a service name in protocol definition                        and no hanler name is given takes <code>0</code>th service and applies                        middleware to that handler |
+| service | <code>String</code> &#124; <code>Object</code> | Service name |
+| name | <code>String</code> &#124; <code>function</code> | RPC name |
 | ...fns | <code>function</code> &#124; <code>Array</code> | Middleware and/or handler |
 
 **Example** *(Define handler for rpc function &#x27;fn1&#x27;)*  
