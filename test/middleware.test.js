@@ -320,6 +320,61 @@ test.cb('should not call middleware downstream of one that does not call next', 
   })
 })
 
+test('multi: call multiple services with middleware', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function hello (ctx) {
+    ctx.res = { message: ctx.req.message || '' + ':Hello ' + ctx.req.name }
+  }
+
+  function goodbye (ctx) {
+    ctx.res = { message: ctx.req.message || '' + ':Goodbye ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.message = ':mw1'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use('Greeter2', mw1)
+  app.use({
+    Greeter4: {
+      sayGoodbye: goodbye,
+      sayHello: [ mw1, hello ]
+    },
+    Greeter2: { sayHello: hello }
+  })
+
+  const host = tu.getHost()
+  const server = app.start(host)
+  t.truthy(server)
+
+  const proto = grpc.load(PROTO_PATH).helloworld
+  const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
+  const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
+  client2.sayHello({ name: 'Bob' }, (err, response) => {
+    t.ifError(err)
+    t.truthy(response)
+    t.is(response.message, ':mw1:Hello Bob')
+
+    client4.sayHello({ name: 'Jane' }, (err, response) => {
+      t.ifError(err)
+      t.truthy(response)
+      t.is(response.message, ':mw1:Hello Jane')
+
+      client4.sayGoodbye({ name: 'Bill' }, (err, response) => {
+        t.ifError(err)
+        t.truthy(response)
+        t.is(response.message, ':Goodbye Bill')
+        app.close().then(() => t.end())
+      })
+    })
+  })
+})
+
 test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
 })
