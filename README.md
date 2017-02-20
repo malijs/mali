@@ -27,7 +27,7 @@ async function sayHello (ctx) {
 }
 
 function main () {
-  const app = new Mali(PROTO_PATH, 'Greeter')
+  const app = new Mali(PROTO_PATH)
   app.use({ sayHello })
   app.start('0.0.0.0:50051')
 }
