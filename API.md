@@ -18,6 +18,7 @@ Represents a RPC call context.
 
 * [Context](#Context)
     * [new Context()](#new_Context_new)
+    * [.name](#Context+name) : <code>String</code>
     * [.type](#Context+type) : <code>String</code>
     * [.req](#Context+req) : <code>Object</code> &#124; <code>Stream</code>
     * [.res](#Context+res) : <code>Object</code> &#124; <code>Stream</code>
@@ -36,6 +37,18 @@ async function toUpper(ctx) {
   console.log(ctx.type) // logs the type
   ctx.res = { message: ctx.req.message.toUpperCase() }
 }
+```
+
+<a name="Context+name"></a>
+
+#### context.name : <code>String</code>
+The call function name.
+
+**Kind**: instance property of <code>[Context](#Context)</code>  
+**Example**  
+
+```js
+console.log(ctx.name) // 'SayHello'
 ```
 
 <a name="Context+type"></a>
@@ -101,7 +114,7 @@ The internal gRPC call instance reference.
 Represents a gRPC service
 
 **Kind**: global class  
-**Extends:** <code>Emitter</code>  
+**Extends**: <code>Emitter</code>  
 
 * [Mali](#Mali) ⇐ <code>Emitter</code>
     * [new Mali(proto, name, options)](#new_Mali_new)
