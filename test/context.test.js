@@ -77,13 +77,15 @@ test.cb('should not affect the original prototype', t => {
 })
 
 test.cb('should have correct properties for req / res', t => {
-  t.plan(18)
+  t.plan(20)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
@@ -115,7 +117,7 @@ test.cb('should have correct properties for req / res', t => {
 })
 
 test.cb('should have correct properties for req / res with proto', t => {
-  t.plan(18)
+  t.plan(20)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -124,6 +126,8 @@ test.cb('should have correct properties for req / res with proto', t => {
   function sayHello (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
@@ -158,13 +162,15 @@ test.cb('should have correct properties for req / res with proto', t => {
 })
 
 test.cb('should have correct properties res stream request', t => {
-  t.plan(16)
+  t.plan(18)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
@@ -212,13 +218,15 @@ test.cb('should have correct properties res stream request', t => {
 })
 
 test.cb('should have correct properties for req stream', t => {
-  t.plan(19)
+  t.plan(21)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
 
   async function writeStuff (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
@@ -275,13 +283,15 @@ test.cb('should have correct properties for req stream', t => {
 })
 
 test.cb('should have correct properties for duplex call', t => {
-  t.plan(17)
+  t.plan(19)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
 
   async function processStuff (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.res)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
