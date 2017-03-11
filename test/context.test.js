@@ -77,17 +77,25 @@ test.cb('should not affect the original prototype', t => {
 })
 
 test.cb('should have correct properties for req / res', t => {
-  t.plan(12)
+  t.plan(20)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
+    t.truthy(ctx.fullName)
+    t.truthy(ctx.service)
+    t.truthy(ctx.package)
     t.is(ctx.name, 'SayHello')
+    t.is(ctx.fullName, '/helloworld.Greeter/SayHello')
+    t.is(ctx.service, 'Greeter')
+    t.is(ctx.package, 'helloworld')
     t.is(ctx.type, CallType.UNARY)
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -108,18 +116,71 @@ test.cb('should have correct properties for req / res', t => {
   })
 })
 
+test.cb('should have correct properties for req / res with proto', t => {
+  t.plan(20)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  const messages = require('./static/helloworld_pb')
+
+  function sayHello (ctx) {
+    t.truthy(ctx)
+    t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
+    t.truthy(ctx.call)
+    t.truthy(ctx.type)
+    t.truthy(ctx.name)
+    t.truthy(ctx.fullName)
+    t.truthy(ctx.service)
+    t.truthy(ctx.package)
+    t.is(ctx.name, 'sayHello')
+    t.is(ctx.fullName, '/helloworld.GreeterService/sayHello')
+    t.is(ctx.service, 'GreeterService')
+    t.is(ctx.package, 'helloworld')
+    t.is(ctx.type, CallType.UNARY)
+    const reply = new messages.HelloReply()
+    reply.setMessage('Hello ' + ctx.req.getName())
+    ctx.res = reply
+  }
+
+  const services = require('./static/helloworld_grpc_pb')
+  const app = new Mali(services)
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.ifError(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Bob')
+    app.close().then(() => t.end())
+  })
+})
+
 test.cb('should have correct properties res stream request', t => {
-  t.plan(10)
+  t.plan(18)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
+    t.truthy(ctx.fullName)
+    t.truthy(ctx.service)
+    t.truthy(ctx.package)
     t.is(ctx.name, 'ListStuff')
+    t.is(ctx.fullName, '/argservice.ArgService/ListStuff')
+    t.is(ctx.service, 'ArgService')
+    t.is(ctx.package, 'argservice')
     t.is(ctx.type, CallType.RESPONSE_STREAM)
 
     ctx.res = hl(_.cloneDeep(ARRAY_DATA))
@@ -157,17 +218,25 @@ test.cb('should have correct properties res stream request', t => {
 })
 
 test.cb('should have correct properties for req stream', t => {
-  t.plan(13)
+  t.plan(21)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
 
   async function writeStuff (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
+    t.truthy(ctx.fullName)
+    t.truthy(ctx.service)
+    t.truthy(ctx.package)
     t.is(ctx.name, 'WriteStuff')
+    t.is(ctx.fullName, '/argservice.ArgService/WriteStuff')
+    t.is(ctx.service, 'ArgService')
+    t.is(ctx.package, 'argservice')
     t.is(ctx.type, CallType.REQUEST_STREAM)
 
     return new Promise((resolve, reject) => {
@@ -214,18 +283,26 @@ test.cb('should have correct properties for req stream', t => {
 })
 
 test.cb('should have correct properties for duplex call', t => {
-  t.plan(11)
+  t.plan(19)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
 
   async function processStuff (ctx) {
     t.truthy(ctx)
     t.truthy(ctx.req)
+    t.truthy(ctx.metadata)
+    t.truthy(ctx.app)
     t.truthy(ctx.res)
     t.truthy(ctx.call)
     t.truthy(ctx.type)
     t.truthy(ctx.name)
+    t.truthy(ctx.fullName)
+    t.truthy(ctx.service)
+    t.truthy(ctx.package)
     t.is(ctx.name, 'ProcessStuff')
+    t.is(ctx.fullName, '/argservice.ArgService/ProcessStuff')
+    t.is(ctx.service, 'ArgService')
+    t.is(ctx.package, 'argservice')
     t.is(ctx.type, CallType.DUPLEX)
 
     ctx.req.on('data', d => {
