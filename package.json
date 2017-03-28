@@ -1,6 +1,6 @@
 {
   "name": "mali",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Minimalistic gRPC microservice framework",
   "main": "lib/index.js",
   "scripts": {
