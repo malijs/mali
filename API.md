@@ -19,6 +19,9 @@ Represents a RPC call context.
 * [Context](#Context)
     * [new Context()](#new_Context_new)
     * [.name](#Context+name) : <code>String</code>
+    * [.fullName](#Context+fullName) : <code>String</code>
+    * [.service](#Context+service) : <code>String</code>
+    * [.package](#Context+package) : <code>String</code>
     * [.type](#Context+type) : <code>String</code>
     * [.req](#Context+req) : <code>Object</code> \| <code>Stream</code>
     * [.res](#Context+res) : <code>Object</code> \| <code>Stream</code>
@@ -49,6 +52,42 @@ The call function name.
 
 ```js
 console.log(ctx.name) // 'SayHello'
+```
+
+<a name="Context+fullName"></a>
+
+#### context.fullName : <code>String</code>
+The full name of the call.
+
+**Kind**: instance property of <code>[Context](#Context)</code>  
+**Example**  
+
+```js
+console.log(ctx.fullName) // '/helloworld.Greeter/SayHello'
+```
+
+<a name="Context+service"></a>
+
+#### context.service : <code>String</code>
+The service name of the call.
+
+**Kind**: instance property of <code>[Context](#Context)</code>  
+**Example**  
+
+```js
+console.log(ctx.service) // 'Greeter'
+```
+
+<a name="Context+package"></a>
+
+#### context.package : <code>String</code>
+The package name of the call.
+
+**Kind**: instance property of <code>[Context](#Context)</code>  
+**Example**  
+
+```js
+console.log(ctx.package) // 'helloworld'
 ```
 
 <a name="Context+type"></a>
