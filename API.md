@@ -20,8 +20,8 @@ Represents a RPC call context.
     * [new Context()](#new_Context_new)
     * [.name](#Context+name) : <code>String</code>
     * [.type](#Context+type) : <code>String</code>
-    * [.req](#Context+req) : <code>Object</code> &#124; <code>Stream</code>
-    * [.res](#Context+res) : <code>Object</code> &#124; <code>Stream</code>
+    * [.req](#Context+req) : <code>Object</code> \| <code>Stream</code>
+    * [.res](#Context+res) : <code>Object</code> \| <code>Stream</code>
     * [.app](#Context+app) : <code>Object</code>
     * [.call](#Context+call) : <code>Object</code>
 
@@ -73,7 +73,7 @@ if(ctx.type === CallType.DUPLEX) {
 
 <a name="Context+req"></a>
 
-#### context.req : <code>Object</code> &#124; <code>Stream</code>
+#### context.req : <code>Object</code> \| <code>Stream</code>
 The request object or stream.
 
 **Kind**: instance property of <code>[Context](#Context)</code>  
@@ -85,7 +85,7 @@ console.dir(ctx.req) // { name: 'Bob' }
 
 <a name="Context+res"></a>
 
-#### context.res : <code>Object</code> &#124; <code>Stream</code>
+#### context.res : <code>Object</code> \| <code>Stream</code>
 The response object or stream.
                             Should be set in handler.
 
@@ -137,7 +137,7 @@ Create a gRPC service
 
 | Param | Type | Description |
 | --- | --- | --- |
-| proto | <code>String</code> &#124; <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - The static service proto object itself |
+| proto | <code>String</code> \| <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - The static service proto object itself |
 | name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
@@ -195,7 +195,7 @@ app construction time for some reason.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| proto | <code>String</code> &#124; <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - The static service proto object itself |
+| proto | <code>String</code> \| <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - The static service proto object itself |
 | name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
@@ -219,9 +219,9 @@ proto, assumes <code>0</code>th service. Useful for protos with only one service
 
 | Param | Type | Description |
 | --- | --- | --- |
-| service | <code>String</code> &#124; <code>Object</code> | Service name |
-| name | <code>String</code> &#124; <code>function</code> | RPC name |
-| ...fns | <code>function</code> &#124; <code>Array</code> | Middleware and/or handler |
+| service | <code>String</code> \| <code>Object</code> | Service name |
+| name | <code>String</code> \| <code>function</code> | RPC name |
+| ...fns | <code>function</code> \| <code>Array</code> | Middleware and/or handler |
 
 **Example** *(Define handler for rpc function &#x27;fn1&#x27;)*  
 
