@@ -316,6 +316,56 @@ test.cb('should handle an error in the handler in req stream app', t => {
   })
 })
 
+test('should handle error in response stream', async t => {
+  t.plan(3)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
+
+  const data = ['a', 'b', 'c', 'ERROR', 'd'];
+  function listStuff (ctx) {
+    const s = hl(data)
+      .consume((err, d, push, next) => {
+        setTimeout(() => {
+          if (d === 'ERROR') {
+            push(new Error('stream error'))
+          } else {
+            push(null, { message: d })
+            next()
+          }
+        }, 10)
+      })
+
+    ctx.res = s
+  }
+  const app = new Mali(PROTO_PATH, 'ArgService')
+  app.use({ listStuff })
+  const appErrorPromise = new Promise(resolve => {
+    app.on('error', err => {
+      resolve(err);
+    })
+  })
+  const server = app.start(APP_HOST)
+
+  const proto = grpc.load(PROTO_PATH).argservice
+  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.listStuff({ message: 'Hello' })
+  const callErrorPromise = new Promise(resolve => {
+    call.on('error', err => {
+      resolve(err)
+    })
+  })
+  const resData = []
+  call.on('data', d => {
+    resData.push(d)
+  })
+  call.on('end', () => {
+    t.fail('not expecting end')
+  })
+  t.is((await appErrorPromise).message, 'stream error')
+  t.is((await callErrorPromise).message, 'stream error')
+  t.is(resData.length, 3)
+})
+
 test.cb('should handle an error in the handler of duplex call', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
