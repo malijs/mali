@@ -1,4 +1,5 @@
 import test from 'ava'
+import grpc from 'grpc'
 import path from 'path'
 import _ from 'lodash'
 import pMap from 'p-map'
@@ -59,8 +60,8 @@ test.serial('should statically create service', t => {
   t.truthy(server)
 })
 
-test.serial.only('should work with protobuf 6 loaded object', async t => {
-  t.plan(3)
+test.serial('should work with protobuf 6 loaded object', async t => {
+  t.plan(4)
   const root = await protobuf.load(PROTO_PATH)
   t.truthy(root)
 
@@ -68,7 +69,9 @@ test.serial.only('should work with protobuf 6 loaded object', async t => {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  const app = new Mali(PROTO_PATH)
+  const loaded = grpc.loadObject(root)
+  t.truthy(loaded)
+  const app = new Mali(loaded)
   t.truthy(app)
   apps.push(app)
 
