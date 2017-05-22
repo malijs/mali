@@ -3,7 +3,7 @@ import grpc from 'grpc'
 import path from 'path'
 import _ from 'lodash'
 import pMap from 'p-map'
-import protobuf from 'protobufjs'
+import protobuf from 'protobufjs6'
 
 import Mali from '../lib'
 import * as tu from './util'

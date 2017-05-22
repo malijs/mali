@@ -4,7 +4,7 @@ import grpc from 'grpc'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
-import protobuf from 'protobufjs'
+import protobuf from 'protobufjs6'
 
 import Mali from '../lib'
 import * as tu from './util'
