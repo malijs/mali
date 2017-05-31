@@ -4,6 +4,7 @@ import grpc from 'grpc'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
+import protobuf from 'protobufjs6'
 
 import Mali from '../lib'
 import * as tu from './util'
@@ -67,6 +68,38 @@ test.cb('should handle req/res request', t => {
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     app.close().then(() => t.end())
+  })
+})
+
+test.cb('should handle req/res request with protobufjs 6', t => {
+  t.plan(8)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  protobuf.load(PROTO_PATH, (err, root) => {
+    t.ifError(err)
+    t.truthy(root)
+    const loaded = grpc.loadObject(root)
+    t.truthy(loaded)
+
+    const app = new Mali(loaded)
+    t.truthy(app)
+    app.use({ sayHello })
+    const server = app.start(APP_HOST)
+    t.truthy(server)
+
+    const helloproto = grpc.load(PROTO_PATH).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.ifError(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      app.close().then(() => t.end())
+    })
   })
 })
 

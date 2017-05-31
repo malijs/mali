@@ -1,7 +1,9 @@
 import test from 'ava'
+import grpc from 'grpc'
 import path from 'path'
 import _ from 'lodash'
 import pMap from 'p-map'
+import protobuf from 'protobufjs6'
 
 import Mali from '../lib'
 import * as tu from './util'
@@ -58,6 +60,26 @@ test.serial('should statically create service', t => {
   t.truthy(server)
 })
 
+test.serial('should work with protobuf 6 loaded object', async t => {
+  t.plan(4)
+  const root = await protobuf.load(PROTO_PATH)
+  t.truthy(root)
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const loaded = grpc.loadObject(root)
+  t.truthy(loaded)
+  const app = new Mali(loaded)
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+})
+
 test.serial('should statically create service without a service name', t => {
   const messages = require('./static/helloworld_pb')
   const services = require('./static/helloworld_grpc_pb')
@@ -78,6 +100,8 @@ test.serial('should statically create service without a service name', t => {
 })
 
 test.serial('should dynamically create service using object specifying root and file', async t => {
+  t.plan(2)
+
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -98,6 +122,8 @@ test.serial('should dynamically create service using object specifying root and 
 })
 
 test.serial('should dynamically create service using object specifying root and file using imports', async t => {
+  t.plan(2)
+
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
