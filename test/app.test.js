@@ -143,14 +143,14 @@ test.cb('should handle res stream request', t => {
   }
 })
 
-test.cb('should handle req stream app', t => {
+test.cb.only('should handle req stream app', t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
 
-  async function writeStuff (ctx) {
+  async function doWork(inputStream) {
     return new Promise((resolve, reject) => {
-      hl(ctx.req)
+      hl(inputStream)
         .map(d => {
           return d.message.toUpperCase()
         })
@@ -160,12 +160,15 @@ test.cb('should handle req stream app', t => {
             return reject(err)
           }
 
-          ctx.res = {
+          resolve({
             message: r.join(':')
-          }
-          resolve()
+          })
         })
     })
+  }
+
+  async function writeStuff (ctx) {
+    ctx.res = await doWork(ctx.req)
   }
 
   const app = new Mali(PROTO_PATH, 'ArgService')
