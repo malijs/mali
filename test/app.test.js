@@ -143,7 +143,7 @@ test.cb('should handle res stream request', t => {
   }
 })
 
-test.cb.only('should handle req stream app', t => {
+test.cb('should handle req stream app', t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
