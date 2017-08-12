@@ -148,7 +148,7 @@ test.cb('should handle req stream app', t => {
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
 
-  async function doWork(inputStream) {
+  async function doWork (inputStream) {
     return new Promise((resolve, reject) => {
       hl(inputStream)
         .map(d => {
@@ -234,23 +234,26 @@ test.cb('should handle duplex call', t => {
     resData.push(d.message)
   })
 
-  call.on('end', () => {
-    _.delay(() => {
-      endTest()
-    }, 200)
-  })
-
-  async.eachSeries(getArrayData(), (d, asfn) => {
+  const data = getArrayData()
+  let size = data.length
+  async.eachSeries(data, (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
-    call.end()
+    async.whilst(
+      () => { return resData.length < size },
+      asfn => {
+        setTimeout(asfn, 10)
+      },
+      () => {
+        call.end()
+        app.close().then(() => {
+          t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+          t.end()
+        })
+      }
+    )
   })
-
-  function endTest () {
-    t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-    app.close().then(() => t.end())
-  }
 })
 
 test.cb('should start multipe servers from same application and handle requests', t => {
