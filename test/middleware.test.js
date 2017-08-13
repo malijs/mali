@@ -320,15 +320,17 @@ test.cb('should not call middleware downstream of one that does not call next', 
   })
 })
 
-test('multi: call multiple services with middleware', t => {
+test.cb('multi: call multiple services with middleware', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
 
   function hello (ctx) {
-    ctx.res = { message: ctx.req.message || '' + ':Hello ' + ctx.req.name }
+    const msg = ctx.message || ''
+    ctx.res = { message: msg + ':Hello ' + ctx.req.name }
   }
 
   function goodbye (ctx) {
-    ctx.res = { message: ctx.req.message || '' + ':Goodbye ' + ctx.req.name }
+    const msg = ctx.message || ''
+    ctx.res = { message: msg + ':Goodbye ' + ctx.req.name }
   }
 
   async function mw1 (ctx, next) {

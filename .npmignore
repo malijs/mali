@@ -5,4 +5,7 @@ node_modules
 dump.rdb
 npm-debug.log
 .nyc_output
+.travis.yml
 test
+API.md
+mali-logo.png
