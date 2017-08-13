@@ -1,4 +1,4 @@
-# [![Mali](mali-logo.png)](https://malijs.github.io)
+# [![Mali](https://raw.githubusercontent.com/malijs/mali/master/mali-logo.png)](https://malijs.github.io)
 
 **A minimalistic [gRPC](http://www.grpc.io) microservice framework.**
 
