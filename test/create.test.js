@@ -3,10 +3,11 @@ import grpc from 'grpc'
 import path from 'path'
 import _ from 'lodash'
 import pMap from 'p-map'
-import { protobuf } from 'protobufjs6'
 
 import Mali from '../lib'
 import * as tu from './util'
+
+const protobuf = require('protobufjs6')
 
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 const PROTO_PATH_MULTI = path.resolve(__dirname, './protos/multi.proto')
