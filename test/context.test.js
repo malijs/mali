@@ -339,24 +339,21 @@ test.cb('should have correct properties for duplex call', t => {
     resData.push(d.message)
   })
 
+  call.on('end', () => {
+    endTest()
+  })
+
   async.eachSeries(ARRAY_DATA, (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
-    async.whilst(
-      () => { return resData.length < ARRAY_DATA.length },
-      asfn => {
-        setTimeout(asfn, 10)
-      },
-      () => {
-        call.end()
-        app.close().then(() => {
-          t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-          t.end()
-        })
-      }
-    )
+    call.end()
   })
+
+  function endTest () {
+    t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    app.close().then(() => t.end())
+  }
 })
 
 test.after.always('cleanup', async t => {

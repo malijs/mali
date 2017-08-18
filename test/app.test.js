@@ -234,26 +234,21 @@ test.cb('should handle duplex call', t => {
     resData.push(d.message)
   })
 
-  const data = getArrayData()
-  let size = data.length
-  async.eachSeries(data, (d, asfn) => {
+  call.on('end', () => {
+    endTest()
+  })
+
+  async.eachSeries(getArrayData(), (d, asfn) => {
     call.write(d)
     _.delay(asfn, _.random(10, 50))
   }, () => {
-    async.whilst(
-      () => { return resData.length < size },
-      asfn => {
-        setTimeout(asfn, 10)
-      },
-      () => {
-        call.end()
-        app.close().then(() => {
-          t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-          t.end()
-        })
-      }
-    )
+    call.end()
   })
+
+  function endTest () {
+    t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    app.close().then(() => t.end())
+  }
 })
 
 test.cb('should start multipe servers from same application and handle requests', t => {

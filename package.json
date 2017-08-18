@@ -35,7 +35,7 @@
     "ee-first": "^1.1.1",
     "error-inject": "^1.0.0",
     "grpc": "^1.4.0",
-    "grpc-inspect": "~0.3.0",
+    "grpc-inspect": "~0.3.3",
     "is-stream": "^1.1.0",
     "lodash": "^4.17.0",
     "lodash.camelcase": "^4.3.0",
@@ -54,9 +54,9 @@
     "pify": "^3.0.0"
   },
   "devDependencies": {
-    "ava": "^0.21.0",
+    "ava": "^0.22.0",
     "babel-eslint": "^7.1.1",
-    "google-protobuf": "^3.1.1",
+    "google-protobuf": "^3.4.0",
     "highland": "^3.0.0-beta.3",
     "jsdoc-to-markdown": "^3.0.0",
     "md-wrap-code": "^0.1.1",
