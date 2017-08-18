@@ -6,7 +6,11 @@ import Mali from '../lib'
 import * as tu from './util'
 
 const protobuf67 = require('protobufjs67')
+console.log('----')
 const protobuf68 = require('protobufjs67')
+
+console.dir(protobuf67, {depth: 1, colors: true})
+console.dir(protobuf68, {depth: 1, colors: true})
 
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
