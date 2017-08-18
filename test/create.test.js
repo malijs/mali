@@ -7,8 +7,6 @@ import pMap from 'p-map'
 import Mali from '../lib'
 import * as tu from './util'
 
-const protobuf = require('protobufjs6')
-
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 const PROTO_PATH_MULTI = path.resolve(__dirname, './protos/multi.proto')
 
@@ -53,26 +51,6 @@ test.serial('should statically create service', t => {
   }
 
   const app = new Mali(services, 'GreeterService')
-  t.truthy(app)
-  apps.push(app)
-
-  app.use({ sayHello })
-  const server = app.start(tu.getHost())
-  t.truthy(server)
-})
-
-test.serial('should work with protobuf 6 loaded object', async t => {
-  t.plan(4)
-  const root = await protobuf.load(PROTO_PATH)
-  t.truthy(root)
-
-  function sayHello (ctx) {
-    ctx.res = { message: 'Hello ' + ctx.req.name }
-  }
-
-  const loaded = grpc.loadObject(root)
-  t.truthy(loaded)
-  const app = new Mali(loaded)
   t.truthy(app)
   apps.push(app)
 

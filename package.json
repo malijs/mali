@@ -60,7 +60,8 @@
     "highland": "^3.0.0-beta.3",
     "jsdoc-to-markdown": "^3.0.0",
     "md-wrap-code": "^0.1.1",
-    "protobufjs6": "./test/protobufjs6",
+    "protobufjs67": "./test/protobufjs67",
+    "protobufjs68": "./test/protobufjs68",
     "standard": "^10.0.3",
     "test-console": "^1.0.0"
   },
