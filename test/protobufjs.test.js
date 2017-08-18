@@ -8,15 +8,23 @@ import * as tu from './util'
 const protobuf67 = require('protobufjs67')
 const protobuf68 = require('protobufjs68')
 
-console.dir(protobuf67, {depth: 0, colors: true})
+test.cb.before(t => {
+  setTimeout(t.end, 100)
+})
+
+console.dir(protobuf67, { depth: 0, colors: true })
 console.log('----')
-console.dir(protobuf68, {depth: 0, colors: true})
+console.dir(protobuf68, { depth: 0, colors: true })
 
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
 const apps = []
 
 test.serial.cb('should handle req/res request with protobufjs 6.7', t => {
+  console.dir(protobuf67, { depth: 0, colors: true })
+  console.log('----')
+  console.dir(protobuf68, { depth: 0, colors: true })
+
   t.plan(8)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
