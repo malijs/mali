@@ -8,24 +8,23 @@ import * as tu from './util'
 const protobuf67 = require('protobufjs67')
 const protobuf68 = require('protobufjs68')
 
-test.cb.before(t => {
-  setTimeout(t.end, 100)
-})
-
-console.dir(protobuf67, { depth: 0, colors: true })
-console.log('----')
-console.dir(protobuf68, { depth: 0, colors: true })
-
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
 const apps = []
 
-test.serial.cb('should handle req/res request with protobufjs 6.7', t => {
-  console.dir(protobuf67, { depth: 0, colors: true })
-  console.log('----')
-  console.dir(protobuf68, { depth: 0, colors: true })
+// FIXME hack for node 8 in travis builds
+// for some reason load is not there, but loadProto, loadProtoFile, loadJson are
+function getLoadFnName (pbjs) {
+  if (typeof pbjs.load === 'function') {
+    return 'load'
+  } else if (typeof pbjs.loadProtoFile === 'function') {
+    return 'loadProtoFile'
+  }
+  return null
+}
 
-  t.plan(8)
+test.serial.cb('should handle req/res request with protobufjs 6.7', t => {
+  t.plan(9)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -33,7 +32,10 @@ test.serial.cb('should handle req/res request with protobufjs 6.7', t => {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  protobuf67.load(PROTO_PATH, (err, root) => {
+  const loadFn = getLoadFnName(protobuf67)
+  t.truthy(loadFn)
+
+  protobuf67[loadFn](PROTO_PATH, (err, root) => {
     t.ifError(err)
     t.truthy(root)
     const loaded = grpc.loadObject(root)
@@ -57,7 +59,7 @@ test.serial.cb('should handle req/res request with protobufjs 6.7', t => {
 })
 
 test.serial.cb('should handle req/res request with protobufjs 6.8', t => {
-  t.plan(8)
+  t.plan(9)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -65,7 +67,10 @@ test.serial.cb('should handle req/res request with protobufjs 6.8', t => {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  protobuf68.load(PROTO_PATH, (err, root) => {
+  const loadFn = getLoadFnName(protobuf68)
+  t.truthy(loadFn)
+
+  protobuf68[loadFn](PROTO_PATH, (err, root) => {
     t.ifError(err)
     t.truthy(root)
     const loaded = grpc.loadObject(root)
@@ -89,8 +94,12 @@ test.serial.cb('should handle req/res request with protobufjs 6.8', t => {
 })
 
 test.serial.serial('should work with protobuf 6.7 loaded object', async t => {
-  t.plan(4)
-  const root = await protobuf67.load(PROTO_PATH)
+  t.plan(5)
+
+  const loadFn = getLoadFnName(protobuf67)
+  t.truthy(loadFn)
+
+  const root = await protobuf67[loadFn](PROTO_PATH)
   t.truthy(root)
 
   function sayHello (ctx) {
@@ -109,8 +118,12 @@ test.serial.serial('should work with protobuf 6.7 loaded object', async t => {
 })
 
 test.serial.serial('should work with protobuf 6.8 loaded object', async t => {
-  t.plan(4)
-  const root = await protobuf68.load(PROTO_PATH)
+  t.plan(5)
+
+  const loadFn = getLoadFnName(protobuf68)
+  t.truthy(loadFn)
+
+  const root = await protobuf68[loadFn](PROTO_PATH)
   t.truthy(root)
 
   function sayHello (ctx) {
