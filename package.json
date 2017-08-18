@@ -73,7 +73,7 @@
   },
   "ava": {
     "files": [
-      "test/protobufjs.test.js"
+      "test/*.test.js"
     ]
   }
 }
