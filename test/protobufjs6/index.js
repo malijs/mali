@@ -1,1 +1,1 @@
-module.exports = require('protobufjs')
+module.exports.protobuf = require('protobufjs')

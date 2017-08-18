@@ -4,7 +4,7 @@ import grpc from 'grpc'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
-import protobuf from 'protobufjs6'
+import { protobuf } from 'protobufjs6'
 
 import Mali from '../lib'
 import * as tu from './util'
@@ -71,7 +71,7 @@ test.cb('should handle req/res request', t => {
   })
 })
 
-test.cb('should handle req/res request with protobufjs 6', t => {
+test.cb.only('should handle req/res request with protobufjs 6', t => {
   t.plan(8)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
