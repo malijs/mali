@@ -8,9 +8,6 @@
 [![License](https://img.shields.io/github/license/malijs/mali.svg?style=flat-square)](https://raw.githubusercontent.com/malijs/mali/master/LICENSE)
 [![chat on gitter](https://img.shields.io/gitter/room/malijs/Lobby.svg?style=flat-square)](https://gitter.im/malijs/Lobby)
 
-**Mali is still in development and preview state. It is good for exploration, but may not
-be suitable for production use yet.**
-
 ## Installation
 
 ```
