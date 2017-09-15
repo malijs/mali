@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "ava -v",
+    "cover": "nyc npm test",
     "mddocs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code > apimd.md",
     "fixdocs": "cat apimd.md | gsed 's/<a name=\"\\(.*\\)\"><\\/a>/<a name=\"\\L\\1\" id=\"\\L\\1\" data-id=\"\\L\\1\"><\\/a>/' | sed -e 's/t\\+/t/g; s/i\\+/i/g;' > api.md",
     "docs": "npm run mddocs && npm run fixdocs && rm apimd.md"
@@ -50,16 +51,16 @@
     "lodash.values": "^4.3.0",
     "mali-call-types": "~0.1.0",
     "mali-compose": "~0.1.0",
-    "p-map": "^1.1.1",
+    "p-map": "^1.2.0",
     "pify": "^3.0.0"
   },
   "devDependencies": {
     "ava": "^0.22.0",
-    "babel-eslint": "^7.1.1",
     "google-protobuf": "^3.4.0",
     "highland": "^3.0.0-beta.3",
     "jsdoc-to-markdown": "^3.0.0",
     "md-wrap-code": "^0.1.1",
+    "nyc": "^11.2.1",
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
     "standard": "^10.0.3",
@@ -68,12 +69,14 @@
   "directories": {
     "test": "test"
   },
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "ava": {
     "files": [
       "test/*.test.js"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "lib"
     ]
   }
 }

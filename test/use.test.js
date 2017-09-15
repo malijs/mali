@@ -34,6 +34,22 @@ test('should throw on invalid parameter', t => {
   t.is(error.message, 'Invalid type for handler for sayHello')
 })
 
+test('should throw on invalid service name parameter', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  const error = t.throws(() => {
+    app.use('UnknownService', 'sayHello', sayHello)
+  }, Error)
+
+  t.is(error.message, 'Unknown service UnknownService')
+})
+
 test('should add handler using object notation', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
