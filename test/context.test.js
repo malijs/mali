@@ -38,7 +38,9 @@ test('createContext should create context for a UNARY call', t => {
 
   t.truthy(ctx)
   t.truthy(ctx.request)
+  t.true(ctx.request instanceof Request)
   t.truthy(ctx.response)
+  t.true(ctx.response instanceof Response)
   t.truthy(ctx.call)
   t.is(ctx.call, ctx.request.call)
   t.is(ctx.type, CallType.UNARY)
