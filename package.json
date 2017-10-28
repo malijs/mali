@@ -76,12 +76,12 @@
   ],
   "ava": {
     "files": [
-      "test/context.test.js"
+      "test/*.test.js"
     ]
   },
   "nyc": {
     "include": [
-      "lib/context.js"
+      "lib/*.js"
     ]
   }
 }

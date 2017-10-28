@@ -4,10 +4,11 @@ import grpc from 'grpc'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
-const CallType = require('mali-call-types')
 
-import Mali from '../lib'
+import Mali from '../'
 import * as tu from './util'
+
+const CallType = require('mali-call-types')
 
 const ARRAY_DATA = [
   { message: '1 foo' },

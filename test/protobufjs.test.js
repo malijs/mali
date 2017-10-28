@@ -2,7 +2,7 @@ import test from 'ava'
 import path from 'path'
 import grpc from 'grpc'
 
-import Mali from '../lib'
+import Mali from '../'
 import * as tu from './util'
 
 const protobuf67 = require('protobufjs67')

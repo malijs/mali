@@ -4,7 +4,7 @@ import path from 'path'
 import _ from 'lodash'
 import pMap from 'p-map'
 
-import Mali from '../lib'
+import Mali from '../'
 import * as tu from './util'
 
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')

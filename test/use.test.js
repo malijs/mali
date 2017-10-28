@@ -1,7 +1,7 @@
 import path from 'path'
 import test from 'ava'
 import _ from 'lodash'
-import Mali from '../lib'
+import Mali from '../'
 
 test('should throw on unknown function', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')

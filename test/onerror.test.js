@@ -4,7 +4,7 @@ import { stderr } from 'test-console'
 import path from 'path'
 import grpc from 'grpc'
 
-import Mali from '../lib'
+import Mali from '../'
 import * as tu from './util'
 
 test('should throw an error if a non-error is given', t => {
