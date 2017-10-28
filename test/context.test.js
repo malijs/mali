@@ -5,36 +5,30 @@ import CallType from 'mali-call-types'
 import Context from '../lib/context'
 import Request from '../lib/request'
 import Response from '../lib/response'
-import { createContext } from '../lib/run'
-
-const APP = {
-  context: Object.create(Context)
-}
+import Mali from '../'
 
 test('createContext should create context for a UNARY call', t => {
-  const runContext = {
-    app: APP,
-    descriptor: {
-      requestStream: false,
-      responseStream: false,
-      requestName: 'Point',
-      responseName: 'Feature',
-      name: 'GetFeature',
-      service: 'RouteGuide',
-      package: 'routeguide',
-      fullName: '/routeguide.RouteGuide/GetFeature'
+  const app = new Mali()
+  const descriptor = {
+    requestStream: false,
+    responseStream: false,
+    requestName: 'Point',
+    responseName: 'Feature',
+    name: 'GetFeature',
+    service: 'RouteGuide',
+    package: 'routeguide',
+    fullName: '/routeguide.RouteGuide/GetFeature'
+  }
+  const call = {
+    request: {
+      foo: 'bar'
     },
-    call: {
-      request: {
-        foo: 'bar'
-      },
-      metadata: {
-        one: 'two'
-      }
+    metadata: {
+      one: 'two'
     }
   }
 
-  const ctx = createContext(runContext)
+  const ctx = app._createContext(call, descriptor)
 
   t.truthy(ctx)
   t.truthy(ctx.request)
@@ -73,26 +67,24 @@ test('createContext should create context for a UNARY call', t => {
 })
 
 test('createContext should create context for a REQUEST_STREAM call', t => {
-  const runContext = {
-    app: APP,
-    descriptor: {
-      requestStream: true,
-      responseStream: false,
-      requestName: 'Point',
-      responseName: 'RouteSummary',
-      name: 'RecordRoute',
-      service: 'RouteGuide',
-      package: 'routeguide',
-      fullName: '/routeguide.RouteGuide/RecordRoute'
-    },
-    call: {
-      metadata: {
-        one: 'two'
-      }
+  const app = new Mali()
+  const descriptor = {
+    requestStream: true,
+    responseStream: false,
+    requestName: 'Point',
+    responseName: 'RouteSummary',
+    name: 'RecordRoute',
+    service: 'RouteGuide',
+    package: 'routeguide',
+    fullName: '/routeguide.RouteGuide/RecordRoute'
+  }
+  const call = {
+    metadata: {
+      one: 'two'
     }
   }
 
-  const ctx = createContext(runContext)
+  const ctx = app._createContext(call, descriptor)
 
   t.truthy(ctx)
   t.truthy(ctx.request)
@@ -124,29 +116,27 @@ test('createContext should create context for a REQUEST_STREAM call', t => {
 })
 
 test('createContext should create context for a RESPONSE_STREAM call', t => {
-  const runContext = {
-    app: APP,
-    descriptor: {
-      requestStream: false,
-      responseStream: true,
-      requestName: 'Rectangle',
-      responseName: 'Feature',
-      name: 'ListFeatures',
-      service: 'RouteGuide',
-      package: 'routeguide',
-      fullName: '/routeguide.RouteGuide/ListFeatures'
+  const app = new Mali()
+  const descriptor = {
+    requestStream: false,
+    responseStream: true,
+    requestName: 'Rectangle',
+    responseName: 'Feature',
+    name: 'ListFeatures',
+    service: 'RouteGuide',
+    package: 'routeguide',
+    fullName: '/routeguide.RouteGuide/ListFeatures'
+  }
+  const call = {
+    request: {
+      foo: 'bar'
     },
-    call: {
-      request: {
-        foo: 'bar'
-      },
-      metadata: {
-        one: 'two'
-      }
+    metadata: {
+      one: 'two'
     }
   }
 
-  const ctx = createContext(runContext)
+  const ctx = app._createContext(call, descriptor)
 
   t.truthy(ctx)
   t.truthy(ctx.request)
@@ -178,26 +168,24 @@ test('createContext should create context for a RESPONSE_STREAM call', t => {
 })
 
 test('createContext should create context for a DUPLEX call', t => {
-  const runContext = {
-    app: APP,
-    descriptor: {
-      requestStream: true,
-      responseStream: true,
-      requestName: 'RouteNote',
-      responseName: 'RouteNote',
-      name: 'RouteChat',
-      service: 'RouteGuide',
-      package: 'routeguide',
-      fullName: '/routeguide.RouteGuide/RouteChat'
-    },
-    call: {
-      metadata: {
-        one: 'two'
-      }
+  const app = new Mali()
+  const descriptor = {
+    requestStream: true,
+    responseStream: true,
+    requestName: 'RouteNote',
+    responseName: 'RouteNote',
+    name: 'RouteChat',
+    service: 'RouteGuide',
+    package: 'routeguide',
+    fullName: '/routeguide.RouteGuide/RouteChat'
+  }
+  const call = {
+    metadata: {
+      one: 'two'
     }
   }
 
-  const ctx = createContext(runContext)
+  const ctx = app._createContext(call, descriptor)
 
   t.truthy(ctx)
   t.truthy(ctx.request)
