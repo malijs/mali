@@ -2,9 +2,19 @@ import test from 'ava'
 import path from 'path'
 import grpc from 'grpc'
 import CallType from 'mali-call-types'
-const gi = require('grpc-inspect')
+import gi from 'grpc-inspect'
 
 import utils from '../lib/utils'
+
+test('isStaticGRPCObject() should return false for an undefined path', t => {
+  const v = utils.isStaticGRPCObject()
+  t.false(v)
+})
+
+test('isStaticGRPCObject() should return false for an empty path', t => {
+  const v = utils.isStaticGRPCObject({})
+  t.false(v)
+})
 
 test('isStaticGRPCObject() should return false for a loaded grpc', t => {
   const protoPath = path.resolve(__dirname, './protos/helloworld.proto')

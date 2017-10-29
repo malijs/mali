@@ -1,8 +1,6 @@
 import test from 'ava'
-import grpc from 'grpc'
 import CallType from 'mali-call-types'
 
-import Context from '../lib/context'
 import Request from '../lib/request'
 import Response from '../lib/response'
 import Mali from '../'
