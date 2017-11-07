@@ -262,10 +262,11 @@ Represents the application context
     * [.req](#Contextreq) : <code>Object</code> \| <code>Stream</code>
     * [.type](#Contexttype) : <code>String</code>
     * [.metadata](#Contextmetadata) : <code>String</code>
-    * [.get](#Contextget) : <code>function</code>
+    * [.get](#Contextget) ⇒ <code>\*</code>
     * [.res](#Contextres) : <code>Object</code> \| <code>Stream</code>
-    * [.sendMetadata](#ContextsendMetadata) : <code>function</code>
     * [.set](#Contextset) : <code>function</code>
+    * [.sendMetadata](#ContextsendMetadata) : <code>function</code>
+    * [.getStatus](#ContextgetStatus) ⇒ <code>\*</code>
     * [.setStatus](#ContextsetStatus) : <code>function</code>
 
 <a name="contextname" id="contextname" data-id="contextname"></a>
@@ -414,11 +415,17 @@ console.dir(ctx.metadata) // { foo: 'bar' }
 
 <a name="contextget" id="contextget" data-id="contextget"></a>
 
-#### context.get : <code>function</code>
+#### context.get ⇒ <code>\*</code>
 Get request metadata value
 This is an alias to `ctx.request.get()`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
+**Returns**: <code>\*</code> - the metadata field value  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> | the field name |
+
 **Example**  
 
 ```js
@@ -438,19 +445,6 @@ This is an alias to `ctx.response.res`.
 ctx.res = { name: 'Bob' }
 ```
 
-<a name="contextsendmetadata" id="contextsendmetadata" data-id="contextsendmetadata"></a>
-
-#### context.sendMetadata : <code>function</code>
-Send response header metadata.
-This is an alias to `ctx.response.sendMetadata()`.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-ctx.sendMetadata()
-```
-
 <a name="contextset" id="contextset" data-id="contextset"></a>
 
 #### context.set : <code>function</code>
@@ -458,6 +452,12 @@ Set response header metadata value.
 This is an alias to `ctx.response.set()`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> \| <code>Object</code> | the metadata field name or object for metadata |
+| val | <code>\*</code> | the value of the field |
+
 **Example** *(Using string field name and value)*  
 
 ```js
@@ -472,6 +472,48 @@ ctx.set({
 })
 ```
 
+<a name="contextsendmetadata" id="contextsendmetadata" data-id="contextsendmetadata"></a>
+
+#### context.sendMetadata : <code>function</code>
+Send response header metadata.
+This is an alias to `ctx.response.sendMetadata()`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| md | <code>Object</code> | optional header metadata object to set into the request before sending                    if there is existing metadata in the response it is cleared                    if param is not provided `sendMetadata` sends the existing metadata in the response |
+
+**Example** *(Set and send)*  
+
+```js
+ctx.sendMetadata({
+  foo: 'bar'
+})
+```
+
+**Example** *(Set and send later)*  
+
+```js
+ctx.set('foo', 'bar')
+// ... later
+ctx.response.sendMetadata()
+```
+
+<a name="contextgetstatus" id="contextgetstatus" data-id="contextgetstatus"></a>
+
+#### context.getStatus ⇒ <code>\*</code>
+Get response status / trailer metadata value.
+This is an alias to `ctx.response.getStatus()`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Returns**: <code>\*</code> - the metadata field value
+console.log(ctx.getStatus('foo')) // 'bar'  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> | the field name |
+
 <a name="contextsetstatus" id="contextsetstatus" data-id="contextsetstatus"></a>
 
 #### context.setStatus : <code>function</code>
@@ -479,6 +521,12 @@ Set response status / trailer metadata value.
 This is an alias to `ctx.response.setStatus()`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> \| <code>Object</code> | the metadata field name or object for metadata |
+| val | <code>\*</code> | the value of the field |
+
 **Example** *(Using string field name and value)*  
 
 ```js
