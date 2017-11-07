@@ -322,10 +322,10 @@ test('should handle error in response stream', async t => {
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
-  const data = ['a', 'b', 'c', 'ERROR', 'd'];
+  const data = ['a', 'b', 'c', 'ERROR', 'd']
   function listStuff (ctx) {
     const s = hl(data)
-      .consume((err, d, push, next) => {
+      .consume((e_, d, push, next) => {
         setTimeout(() => {
           if (d === 'ERROR') {
             push(new Error('stream error'))
@@ -342,10 +342,10 @@ test('should handle error in response stream', async t => {
   app.use({ listStuff })
   const appErrorPromise = new Promise(resolve => {
     app.on('error', err => {
-      resolve(err);
+      resolve(err)
     })
   })
-  const server = app.start(APP_HOST)
+  app.start(APP_HOST)
 
   const proto = grpc.load(PROTO_PATH).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())

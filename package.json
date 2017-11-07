@@ -4,7 +4,8 @@
   "description": "Minimalistic gRPC microservice framework",
   "main": "lib/app.js",
   "scripts": {
-    "test": "ava -v",
+    "lint": "standard | snazzy",
+    "test": "npm run lint && ava -v",
     "cover": "nyc npm test",
     "mddocs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code > apimd.md",
     "fixdocs": "cat apimd.md | gsed 's/<a name=\"\\(.*\\)\"><\\/a>/<a name=\"\\L\\1\" id=\"\\L\\1\" data-id=\"\\L\\1\"><\\/a>/' | sed -e 's/t\\+/t/g; s/i\\+/i/g;' > api.md",
@@ -65,8 +66,17 @@
     "nyc": "^11.3.0",
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
+    "snazzy": "^7.0.0",
     "standard": "^10.0.3",
     "test-console": "^1.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "test/protobufjs67/*.*",
+      "test/protobufjs68/*.*",
+      "test/protos/*.*",
+      "test/static/*.*"
+    ]
   },
   "directories": {
     "test": "test"

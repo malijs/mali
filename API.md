@@ -1,165 +1,22 @@
 ### Classes
 
 <dl>
-<dt><a href="#Context">Context</a></dt>
-<dd><p>Represents a RPC call context.</p>
-</dd>
 <dt><a href="#Mali">Mali</a> ⇐ <code>Emitter</code></dt>
 <dd><p>Represents a gRPC service</p>
 </dd>
+<dt><a href="#Context">Context</a></dt>
+<dd><p>Represents the application context</p>
+</dd>
+<dt><a href="#Request">Request</a></dt>
+<dd><p>Mali Request class that encasulates the request of a call.
+Clients to not create this. Mali does it for us.</p>
+</dd>
+<dt><a href="#Response">Response</a></dt>
+<dd><p>Mali Response class that encasulates the response of a call.
+Clients to not create this. Mali does it for us.</p>
+</dd>
 </dl>
 
-<a name="context" id="context" data-id="context"></a>
-
-### Context
-Represents a RPC call context.
-
-**Kind**: global class  
-
-* [Context](#Context)
-    * [new Context()](#new_Context_new)
-    * [.name](#Contextname) : <code>String</code>
-    * [.fullName](#ContextfullName) : <code>String</code>
-    * [.service](#Contextservice) : <code>String</code>
-    * [.package](#Contextpackage) : <code>String</code>
-    * [.type](#Contexttype) : <code>String</code>
-    * [.req](#Contextreq) : <code>Object</code> \| <code>Stream</code>
-    * [.res](#Contextres) : <code>Object</code> \| <code>Stream</code>
-    * [.metadata](#Contextmetadata) : <code>Object</code>
-    * [.app](#Contextapp) : <code>Object</code>
-    * [.call](#Contextcall) : <code>Object</code>
-
-<a name="new_context_new" id="new_context_new" data-id="new_context_new"></a>
-
-#### new Context()
-Context constructor. Clients do not need to call this.
-
-**Example**  
-
-```js
-async function toUpper(ctx) {
-  console.log(ctx.type) // logs the type
-  ctx.res = { message: ctx.req.message.toUpperCase() }
-}
-```
-
-<a name="contextname" id="contextname" data-id="contextname"></a>
-
-#### context.name : <code>String</code>
-The call function name.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.name) // 'SayHello'
-```
-
-<a name="contextfullname" id="contextfullname" data-id="contextfullname"></a>
-
-#### context.fullName : <code>String</code>
-The full name of the call.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.fullName) // '/helloworld.Greeter/SayHello'
-```
-
-<a name="contextservice" id="contextservice" data-id="contextservice"></a>
-
-#### context.service : <code>String</code>
-The service name of the call.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.service) // 'Greeter'
-```
-
-<a name="contextpackage" id="contextpackage" data-id="contextpackage"></a>
-
-#### context.package : <code>String</code>
-The package name of the call.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.package) // 'helloworld'
-```
-
-<a name="contexttype" id="contexttype" data-id="contexttype"></a>
-
-#### context.type : <code>String</code>
-The call type. One of <code>CallType</code> enums.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.type) // 'unary'
-```
-
-**Example**  
-
-```js
-if(ctx.type === CallType.DUPLEX) {
-  console.log('Duplex stream call')
-}
-```
-
-<a name="contextreq" id="contextreq" data-id="contextreq"></a>
-
-#### context.req : <code>Object</code> \| <code>Stream</code>
-The request object or stream.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.dir(ctx.req) // { name: 'Bob' }
-```
-
-<a name="contextres" id="contextres" data-id="contextres"></a>
-
-#### context.res : <code>Object</code> \| <code>Stream</code>
-The response object or stream. Should be set in handler.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-ctx.res = { name: 'Bob' }
-```
-
-<a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
-
-#### context.metadata : <code>Object</code>
-The call metadata if present.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.metadata)
-// { 'user-agent': 'grpc-node/1.0.1 grpc-c/1.0.1 (osx; chttp2)' }
-```
-
-<a name="contextapp" id="contextapp" data-id="contextapp"></a>
-
-#### context.app : <code>Object</code>
-The application instance reference.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-<a name="contextcall" id="contextcall" data-id="contextcall"></a>
-
-#### context.call : <code>Object</code>
-The internal gRPC call instance reference.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
 <a name="mali" id="mali" data-id="mali"></a>
 
 ### Mali ⇐ <code>Emitter</code>
@@ -170,9 +27,9 @@ Represents a gRPC service
 
 * [Mali](#Mali) ⇐ <code>Emitter</code>
     * [new Mali(proto, name, options)](#new_Mali_new)
+    * [.silent](#Malisilent) : <code>Boolean</code>
     * [.name](#Maliname) : <code>String</code>
     * [.env](#Malienv) : <code>String</code>
-    * [.silent](#Malisilent) : <code>Boolean</code>
     * [.init(proto, name, options)](#Maliinit)
     * [.use(service, name, ...fns)](#Maliuse)
     * [.onerror(err)](#Malionerror)
@@ -207,6 +64,12 @@ const services = require('./static/helloworld_grpc_pb')
 const app = new Mali(services, 'GreeterService')
 ```
 
+<a name="malisilent" id="malisilent" data-id="malisilent"></a>
+
+#### mali.silent : <code>Boolean</code>
+Whether to log errors in <code>onerror</code>. Default: <code>false</code>
+
+**Kind**: instance property of [<code>Mali</code>](#Mali)  
 <a name="maliname" id="maliname" data-id="maliname"></a>
 
 #### mali.name : <code>String</code>
@@ -231,12 +94,6 @@ The environment. Taken from <code>process.end.NODE_ENV</code>. Default: <code>de
 console.log(app.env) // 'development'
 ```
 
-<a name="malisilent" id="malisilent" data-id="malisilent"></a>
-
-#### mali.silent : <code>Boolean</code>
-Whether to log errors in <code>onerror</code>. Default: <code>false</code>
-
-**Kind**: instance property of [<code>Mali</code>](#Mali)  
 <a name="maliinit" id="maliinit" data-id="maliinit"></a>
 
 #### mali.init(proto, name, options)
@@ -257,7 +114,7 @@ app construction time for some reason.
 Define middleware and handlers.
 If <code>service</code> and name are given applies fns for that call under that service.
 If <code>service</code> name is provided and matches one of the services defined in proto,
-but no </code>name</code> is provided applies the fns as middleware as service level middleware
+but no </code>name</code> is provided applies the fns as service level middleware
 for all handlers in that service.
 If <code>service</code> is provided and no <code>name</code> is provided, and service does not
 match any of the service names in the proto, assumes <code>service</code> is actually rpc call
@@ -384,3 +241,462 @@ We only bother showing settings.
 Inspect implementation.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
+<a name="context" id="context" data-id="context"></a>
+
+### Context
+Represents the application context
+
+**Kind**: global class  
+
+* [Context](#Context)
+    * [.name](#Contextname) : <code>String</code>
+    * [.fullName](#ContextfullName) : <code>String</code>
+    * [.service](#Contextservice) : <code>String</code>
+    * [.package](#Contextpackage) : <code>String</code>
+    * [.type](#Contexttype) : <code>String</code>
+    * [.metadata](#Contextmetadata) : <code>Object</code>
+    * [.app](#Contextapp) : <code>Object</code>
+    * [.call](#Contextcall) : <code>Object</code>
+    * [.request](#Contextrequest) : <code>Object</code>
+    * [.response](#Contextresponse) : <code>Object</code>
+    * [.req](#Contextreq) : <code>Object</code> \| <code>Stream</code>
+    * [.type](#Contexttype) : <code>String</code>
+    * [.metadata](#Contextmetadata) : <code>String</code>
+    * [.get](#Contextget) : <code>function</code>
+    * [.res](#Contextres) : <code>Object</code> \| <code>Stream</code>
+    * [.sendMetadata](#ContextsendMetadata) : <code>function</code>
+    * [.set](#Contextset) : <code>function</code>
+    * [.setStatus](#ContextsetStatus) : <code>function</code>
+
+<a name="contextname" id="contextname" data-id="contextname"></a>
+
+#### context.name : <code>String</code>
+The call function name.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.name) // 'SayHello'
+```
+
+<a name="contextfullname" id="contextfullname" data-id="contextfullname"></a>
+
+#### context.fullName : <code>String</code>
+The full name of the call.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.fullName) // '/helloworld.Greeter/SayHello'
+```
+
+<a name="contextservice" id="contextservice" data-id="contextservice"></a>
+
+#### context.service : <code>String</code>
+The service name of the call.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.service) // 'Greeter'
+```
+
+<a name="contextpackage" id="contextpackage" data-id="contextpackage"></a>
+
+#### context.package : <code>String</code>
+The package name of the call.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.package) // 'helloworld'
+```
+
+<a name="contexttype" id="contexttype" data-id="contexttype"></a>
+
+#### context.type : <code>String</code>
+The call type. One of <code>CallType</code> enums.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.type) // 'unary'
+```
+
+**Example**  
+
+```js
+if(ctx.type === CallType.DUPLEX) {
+  console.log('Duplex stream call')
+}
+```
+
+<a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
+
+#### context.metadata : <code>Object</code>
+The call metadata if present.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.metadata)
+// { 'user-agent': 'grpc-node/1.0.1 grpc-c/1.0.1 (osx; chttp2)' }
+```
+
+<a name="contextapp" id="contextapp" data-id="contextapp"></a>
+
+#### context.app : <code>Object</code>
+The application instance reference.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+<a name="contextcall" id="contextcall" data-id="contextcall"></a>
+
+#### context.call : <code>Object</code>
+The internal gRPC call instance reference.
+This is an alias to `ctx.request.call`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+<a name="contextrequest" id="contextrequest" data-id="contextrequest"></a>
+
+#### context.request : <code>Object</code>
+The call's Mali Request object.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+<a name="contextresponse" id="contextresponse" data-id="contextresponse"></a>
+
+#### context.response : <code>Object</code>
+The call's Mali Response object.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+<a name="contextreq" id="contextreq" data-id="contextreq"></a>
+
+#### context.req : <code>Object</code> \| <code>Stream</code>
+The call request object or stream. This is an alias to `ctx.request.res`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.dir(ctx.req) // { name: 'Bob' }
+```
+
+<a name="contexttype" id="contexttype" data-id="contexttype"></a>
+
+#### context.type : <code>String</code>
+The call's type. One of `mali-call-types` enums.
+This is an alias to `ctx.request.type`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.type) // 'unary'
+```
+
+<a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
+
+#### context.metadata : <code>String</code>
+The call's request metadata plain object.
+This is an alias to `ctx.request.metadata`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.dir(ctx.metadata) // { foo: 'bar' }
+```
+
+<a name="contextget" id="contextget" data-id="contextget"></a>
+
+#### context.get : <code>function</code>
+Get request metadata value
+This is an alias to `ctx.request.get()`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+console.log(ctx.get('foo')) // 'bar'
+```
+
+<a name="contextres" id="contextres" data-id="contextres"></a>
+
+#### context.res : <code>Object</code> \| <code>Stream</code>
+The response object or stream. Should be set in handler.
+This is an alias to `ctx.response.res`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+ctx.res = { name: 'Bob' }
+```
+
+<a name="contextsendmetadata" id="contextsendmetadata" data-id="contextsendmetadata"></a>
+
+#### context.sendMetadata : <code>function</code>
+Send response header metadata.
+This is an alias to `ctx.response.sendMetadata()`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example**  
+
+```js
+ctx.sendMetadata()
+```
+
+<a name="contextset" id="contextset" data-id="contextset"></a>
+
+#### context.set : <code>function</code>
+Set response header metadata value.
+This is an alias to `ctx.response.set()`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example** *(Using string field name and value)*  
+
+```js
+ctx.set('foo', 'bar')
+```
+
+**Example** *(Using object)*  
+
+```js
+ctx.set({
+  foo: 'bar'
+})
+```
+
+<a name="contextsetstatus" id="contextsetstatus" data-id="contextsetstatus"></a>
+
+#### context.setStatus : <code>function</code>
+Set response status / trailer metadata value.
+This is an alias to `ctx.response.setStatus()`.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+**Example** *(Using string field name and value)*  
+
+```js
+ctx.setStatus('foo', 'bar')
+```
+
+**Example** *(Using object)*  
+
+```js
+ctx.setStatus({
+  foo: 'bar'
+})
+```
+
+<a name="request" id="request" data-id="request"></a>
+
+### Request
+Mali Request class that encasulates the request of a call.
+Clients to not create this. Mali does it for us.
+
+**Kind**: global class  
+
+* [Request](#Request)
+    * [new Request(call, type)](#new_Request_new)
+    * [.getMetadata()](#RequestgetMetadata) ⇒ <code>Object</code>
+    * [.get(field)](#Requestget) ⇒ <code>\*</code>
+
+<a name="new_request_new" id="new_request_new" data-id="new_request_new"></a>
+
+#### new Request(call, type)
+Creates a Mali Request instance
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| call | <code>Object</code> | the grpc call instance |
+| type | <code>String</code> | the call type. one of `mali-call-types` enums. |
+
+<a name="requestgetmetadata" id="requestgetmetadata" data-id="requestgetmetadata"></a>
+
+#### request.getMetadata() ⇒ <code>Object</code>
+Gets the requests metadata as a `grpc.Metadata` object instance
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Returns**: <code>Object</code> - request metadata  
+<a name="requestget" id="requestget" data-id="requestget"></a>
+
+#### request.get(field) ⇒ <code>\*</code>
+Gets specific request meatadata field value
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Returns**: <code>\*</code> - the metadata value for the field  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>\*</code> | the metadata field name |
+
+**Example**  
+
+```js
+console.log(ctx.request.get('foo')) // 'bar'
+```
+
+<a name="response" id="response" data-id="response"></a>
+
+### Response
+Mali Response class that encasulates the response of a call.
+Clients to not create this. Mali does it for us.
+
+**Kind**: global class  
+
+* [Response](#Response)
+    * [new Response(call, type)](#new_Response_new)
+    * [.set(field, val)](#Response+set)
+    * [.get(field)](#Response+get) ⇒ <code>\*</code>
+    * [.getMetadata()](#Response+getMetadata) ⇒ <code>Object</code>
+    * [.sendMetadata(md)](#Response+sendMetadata)
+    * [.getStatus(field)](#Response+getStatus) ⇒ <code>\*</code>
+    * [.setStatus(field, val)](#Response+setStatus)
+    * [.getStatusMetadata()](#Response+getStatusMetadata) ⇒ <code>Object</code>
+
+<a name="new_response_new" id="new_response_new" data-id="new_response_new"></a>
+
+#### new Response(call, type)
+Creates a Mali Response instance
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| call | <code>Object</code> | the grpc call instance |
+| type | <code>String</code> | the call type. one of `mali-call-types` enums. |
+
+<a name="response+set" id="response+set" data-id="response+set"></a>
+
+#### response.set(field, val)
+Sets specific response header meatadata field value
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> \| <code>Object</code> | the metadata field name or object for metadata |
+| val | <code>\*</code> | the value of the field |
+
+**Example** *(Using string field name and value)*  
+
+```js
+ctx.response.set('foo', 'bar')
+```
+
+**Example** *(Using object)*  
+
+```js
+ctx.response.set({
+  foo: 'bar'
+})
+```
+
+<a name="response+get" id="response+get" data-id="response+get"></a>
+
+#### response.get(field) ⇒ <code>\*</code>
+Gets the response header metadata value
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+**Returns**: <code>\*</code> - the metadata field value  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> | the field name |
+
+**Example**  
+
+```js
+console.log(ctx.response.get('foo')) // 'bar'
+```
+
+<a name="response+getmetadata" id="response+getmetadata" data-id="response+getmetadata"></a>
+
+#### response.getMetadata() ⇒ <code>Object</code>
+Gets the response metadata as a `grpc.Metadata` object instance
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+**Returns**: <code>Object</code> - response metadata  
+<a name="response+sendmetadata" id="response+sendmetadata" data-id="response+sendmetadata"></a>
+
+#### response.sendMetadata(md)
+Sends the response header metadata. Optionally (re)sets the header metadata as well.
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| md | <code>Object</code> | optional header metadata object to set into the request before sending                    if there is existing metadata in the response it is cleared                    if param is not provided `sendMetadata` sends the existing metadata in the response |
+
+**Example** *(Set and send)*  
+
+```js
+ctx.response.sendMetadata({
+  foo: 'bar'
+})
+```
+
+**Example** *(Set and send later)*  
+
+```js
+ctx.response.set('foo', 'bar')
+// ... later
+ctx.response.sendMetadata()
+```
+
+<a name="response+getstatus" id="response+getstatus" data-id="response+getstatus"></a>
+
+#### response.getStatus(field) ⇒ <code>\*</code>
+Gets the response status / trailer metadata value
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+**Returns**: <code>\*</code> - the metadata field value  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> | the field name |
+
+**Example**  
+
+```js
+console.log(ctx.response.getStatus('bar')) // 'baz'
+```
+
+<a name="response+setstatus" id="response+setstatus" data-id="response+setstatus"></a>
+
+#### response.setStatus(field, val)
+Sets specific response status / trailer meatadata field value
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>String</code> \| <code>Object</code> | the metadata field name or object for metadata |
+| val | <code>\*</code> | the value of the field |
+
+**Example** *(Using string field name and value)*  
+
+```js
+ctx.response.setStatus('foo', 'bar')
+```
+
+**Example** *(Using object)*  
+
+```js
+ctx.response.setStatus({
+  foo: 'bar'
+})
+```
+
+<a name="response+getstatusmetadata" id="response+getstatusmetadata" data-id="response+getstatusmetadata"></a>
+
+#### response.getStatusMetadata() ⇒ <code>Object</code>
+Gets the response status / trailer metadata as a `grpc.Metadata` object instance
+
+**Kind**: instance method of [<code>Response</code>](#Response)  
+**Returns**: <code>Object</code> - response status / trailer metadata  
