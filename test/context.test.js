@@ -215,3 +215,35 @@ test('createContext should create context for a DUPLEX call', t => {
   t.truthy(ctx.response.res)
   t.is(ctx.response.res, ctx.call)
 })
+
+test('context status functions should act on response status', t => {
+  const app = new Mali()
+  const descriptor = {
+    requestStream: false,
+    responseStream: false,
+    requestName: 'Point',
+    responseName: 'Feature',
+    name: 'GetFeature',
+    service: 'RouteGuide',
+    package: 'routeguide',
+    fullName: '/routeguide.RouteGuide/GetFeature'
+  }
+  const call = {
+    request: {
+      foo: 'bar'
+    },
+    metadata: {
+      one: 'two'
+    }
+  }
+
+  const ctx = app._createContext(call, descriptor)
+  let s = ctx.getStatus('baz')
+  t.falsy(s)
+  ctx.setStatus('baz', 'bar')
+  s = ctx.getStatus('baz')
+  t.is(s, 'bar')
+  t.deepEqual(ctx.response.status, {
+    baz: 'bar'
+  })
+})

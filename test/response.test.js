@@ -172,3 +172,111 @@ test('getMetadata() should return metadata object', t => {
   t.truthy(md instanceof grpc.Metadata)
   t.deepEqual(md.getMap(), { one: 'two', three: 'four' })
 })
+
+test('setStatus() should create status metadata from simple key and value', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.status)
+  res.setStatus('one', 'two')
+  t.deepEqual(res.status, { one: 'two' })
+})
+
+test('setStatus() should create status metadata from plain object', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.status)
+  const md = {
+    one: 'two',
+    three: 'four'
+  }
+  res.setStatus(md)
+  t.deepEqual(res.status, md)
+})
+
+test('setStatus() should create status metadata from Metadata object', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.status)
+  const md = new grpc.Metadata()
+  md.set('one', 'two')
+  md.set('three', 'four')
+  res.setStatus(md)
+  t.deepEqual(res.status, {
+    one: 'two',
+    three: 'four'
+  })
+})
+
+test('getStatus() should return proper values', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.status)
+  let v = res.getStatus('one')
+  t.falsy(v)
+  res.setStatus('one', 'two')
+  v = res.getStatus('one')
+  t.is(v, 'two')
+  v = res.getStatus('two')
+  t.falsy(v)
+})
+
+test('getStatusMetadata() should return undefined when no metadata', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  const md = res.getStatusMetadata()
+  t.falsy(md)
+})
+
+test('getStatusMetadata() should return metadata object', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.status)
+  res.setStatus('one', 'two')
+  res.setStatus('three', 'four')
+  const md = res.getStatusMetadata()
+  t.truthy(md)
+  t.truthy(md instanceof grpc.Metadata)
+  t.deepEqual(md.getMap(), { one: 'two', three: 'four' })
+})
