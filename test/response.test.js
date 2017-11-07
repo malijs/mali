@@ -120,6 +120,21 @@ test('set() should create metadata from Metadata object', t => {
   })
 })
 
+test('set() should not set any metadata if set() is bassed an invalid value', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.metadata)
+  res.set(1)
+  t.falsy(res.metadata)
+})
+
 test('get() should return proper values', t => {
   const call = {
     request: {

@@ -3,8 +3,26 @@ import path from 'path'
 import grpc from 'grpc'
 import CallType from 'mali-call-types'
 import gi from 'grpc-inspect'
+import hl from 'highland'
+import _ from 'lodash'
+import async from 'async'
 
+import * as tu from './util'
+import Mali from '../'
 import utils from '../lib/utils'
+
+const ARRAY_DATA = [
+  { message: '1 foo' },
+  { message: '2 bar' },
+  { message: '3 asd' },
+  { message: '4 qwe' },
+  { message: '5 rty' },
+  { message: '6 zxc' }
+]
+
+function getArrayData () {
+  return _.cloneDeep(ARRAY_DATA)
+}
 
 test('isStaticGRPCObject() should return false for an undefined path', t => {
   const v = utils.isStaticGRPCObject()
@@ -196,10 +214,173 @@ test('getCallTypeFromDescriptor() should get call type from DUPLEX call', t => {
   t.is(v, CallType.DUPLEX)
 })
 
-test.todo('getCallTypeFromCall() should get call type from UNARY call')
+test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
+  t.plan(1)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
-test.todo('getCallTypeFromCall() should get call type from REQUEST_STREAM call')
+  let callType
 
-test.todo('getCallTypeFromCall() should get call type from RESPONSE_STREAM call')
+  function sayHello (ctx) {
+    callType = utils.getCallTypeFromCall(ctx.call)
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
 
-test.todo('getCallTypeFromCall() should get call type from DUPLEX call')
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  app.use({ sayHello })
+  app.start(APP_HOST)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (e_, response) => {
+    t.is(callType, CallType.UNARY)
+    app.close().then(() => t.end())
+  })
+})
+
+test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', t => {
+  t.plan(1)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
+
+  let callType
+
+  function listStuff (ctx) {
+    callType = utils.getCallTypeFromCall(ctx.call)
+    ctx.res = hl(getArrayData())
+      .map(d => {
+        d.message = d.message.toUpperCase()
+        return d
+      })
+  }
+
+  const app = new Mali(PROTO_PATH, 'ArgService')
+  app.use({ listStuff })
+  app.start(APP_HOST)
+
+  const proto = grpc.load(PROTO_PATH).argservice
+  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.listStuff({ message: 'Hello' })
+
+  const resData = []
+  call.on('data', d => {
+    resData.push(d.message)
+  })
+
+  call.on('end', () => {
+    _.delay(() => {
+      endTest()
+    }, 200)
+  })
+
+  function endTest () {
+    t.is(callType, CallType.RESPONSE_STREAM)
+    app.close().then(() => t.end())
+  }
+})
+
+test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t => {
+  t.plan(2)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
+
+  async function doWork (inputStream) {
+    return new Promise((resolve, reject) => {
+      hl(inputStream)
+        .map(d => {
+          return d.message.toUpperCase()
+        })
+        .collect()
+        .toCallback((err, r) => {
+          if (err) {
+            return reject(err)
+          }
+
+          resolve({
+            message: r.join(':')
+          })
+        })
+    })
+  }
+
+  let callType
+  async function writeStuff (ctx) {
+    callType = utils.getCallTypeFromCall(ctx.call)
+    ctx.res = await doWork(ctx.req)
+  }
+
+  const app = new Mali(PROTO_PATH, 'ArgService')
+  app.use({ writeStuff })
+  app.start(APP_HOST)
+
+  const proto = grpc.load(PROTO_PATH).argservice
+  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.writeStuff((err, res) => {
+    t.ifError(err)
+    t.is(callType, CallType.REQUEST_STREAM)
+    app.close().then(() => t.end())
+  })
+
+  async.eachSeries(getArrayData(), (d, asfn) => {
+    call.write(d)
+    _.delay(asfn, _.random(10, 50))
+  }, () => {
+    call.end()
+  })
+})
+
+test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
+  t.plan(1)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+
+  let callType
+  async function processStuff (ctx) {
+    callType = utils.getCallTypeFromCall(ctx.call)
+    ctx.req.on('data', d => {
+      ctx.req.pause()
+      _.delay(() => {
+        let ret = {
+          message: d.message.toUpperCase()
+        }
+        ctx.res.write(ret)
+        ctx.req.resume()
+      }, _.random(50, 150))
+    })
+
+    ctx.req.on('end', () => {
+      _.delay(() => {
+        ctx.res.end()
+      }, 200)
+    })
+  }
+
+  const app = new Mali(PROTO_PATH, 'ArgService')
+  app.use({ processStuff })
+  app.start(APP_HOST)
+
+  const proto = grpc.load(PROTO_PATH).argservice
+  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.processStuff()
+
+  let resData = []
+  call.on('data', d => {
+    resData.push(d.message)
+  })
+
+  call.on('end', () => {
+    endTest()
+  })
+
+  async.eachSeries(getArrayData(), (d, asfn) => {
+    call.write(d)
+    _.delay(asfn, _.random(10, 50))
+  }, () => {
+    call.end()
+  })
+
+  function endTest () {
+    t.is(callType, CallType.DUPLEX)
+    app.close().then(() => t.end())
+  }
+})
