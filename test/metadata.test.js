@@ -322,6 +322,108 @@ test.cb('req/res: header metadata set and then new metadata sent using ctx.sendM
   })
 })
 
+test.cb('req/res: header metadata ctx.sendMetadata and then set new metadata, should get first', t => {
+  t.plan(13)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.sendMetadata({ biz: 'baz' })
+    ctx.set('foo', 'bar')
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  let metadata
+  let status
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.sayHello({ name: 'Bob' }, (err, response) => {
+    setTimeout(() => {
+      t.ifError(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      t.truthy(metadata)
+      t.true(metadata instanceof grpc.Metadata)
+      const header = metadata.getMap()
+      t.deepEqual(header, {
+        biz: 'baz'
+      })
+      t.truthy(status)
+      t.true(typeof status.code === 'number')
+      t.truthy(status.metadata)
+      t.true(status.metadata instanceof grpc.Metadata)
+      const trailer = status.metadata.getMap()
+      t.deepEqual(trailer, {})
+      app.close().then(() => t.end())
+    }, 250)
+  })
+
+  call.on('metadata', md => {
+    metadata = md
+  })
+
+  call.on('status', s => {
+    status = s
+  })
+})
+
+test.cb('req/res: header metadata send invalid param usingctx.sendMetadata and then set new metadata, should get 2nd', t => {
+  t.plan(13)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.set('foo', 'bar')
+    ctx.sendMetadata(1)
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  let metadata
+  let status
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.sayHello({ name: 'Bob' }, (err, response) => {
+    setTimeout(() => {
+      t.ifError(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      t.truthy(metadata)
+      t.true(metadata instanceof grpc.Metadata)
+      const header = metadata.getMap()
+      t.deepEqual(header, {
+        foo: 'bar'
+      })
+      t.truthy(status)
+      t.true(typeof status.code === 'number')
+      t.truthy(status.metadata)
+      t.true(status.metadata instanceof grpc.Metadata)
+      const trailer = status.metadata.getMap()
+      t.deepEqual(trailer, {})
+      app.close().then(() => t.end())
+    }, 250)
+  })
+
+  call.on('metadata', md => {
+    metadata = md
+  })
+
+  call.on('status', s => {
+    status = s
+  })
+})
+
 test.cb('req/res: trailer metadata set', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()

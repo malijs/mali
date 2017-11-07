@@ -120,7 +120,7 @@ test('set() should create metadata from Metadata object', t => {
   })
 })
 
-test('set() should not set any metadata if set() is bassed an invalid value', t => {
+test('set() should not set any metadata if passed an invalid value', t => {
   const call = {
     request: {
       foo: 'bar'
@@ -241,6 +241,27 @@ test('setStatus() should create status metadata from Metadata object', t => {
     one: 'two',
     three: 'four'
   })
+})
+
+test('setStatus() should not set any status metadata if passed an invalid value', t => {
+  const call = {
+    request: {
+      foo: 'bar'
+    }
+  }
+
+  const res = new Response(call, CallType.UNARY)
+  t.truthy(res)
+
+  t.falsy(res.status)
+  const md = {
+    one: 'two',
+    three: 'four'
+  }
+  res.setStatus(md)
+  t.deepEqual(res.status, md)
+  res.setStatus(1)
+  t.deepEqual(res.status, md)
 })
 
 test('getStatus() should return proper values', t => {
