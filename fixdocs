@@ -1,0 +1,18 @@
+#!/usr/local/bin/node
+
+const readline = require('readline')
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.on('line', input => {
+  input = input.replace(/="(.*)\+(.*)"/gi, '="$1$2"')
+  input = input.replace(/name="(.*)"/gi, (match, p1, offset, string) => {
+    return `name="${p1.toLowerCase()}" id="${p1.toLowerCase()}" data-id="${p1.toLowerCase()}"`
+  })
+  // input = input.replace(/name="(.*)"/gi, 'name="$1" id="$1" data-id="$1"')
+  input = input.replace(/\(#(.*)\+(.*)\)/gi, '(#$1$2)')
+  console.log(input)
+});

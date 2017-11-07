@@ -587,13 +587,13 @@ Clients to not create this. Mali does it for us.
 
 * [Response](#Response)
     * [new Response(call, type)](#new_Response_new)
-    * [.set(field, val)](#Response+set)
-    * [.get(field)](#Response+get) ⇒ <code>\*</code>
-    * [.getMetadata()](#Response+getMetadata) ⇒ <code>Object</code>
-    * [.sendMetadata(md)](#Response+sendMetadata)
-    * [.getStatus(field)](#Response+getStatus) ⇒ <code>\*</code>
-    * [.setStatus(field, val)](#Response+setStatus)
-    * [.getStatusMetadata()](#Response+getStatusMetadata) ⇒ <code>Object</code>
+    * [.set(field, val)](#Responseset)
+    * [.get(field)](#Responseget) ⇒ <code>\*</code>
+    * [.getMetadata()](#ResponsegetMetadata) ⇒ <code>Object</code>
+    * [.sendMetadata(md)](#ResponsesendMetadata)
+    * [.getStatus(field)](#ResponsegetStatus) ⇒ <code>\*</code>
+    * [.setStatus(field, val)](#ResponsesetStatus)
+    * [.getStatusMetadata()](#ResponsegetStatusMetadata) ⇒ <code>Object</code>
 
 <a name="new_response_new" id="new_response_new" data-id="new_response_new"></a>
 
@@ -606,7 +606,7 @@ Creates a Mali Response instance
 | call | <code>Object</code> | the grpc call instance |
 | type | <code>String</code> | the call type. one of `mali-call-types` enums. |
 
-<a name="response+set" id="response+set" data-id="response+set"></a>
+<a name="responseset" id="responseset" data-id="responseset"></a>
 
 #### response.set(field, val)
 Sets specific response header meatadata field value
@@ -632,7 +632,7 @@ ctx.response.set({
 })
 ```
 
-<a name="response+get" id="response+get" data-id="response+get"></a>
+<a name="responseget" id="responseget" data-id="responseget"></a>
 
 #### response.get(field) ⇒ <code>\*</code>
 Gets the response header metadata value
@@ -650,14 +650,14 @@ Gets the response header metadata value
 console.log(ctx.response.get('foo')) // 'bar'
 ```
 
-<a name="response+getmetadata" id="response+getmetadata" data-id="response+getmetadata"></a>
+<a name="responsegetmetadata" id="responsegetmetadata" data-id="responsegetmetadata"></a>
 
 #### response.getMetadata() ⇒ <code>Object</code>
 Gets the response metadata as a `grpc.Metadata` object instance
 
 **Kind**: instance method of [<code>Response</code>](#Response)  
 **Returns**: <code>Object</code> - response metadata  
-<a name="response+sendmetadata" id="response+sendmetadata" data-id="response+sendmetadata"></a>
+<a name="responsesendmetadata" id="responsesendmetadata" data-id="responsesendmetadata"></a>
 
 #### response.sendMetadata(md)
 Sends the response header metadata. Optionally (re)sets the header metadata as well.
@@ -684,7 +684,7 @@ ctx.response.set('foo', 'bar')
 ctx.response.sendMetadata()
 ```
 
-<a name="response+getstatus" id="response+getstatus" data-id="response+getstatus"></a>
+<a name="responsegetstatus" id="responsegetstatus" data-id="responsegetstatus"></a>
 
 #### response.getStatus(field) ⇒ <code>\*</code>
 Gets the response status / trailer metadata value
@@ -702,7 +702,7 @@ Gets the response status / trailer metadata value
 console.log(ctx.response.getStatus('bar')) // 'baz'
 ```
 
-<a name="response+setstatus" id="response+setstatus" data-id="response+setstatus"></a>
+<a name="responsesetstatus" id="responsesetstatus" data-id="responsesetstatus"></a>
 
 #### response.setStatus(field, val)
 Sets specific response status / trailer meatadata field value
@@ -728,7 +728,7 @@ ctx.response.setStatus({
 })
 ```
 
-<a name="response+getstatusmetadata" id="response+getstatusmetadata" data-id="response+getstatusmetadata"></a>
+<a name="responsegetstatusmetadata" id="responsegetstatusmetadata" data-id="responsegetstatusmetadata"></a>
 
 #### response.getStatusMetadata() ⇒ <code>Object</code>
 Gets the response status / trailer metadata as a `grpc.Metadata` object instance
