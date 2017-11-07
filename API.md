@@ -5,7 +5,7 @@
 <dd><p>Represents a gRPC service</p>
 </dd>
 <dt><a href="#Context">Context</a></dt>
-<dd><p>Represents the application context</p>
+<dd><p>Represents the application and call context. Clients to not create this. Mali does it for us.</p>
 </dd>
 <dt><a href="#Request">Request</a></dt>
 <dd><p>Mali Request class that encasulates the request of a call.
@@ -244,7 +244,7 @@ Inspect implementation.
 <a name="context" id="context" data-id="context"></a>
 
 ### Context
-Represents the application context
+Represents the application and call context. Clients to not create this. Mali does it for us.
 
 **Kind**: global class  
 
@@ -253,7 +253,6 @@ Represents the application context
     * [.fullName](#ContextfullName) : <code>String</code>
     * [.service](#Contextservice) : <code>String</code>
     * [.package](#Contextpackage) : <code>String</code>
-    * [.type](#Contexttype) : <code>String</code>
     * [.metadata](#Contextmetadata) : <code>Object</code>
     * [.app](#Contextapp) : <code>Object</code>
     * [.call](#Contextcall) : <code>Object</code>
@@ -317,26 +316,6 @@ The package name of the call.
 console.log(ctx.package) // 'helloworld'
 ```
 
-<a name="contexttype" id="contexttype" data-id="contexttype"></a>
-
-#### context.type : <code>String</code>
-The call type. One of <code>CallType</code> enums.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.type) // 'unary'
-```
-
-**Example**  
-
-```js
-if(ctx.type === CallType.DUPLEX) {
-  console.log('Duplex stream call')
-}
-```
-
 <a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
 
 #### context.metadata : <code>Object</code>
@@ -398,6 +377,14 @@ This is an alias to `ctx.request.type`.
 
 ```js
 console.log(ctx.type) // 'unary'
+```
+
+**Example**  
+
+```js
+if(ctx.type === CallType.DUPLEX) {
+  console.log('Duplex stream call')
+}
 ```
 
 <a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
