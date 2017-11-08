@@ -7,11 +7,7 @@
     "lint": "standard | snazzy",
     "test": "npm run lint && ava -v",
     "cover": "nyc npm test",
-    "mddocs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code > apimd.md",
-    "fixdocs": "cat apimd.md | ./fixdocs > api.md",
-    "fixdocs2": "cat apimd.md | ./fixdocs | gsed 's/<a name=\"\\(.*\\)\"><\\/a>/<a name=\"\\L\\1\" id=\"\\L\\1\" data-id=\"\\L\\1\"><\\/a>/' > api.md",
-    "docs": "npm run mddocs && npm run fixdocs2",
-    "docs2": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code | ./fixdocs > api.md"
+    "docs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code | ./fixdocs > api.md"
   },
   "repository": {
     "type": "git",
@@ -40,7 +36,7 @@
     "ee-first": "^1.1.1",
     "error-inject": "^1.0.0",
     "grpc": "^1.7.1",
-    "grpc-create-metadata": "^1.0.0",
+    "grpc-create-metadata": "^2.0.0",
     "grpc-inspect": "~0.3.3",
     "is-stream": "^1.1.0",
     "lodash": "^4.17.0",
