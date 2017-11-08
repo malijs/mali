@@ -247,13 +247,13 @@ Inspect implementation.
 Represents the application and call context. Clients to not create this. Mali does it for us.
 
 **Kind**: global class  
+**Summary**: Represents a Mali call context  
 
 * [Context](#Context)
     * [.name](#Contextname) : <code>String</code>
     * [.fullName](#ContextfullName) : <code>String</code>
     * [.service](#Contextservice) : <code>String</code>
     * [.package](#Contextpackage) : <code>String</code>
-    * [.metadata](#Contextmetadata) : <code>Object</code>
     * [.app](#Contextapp) : <code>Object</code>
     * [.call](#Contextcall) : <code>Object</code>
     * [.request](#Contextrequest) : <code>Object</code>
@@ -314,19 +314,6 @@ The package name of the call.
 
 ```js
 console.log(ctx.package) // 'helloworld'
-```
-
-<a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
-
-#### context.metadata : <code>Object</code>
-The call metadata if present.
-
-**Kind**: instance property of [<code>Context</code>](#Context)  
-**Example**  
-
-```js
-console.log(ctx.metadata)
-// { 'user-agent': 'grpc-node/1.0.1 grpc-c/1.0.1 (osx; chttp2)' }
 ```
 
 <a name="contextapp" id="contextapp" data-id="contextapp"></a>
@@ -397,7 +384,8 @@ This is an alias to `ctx.request.metadata`.
 **Example**  
 
 ```js
-console.dir(ctx.metadata) // { foo: 'bar' }
+console.log(ctx.metadata)
+// { 'user-agent': 'grpc-node/1.7.1 grpc-c/1.7.1 (osx; chttp2)' }
 ```
 
 <a name="contextget" id="contextget" data-id="contextget"></a>
@@ -538,6 +526,10 @@ Clients to not create this. Mali does it for us.
 
 * [Request](#Request)
     * [new Request(call, type)](#new_Request_new)
+    * [.call](#Requestcall) : <code>Object</code>
+    * [.req](#Requestreq) : <code>Object</code> \| <code>Stream</code>
+    * [.metadata](#Requestmetadata) : <code>Object</code>
+    * [.type](#Requesttype) : <code>String</code>
     * [.getMetadata()](#RequestgetMetadata) ⇒ <code>Object</code>
     * [.get(field)](#Requestget) ⇒ <code>\*</code>
 
@@ -551,6 +543,57 @@ Creates a Mali Request instance
 | --- | --- | --- |
 | call | <code>Object</code> | the grpc call instance |
 | type | <code>String</code> | the call type. one of `mali-call-types` enums. |
+
+<a name="requestcall" id="requestcall" data-id="requestcall"></a>
+
+#### request.call : <code>Object</code>
+The internal gRPC call instance reference.
+
+**Kind**: instance property of [<code>Request</code>](#Request)  
+<a name="requestreq" id="requestreq" data-id="requestreq"></a>
+
+#### request.req : <code>Object</code> \| <code>Stream</code>
+The call request object or stream.
+
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Example**  
+
+```js
+console.log(ctx.request.req) // { name: 'Bob' }
+```
+
+<a name="requestmetadata" id="requestmetadata" data-id="requestmetadata"></a>
+
+#### request.metadata : <code>Object</code>
+The call's request metadata plain object if present.
+
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Example**  
+
+```js
+console.log(ctx.request.metadata)
+// { 'user-agent': 'grpc-node/1.7.1 grpc-c/1.7.1 (osx; chttp2)' }
+```
+
+<a name="requesttype" id="requesttype" data-id="requesttype"></a>
+
+#### request.type : <code>String</code>
+The call's type. One of `mali-call-types` enums.
+
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Example**  
+
+```js
+console.log(ctx.request.type) // 'unary'
+```
+
+**Example**  
+
+```js
+if(ctx.request.type === CallType.DUPLEX) {
+  console.log('Duplex stream call')
+}
+```
 
 <a name="requestgetmetadata" id="requestgetmetadata" data-id="requestgetmetadata"></a>
 
@@ -587,6 +630,11 @@ Clients to not create this. Mali does it for us.
 
 * [Response](#Response)
     * [new Response(call, type)](#new_Response_new)
+    * [.call](#Responsecall) : <code>Object</code>
+    * [.type](#Responsetype) : <code>String</code>
+    * [.metadata](#Responsemetadata) : <code>Object</code>
+    * [.status](#Responsestatus) : <code>Object</code>
+    * [.res](#Responseres) : <code>Object</code> \| <code>Stream</code>
     * [.set(field, val)](#Responseset)
     * [.get(field)](#Responseget) ⇒ <code>\*</code>
     * [.getMetadata()](#ResponsegetMetadata) ⇒ <code>Object</code>
@@ -605,6 +653,74 @@ Creates a Mali Response instance
 | --- | --- | --- |
 | call | <code>Object</code> | the grpc call instance |
 | type | <code>String</code> | the call type. one of `mali-call-types` enums. |
+
+<a name="responsecall" id="responsecall" data-id="responsecall"></a>
+
+#### response.call : <code>Object</code>
+The internal gRPC call instance reference.
+
+**Kind**: instance property of [<code>Response</code>](#Response)  
+<a name="responsetype" id="responsetype" data-id="responsetype"></a>
+
+#### response.type : <code>String</code>
+The call's type. One of `mali-call-types` enums.
+This will match Request's type.
+
+**Kind**: instance property of [<code>Response</code>](#Response)  
+**Example**  
+
+```js
+console.log(ctx.response.type) // 'unary'
+```
+
+<a name="responsemetadata" id="responsemetadata" data-id="responsemetadata"></a>
+
+#### response.metadata : <code>Object</code>
+The call's response header metadata plain object if present.
+
+**Kind**: instance property of [<code>Response</code>](#Response)  
+**Example**  
+
+```js
+console.log(ctx.response.metadata)  // { 'foo': 'bar' }
+```
+
+<a name="responsestatus" id="responsestatus" data-id="responsestatus"></a>
+
+#### response.status : <code>Object</code>
+The call's response trailer / status metadata plain object if present.
+
+**Kind**: instance property of [<code>Response</code>](#Response)  
+**Example**  
+
+```js
+console.log(ctx.response.status) // { 'bar': 'biz' }
+```
+
+<a name="responseres" id="responseres" data-id="responseres"></a>
+
+#### response.res : <code>Object</code> \| <code>Stream</code>
+The call's response actual payload object / stream.
+In case of `DUPLEX` call this is automatically set the actual `call` instance.
+
+**Kind**: instance property of [<code>Response</code>](#Response)  
+**Example** *(UNARY or REQUEST STREAM calls)*  
+
+```js
+ctx.response.res = { foo: 'bar' }
+```
+
+**Example** *(RESPONSE STREAM calls)*  
+
+```js
+ctx.response.res = createResponseStream()
+```
+
+**Example** *(DUPLEX calls)*  
+
+```js
+ctx.response.res.write({ foo: 'bar' })
+```
 
 <a name="responseset" id="responseset" data-id="responseset"></a>
 
