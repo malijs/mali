@@ -404,7 +404,8 @@ This is an alias to `ctx.request.get()`.
 **Example**  
 
 ```js
-console.log(ctx.get('foo')) // 'bar'
+console.log(ctx.get('user-agent'))
+// 'grpc-node/1.7.1 grpc-c/1.7.1 (osx; chttp2)'
 ```
 
 <a name="contextres" id="contextres" data-id="contextres"></a>
@@ -417,7 +418,7 @@ This is an alias to `ctx.response.res`.
 **Example**  
 
 ```js
-ctx.res = { name: 'Bob' }
+ctx.res = { message: 'Hello World!' }
 ```
 
 <a name="contextset" id="contextset" data-id="contextset"></a>
@@ -502,7 +503,7 @@ This is an alias to `ctx.response.setStatus()`.
 | field | <code>String</code> \| <code>Object</code> | the metadata field name or object for metadata |
 | val | <code>\*</code> | the value of the field |
 
-**Example** *(Using string field name and value)*  
+**Example**  
 
 ```js
 ctx.setStatus('foo', 'bar')
@@ -682,6 +683,7 @@ The call's response header metadata plain object if present.
 **Example**  
 
 ```js
+ctx.response.set('foo', 'bar')
 console.log(ctx.response.metadata)  // { 'foo': 'bar' }
 ```
 
@@ -694,7 +696,8 @@ The call's response trailer / status metadata plain object if present.
 **Example**  
 
 ```js
-console.log(ctx.response.status) // { 'bar': 'biz' }
+ctx.response.setStatus('biz', 'baz')
+console.log(ctx.response.status) // { biz: 'baz' }
 ```
 
 <a name="responseres" id="responseres" data-id="responseres"></a>
