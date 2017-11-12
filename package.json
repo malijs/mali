@@ -5,8 +5,9 @@
   "main": "lib/app.js",
   "scripts": {
     "lint": "standard | snazzy",
-    "test": "npm run lint && ava -v",
-    "cover": "nyc npm test",
+    "linttest": "npm run lint && ava -v",
+    "test": "nyc npm run linttest",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "docs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code | ./fixdocs > api.md"
   },
   "repository": {
@@ -31,6 +32,7 @@
   ],
   "dependencies": {
     "ascallback": "^1.1.1",
+    "coveralls": "^3.0.0",
     "delegates": "^1.0.0",
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
