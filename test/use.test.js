@@ -1,7 +1,7 @@
 import path from 'path'
 import test from 'ava'
 import _ from 'lodash'
-import Mali from '../lib'
+import Mali from '../'
 
 test('should throw on unknown function', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -36,6 +36,7 @@ test('should throw on invalid parameter', t => {
 
 test('should throw on invalid service name parameter', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -48,6 +49,28 @@ test('should throw on invalid service name parameter', t => {
   }, Error)
 
   t.is(error.message, 'Unknown service UnknownService')
+})
+
+test('should throw on invalid handler type', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  const error = t.throws(() => {
+    app.use({
+      Greeter4: {
+        sayGoodbye: sayHello,
+        sayHello: 2
+      }
+    })
+  }, Error)
+
+  t.is(error.message, 'Handler for sayHello is not a function or array')
 })
 
 test('should add handler using object notation', t => {
@@ -647,7 +670,7 @@ test('multi: should add handlers using object notation for all services', t => {
   app.use({
     Greeter4: {
       sayGoodbye: handler,
-      sayHello: [ mw1, handler ]
+      sayHello: [mw1, handler]
     },
     Greeter2: { sayHello: handler }
   })
@@ -731,7 +754,7 @@ test('multi: should add handlers using object notation for all services with ser
   app.use({
     Greeter4: {
       sayGoodbye: handler,
-      sayHello: [ mw1, handler ]
+      sayHello: [mw1, handler]
     },
     Greeter2: { sayHello: handler }
   })

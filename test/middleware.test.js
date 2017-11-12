@@ -5,7 +5,7 @@ import BB from 'bluebird'
 import pMap from 'p-map'
 import _ from 'lodash'
 
-import Mali from '../lib'
+import Mali from '../'
 import * as tu from './util'
 
 const fs = BB.promisifyAll(require('fs'))

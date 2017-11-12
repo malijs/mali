@@ -5,7 +5,7 @@ import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
 
-import Mali from '../lib'
+import Mali from '../'
 import * as tu from './util'
 
 const ARRAY_DATA = [
