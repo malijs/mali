@@ -254,3 +254,26 @@ test.cb('should start multipe servers from same application and handle requests'
     app.close().then(() => t.end())
   })
 })
+
+test.cb('should work with multi package proto', t => {
+  t.plan(4)
+  function sayHello (ctx) {
+    ctx.res = { message: `Hello ${ctx.req.name}!` }
+  }
+
+  const app = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  const port = tu.getHost()
+
+  app.use({ sayHello })
+  const server = app.start(port)
+  t.truthy(server)
+
+  const greet = grpc.load({ file: 'protos/multipkg.proto', root: __dirname }).greet
+  const client = new greet.Greeter(port, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Kate' }, (err, response) => {
+    t.ifError(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Kate!')
+    app.close().then(() => t.end())
+  })
+})
