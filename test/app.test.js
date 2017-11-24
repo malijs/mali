@@ -70,6 +70,35 @@ test.cb('should handle req/res request', t => {
   })
 })
 
+test.cb('should handle req/res request where res is a promise', t => {
+  t.plan(5)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({ message: 'Hello ' + ctx.req.name })
+      }, 40)
+    })
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Jim' }, (err, response) => {
+    t.ifError(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Jim')
+    app.close().then(() => t.end())
+  })
+})
+
 test.cb('should handle res stream request', t => {
   t.plan(3)
   const APP_HOST = tu.getHost()
@@ -251,6 +280,29 @@ test.cb('should start multipe servers from same application and handle requests'
     t.is(results.req1.message, 'Hello Bob')
     t.truthy(results.req2)
     t.is(results.req2.message, 'Hello Kate')
+    app.close().then(() => t.end())
+  })
+})
+
+test.cb('should work with multi package proto', t => {
+  t.plan(4)
+  function sayHello (ctx) {
+    ctx.res = { message: `Hello ${ctx.req.name}!` }
+  }
+
+  const app = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  const port = tu.getHost()
+
+  app.use({ sayHello })
+  const server = app.start(port)
+  t.truthy(server)
+
+  const greet = grpc.load({ file: 'protos/multipkg.proto', root: __dirname }).greet
+  const client = new greet.Greeter(port, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Kate' }, (err, response) => {
+    t.ifError(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Kate!')
     app.close().then(() => t.end())
   })
 })

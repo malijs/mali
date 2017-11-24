@@ -75,6 +75,49 @@ test.cb('should handle an error in the handler in req/res app', t => {
   })
 })
 
+test.cb('should handle an error in the handler in req/res app where ctx.res is a promise that rejects', t => {
+  t.plan(11)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error('boom'))
+      }, 100)
+    })
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  let errMsg
+  let errCtx
+  app.on('error', (err, ctx) => {
+    errCtx = ctx
+    errMsg = err.message
+  })
+
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.truthy(err)
+    t.is(err.message, 'boom')
+    t.falsy(response)
+    t.is(errMsg, 'boom')
+    t.truthy(errCtx)
+    t.truthy(errCtx.call)
+    t.truthy(errCtx.req)
+    t.is(errCtx.name, 'SayHello')
+    t.is(errCtx.type, CallType.UNARY)
+    app.close().then(() => t.end())
+  })
+})
+
 test.cb('should handle an error with code in the handler in req/res app', t => {
   t.plan(12)
   const APP_HOST = tu.getHost()
@@ -391,6 +434,103 @@ test.cb('should handle an error in the handler of duplex call', t => {
       _.delay(() => {
         ctx.res.end()
       }, 200)
+    })
+  }
+
+  const app = new Mali(PROTO_PATH, 'ArgService')
+  t.truthy(app)
+
+  let errMsg1 = ''
+  let errCtx
+  app.on('error', (err, ctx) => {
+    errCtx = ctx
+    errMsg1 = err ? err.message : ''
+  })
+
+  app.use({ processStuff })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+  const proto = grpc.load(PROTO_PATH).argservice
+  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const call = client.processStuff()
+
+  let dataCounter = 0
+  call.on('data', d => {
+    dataCounter++
+  })
+
+  let errMsg2 = ''
+  call.on('error', err2 => {
+    errMsg2 = err2 ? err2.message : ''
+    if (!endCalled) {
+      endCalled = true
+      _.delay(() => {
+        endTest()
+      }, 200)
+    }
+  })
+
+  let endCalled = false
+  call.on('end', () => {
+    if (!endCalled) {
+      endCalled = true
+      _.delay(() => {
+        endTest()
+      }, 200)
+    }
+  })
+
+  async.eachSeries(getArrayData(), (d, asfn) => {
+    call.write(d)
+    _.delay(asfn, _.random(10, 50))
+  }, () => {
+    call.end()
+  })
+
+  function endTest () {
+    t.is(dataCounter, 2)
+    t.truthy(errMsg1)
+    t.truthy(errMsg2)
+    t.true(endCalled)
+    t.true(errMsg1.indexOf('Unexpected token') >= 0)
+    t.true(errMsg2.indexOf('Unexpected token') >= 0)
+    t.truthy(errCtx)
+    t.truthy(errCtx.call)
+    t.truthy(errCtx.req)
+    t.is(errCtx.name, 'ProcessStuff')
+    t.is(errCtx.type, CallType.DUPLEX)
+    app.close().then(() => t.end())
+  }
+})
+
+test.cb('should handle an error in the handler of duplex call that returns a promise', t => {
+  t.plan(13)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+  async function processStuff (ctx) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        ctx.req.on('data', d => {
+          ctx.req.pause()
+          _.delay(() => {
+            let ret = {}
+            try {
+              ret = crashMapper(d)
+            } catch (e) {
+              return reject(e)
+            }
+            ctx.res.write(ret)
+            ctx.req.resume()
+          }, _.random(50, 150))
+        })
+
+        ctx.req.on('end', () => {
+          _.delay(() => {
+            ctx.res.end()
+            resolve()
+          }, 200)
+        })
+      }, 100)
     })
   }
 

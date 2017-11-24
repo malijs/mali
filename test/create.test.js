@@ -228,6 +228,20 @@ test.serial('should statically create all services from defition with multiple s
   t.truthy(server)
 })
 
+test.serial('should dynamically create a named service from multi package proto', t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+})
+
 test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
 })
