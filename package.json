@@ -39,7 +39,7 @@
     "error-inject": "^1.0.0",
     "grpc": "^1.7.2",
     "grpc-create-metadata": "^2.0.0",
-    "grpc-inspect": "git://github.com/bojand/grpc-inspect.git#multi_packages",
+    "grpc-inspect": "~0.4.0",
     "is-stream": "^1.1.0",
     "lodash": "^4.17.0",
     "lodash.camelcase": "^4.3.0",

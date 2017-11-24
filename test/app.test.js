@@ -70,6 +70,35 @@ test.cb('should handle req/res request', t => {
   })
 })
 
+test.cb('should handle req/res request where res is a promise', t => {
+  t.plan(5)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({ message: 'Hello ' + ctx.req.name })
+      }, 40)
+    })
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Jim' }, (err, response) => {
+    t.ifError(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Jim')
+    app.close().then(() => t.end())
+  })
+})
+
 test.cb('should handle res stream request', t => {
   t.plan(3)
   const APP_HOST = tu.getHost()
