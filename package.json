@@ -1,6 +1,6 @@
 {
   "name": "mali",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Minimalistic gRPC microservice framework",
   "main": "lib/app.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "linttest": "npm run lint && ava -v",
     "test": "nyc npm run linttest",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "docs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code | ./fixdocs > api.md"
+    "docs":
+      "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code | ./fixdocs > api.md"
   },
   "repository": {
     "type": "git",
@@ -23,13 +24,7 @@
     "url": "https://github.com/malijs/mali/issues"
   },
   "homepage": "https://malijs.github.io",
-  "keywords": [
-    "mali",
-    "grpc",
-    "service",
-    "server",
-    "microservice"
-  ],
+  "keywords": ["mali", "grpc", "service", "server", "microservice"],
   "dependencies": {
     "ascallback": "^1.1.1",
     "coveralls": "^3.0.0",
@@ -81,17 +76,11 @@
   "directories": {
     "test": "test"
   },
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "ava": {
-    "files": [
-      "test/*.test.js"
-    ]
+    "files": ["test/*.test.js"]
   },
   "nyc": {
-    "include": [
-      "lib/*.js"
-    ]
+    "include": ["lib/*.js"]
   }
 }
