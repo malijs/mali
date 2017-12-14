@@ -105,6 +105,26 @@ test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
   app.close().then(() => t.end())
 })
 
+test.cb('app.start() with a default port from OS with ""', t => {
+  t.plan(5)
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start('')
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  app.close().then(() => t.end())
+})
+
 test.cb('app.start() with param', t => {
   t.plan(5)
   const PORT = tu.getPort()
@@ -118,6 +138,27 @@ test.cb('app.start() with param', t => {
   t.truthy(app)
   app.use({ sayHello })
   const server = app.start(`127.0.0.1:0${PORT}`)
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.is(ports[0], PORT)
+  app.close().then(() => t.end())
+})
+
+test.cb('app.start() with port param and invalid creds', t => {
+  t.plan(5)
+  const PORT = tu.getPort()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(`127.0.0.1:0${PORT}`, 'foo')
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
