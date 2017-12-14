@@ -38,11 +38,92 @@ test('app.inspect should return app properties', t => {
   process.env.NODE_ENV = ''
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
   const app = new Mali(PROTO_PATH, 'Greeter')
-  app.port = 50000
+  app.foo = 'bar'
   t.truthy(app)
   const str = util.inspect(app)
   process.env.NODE_ENV = NODE_ENV
-  t.is('{ context: Context {},\n  env: \'development\',\n  name: \'Greeter\',\n  port: 50000 }', str)
+  t.is('{ ports: [],\n  context: Context {},\n  env: \'development\',\n  name: \'Greeter\',\n  foo: \'bar\' }', str)
+})
+
+test.cb('app.start() with a default port from OS when no params given', t => {
+  t.plan(5)
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start()
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  app.close().then(() => t.end())
+})
+
+test.cb('app.start() with a default port from OS with object param', t => {
+  t.plan(5)
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(grpc.ServerCredentials.createInsecure())
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  app.close().then(() => t.end())
+})
+
+test.cb('app.start() with a default port from OS with "0.0.0.0:0"', t => {
+  t.plan(5)
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start('0.0.0.0:0')
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  app.close().then(() => t.end())
+})
+
+test.cb('app.start() with param', t => {
+  t.plan(5)
+  const PORT = tu.getPort()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(`0.0.0.0:0${PORT}`)
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.is(ports[0], PORT)
+  app.close().then(() => t.end())
 })
 
 test.cb('should handle req/res request', t => {
@@ -248,7 +329,7 @@ test.cb('should handle duplex call', t => {
 })
 
 test.cb('should start multipe servers from same application and handle requests', t => {
-  t.plan(10)
+  t.plan(11)
   const APP_HOST1 = tu.getHost()
   const APP_HOST2 = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -266,6 +347,7 @@ test.cb('should start multipe servers from same application and handle requests'
   t.truthy(server2)
   t.truthy(Array.isArray(app.servers))
   t.is(app.servers.length, 2)
+  t.is(app.ports.length, 2)
 
   const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST1, grpc.credentials.createInsecure())
