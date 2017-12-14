@@ -85,7 +85,7 @@ test.cb('app.start() with a default port from OS with object param', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() with a default port from OS with "0.0.0.0:0"', t => {
+test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -96,7 +96,7 @@ test.cb('app.start() with a default port from OS with "0.0.0.0:0"', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start('0.0.0.0:0')
+  const server = app.start('127.0.0.1:0')
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -117,7 +117,7 @@ test.cb('app.start() with param', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(`0.0.0.0:0${PORT}`)
+  const server = app.start(`127.0.0.1:0${PORT}`)
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)

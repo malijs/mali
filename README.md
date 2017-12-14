@@ -30,7 +30,7 @@ async function sayHello (ctx) {
 function main () {
   const app = new Mali(PROTO_PATH)
   app.use({ sayHello })
-  app.start('0.0.0.0:50051')
+  app.start('127.0.0.1:50051')
 }
 ```
 
