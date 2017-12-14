@@ -219,7 +219,7 @@ Start the service. All middleware and handlers have to be set up prior to callin
 
 | Param | Type | Description |
 | --- | --- | --- |
-| port | <code>String</code> | The hostport for the service |
+| port | <code>String</code> | The hostport for the service. Default: <code>127.0.0.1:0</code> |
 | creds | <code>Object</code> | Credentials options. Default: <code>grpc.ServerCredentials.createInsecure()</code> |
 
 **Example**  
@@ -231,8 +231,8 @@ app.start('localhost:50051')
 **Example** *(Start same app on multiple ports)*  
 
 ```js
-app.start('0.0.0.0:50050')
-app.start('0.0.0.0:50051')
+app.start('127.0.0.1:50050')
+app.start('127.0.0.1:50051')
 ```
 
 <a name="maliclose" id="maliclose" data-id="maliclose"></a>
