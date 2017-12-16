@@ -30,6 +30,7 @@ Represents a gRPC service
     * [.silent](#Malisilent) : <code>Boolean</code>
     * [.name](#Maliname) : <code>String</code>
     * [.env](#Malienv) : <code>String</code>
+    * [.ports](#Maliports) : <code>Array</code>
     * [.init(proto, name, options)](#Maliinit)
     * [.use(service, name, ...fns)](#Maliuse)
     * [.onerror(err)](#Malionerror)
@@ -92,6 +93,18 @@ The environment. Taken from <code>process.end.NODE_ENV</code>. Default: <code>de
 
 ```js
 console.log(app.env) // 'development'
+```
+
+<a name="maliports" id="maliports" data-id="maliports"></a>
+
+#### mali.ports : <code>Array</code>
+The ports of the started service(s)
+
+**Kind**: instance property of [<code>Mali</code>](#Mali)  
+**Example**  
+
+```js
+console.log(app.ports) // [ 52239 ]
 ```
 
 <a name="maliinit" id="maliinit" data-id="maliinit"></a>
@@ -204,15 +217,22 @@ Start the service. All middleware and handlers have to be set up prior to callin
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 **Returns**: <code>Object</code> - server - The <code>grpc.Server</code> instance  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| port | <code>String</code> |  | The hostport for the service |
-| creds | <code>Object</code> | <code></code> | Credentials options. Default: <code>grpc.ServerCredentials.createInsecure()</code> |
+| Param | Type | Description |
+| --- | --- | --- |
+| port | <code>String</code> | The hostport for the service. Default: <code>127.0.0.1:0</code> |
+| creds | <code>Object</code> | Credentials options. Default: <code>grpc.ServerCredentials.createInsecure()</code> |
 
 **Example**  
 
 ```js
 app.start('localhost:50051')
+```
+
+**Example** *(Start same app on multiple ports)*  
+
+```js
+app.start('127.0.0.1:50050')
+app.start('127.0.0.1:50051')
 ```
 
 <a name="maliclose" id="maliclose" data-id="maliclose"></a>
