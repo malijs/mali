@@ -37,8 +37,7 @@
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
     "error-inject": "^1.0.0",
-    "grpc": "^1.7.2",
-    "grpc-create-metadata": "^2.0.0",
+    "grpc-create-metadata": "^3.0.0",
     "grpc-inspect": "~0.4.0",
     "is-stream": "^1.1.0",
     "lodash": "^4.17.0",
@@ -57,13 +56,17 @@
     "p-map": "^1.2.0",
     "pify": "^3.0.0"
   },
+  "peerDependencies": {
+    "grpc": "^1.0.0"
+  },
   "devDependencies": {
-    "ava": "^0.23.0",
+    "ava": "^0.24.0",
     "google-protobuf": "^3.5.0",
+    "grpc": "^1.8.0",
     "highland": "^3.0.0-beta.3",
-    "jsdoc-to-markdown": "^3.0.2",
+    "jsdoc-to-markdown": "^3.0.3",
     "md-wrap-code": "^0.1.1",
-    "nyc": "^11.3.0",
+    "nyc": "^11.4.1",
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
     "snazzy": "^7.0.0",

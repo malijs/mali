@@ -25,6 +25,41 @@ test.serial('should dynamically create service', t => {
   t.truthy(server)
 })
 
+test.serial('should dynamically create service without specifying a name and default to the one in proto', t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+  t.is(app.name, 'Greeter')
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(typeof app.handlers.Greeter.sayHello[0] === 'function')
+})
+
+test.serial('should dynamically create service using addService() without specifying a name and default to the one in proto', t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali()
+  app.addService(PROTO_PATH)
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+  t.is(app.name, 'Greeter')
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(typeof app.handlers.Greeter.sayHello[0] === 'function')
+})
+
 test.serial('should dynamically create service without a service name', t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
@@ -244,4 +279,38 @@ test.serial('should dynamically create a named service from multi package proto'
 
 test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
+})
+
+test.serial('should dynamically create service from multiple protos', t => {
+  const proto1 = path.resolve(__dirname, './protos/helloworld.proto')
+  const proto2 = path.resolve(__dirname, './protos/reqres.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  function doSomething (ctx) {
+    ctx.res = { message: ctx.req.message.toUppercase() }
+  }
+
+  const app = new Mali()
+  app.addService(proto1)
+  app.addService(proto2)
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  app.use({ doSomething })
+
+  t.is(app.name, 'Greeter')
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(typeof app.handlers.Greeter.sayHello[0] === 'function')
+  t.is(app.handlers.Greeter.sayHello[0], sayHello)
+
+  t.truthy(app.handlers.ArgService.doSomething)
+  t.true(typeof app.handlers.ArgService.doSomething[0] === 'function')
+  t.is(app.handlers.ArgService.doSomething[0], doSomething)
+
+  const server = app.start(tu.getHost())
+  t.truthy(server)
 })
