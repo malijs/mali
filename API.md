@@ -31,7 +31,7 @@ Represents a gRPC service
     * [.name](#Maliname) : <code>String</code>
     * [.env](#Malienv) : <code>String</code>
     * [.ports](#Maliports) : <code>Array</code>
-    * [.init(proto, name, options)](#Maliinit)
+    * [.addService(proto, name, options)](#MaliaddService)
     * [.use(service, name, ...fns)](#Maliuse)
     * [.onerror(err)](#Malionerror)
     * [.start(port, creds)](#Malistart) ⇒ <code>Object</code>
@@ -74,7 +74,8 @@ Whether to log errors in <code>onerror</code>. Default: <code>false</code>
 <a name="maliname" id="maliname" data-id="maliname"></a>
 
 #### mali.name : <code>String</code>
-The service name
+The service name.
+                      If multiple services are initalized, this will be equal to the first service loaded.
 
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 **Example**  
@@ -107,11 +108,12 @@ The ports of the started service(s)
 console.log(app.ports) // [ 52239 ]
 ```
 
-<a name="maliinit" id="maliinit" data-id="maliinit"></a>
+<a name="maliaddservice" id="maliaddservice" data-id="maliaddservice"></a>
 
-#### mali.init(proto, name, options)
-Init's the app with the proto. Basically this can be used if you don't have the data at
-app construction time for some reason.
+#### mali.addService(proto, name, options)
+Add the service and initalizes the app with the proto.
+Basically this can be used if you don't have the data at app construction time for some reason.
+This is different than `grpc.Server.addService()`.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
@@ -135,7 +137,8 @@ name. Uses <code>0</code>th property in internal services object. Useful for pro
 one service.
 If an <code>object</code> is provided, you can set middleware and handlers for all services.
 If <code>object</code> provided but <code>0</code>th key does not match any of the services in
-proto, assumes <code>0</code>th service. Useful for protos with only one service.
+proto, we try to match the key to one of the rpc function names in one of the services.
+if we can't find the matching rpc function name just tries the `0`th service name.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
