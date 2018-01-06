@@ -38,7 +38,7 @@
     "ee-first": "^1.1.1",
     "error-inject": "^1.0.0",
     "grpc-create-metadata": "^3.0.0",
-    "grpc-inspect": "~0.4.0",
+    "grpc-inspect": "^0.5.0",
     "is-stream": "^1.1.0",
     "lodash": "^4.17.0",
     "lodash.camelcase": "^4.3.0",
