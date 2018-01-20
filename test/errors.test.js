@@ -118,6 +118,38 @@ test.cb('should handle an error in the handler in req/res app where ctx.res is a
   })
 })
 
+test.cb('should return error when we set response to error explicitely', t => {
+  t.plan(6)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = new Error('boom')
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  let errCtx
+  app.on('error', (_err, ctx) => {
+    errCtx = ctx
+  })
+
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.truthy(err)
+    t.is(err.message, 'boom')
+    t.falsy(response)
+    t.falsy(errCtx)
+    app.close().then(() => t.end())
+  })
+})
+
 test.cb('should handle an error with code in the handler in req/res app', t => {
   t.plan(12)
   const APP_HOST = tu.getHost()
