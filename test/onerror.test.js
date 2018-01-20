@@ -75,7 +75,7 @@ test.cb('should log an error in the handler in req/res app', t => {
   const inspect = stderr.inspect()
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
-    t.is(err.message, 'boom')
+    t.true(err.message.indexOf('boom') >= 0)
     t.falsy(response)
     inspect.restore()
     const output = Array.isArray(inspect.output) ? inspect.output.join() : inspect.output

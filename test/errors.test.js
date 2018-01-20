@@ -63,7 +63,7 @@ test.cb('should handle an error in the handler in req/res app', t => {
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
-    t.is(err.message, 'boom')
+    t.true(err.message.indexOf('boom') >= 0)
     t.falsy(response)
     t.is(errMsg, 'boom')
     t.truthy(errCtx)
@@ -106,7 +106,7 @@ test.cb('should handle an error in the handler in req/res app where ctx.res is a
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
-    t.is(err.message, 'boom')
+    t.true(err.message.indexOf('boom') >= 0)
     t.falsy(response)
     t.is(errMsg, 'boom')
     t.truthy(errCtx)
@@ -143,7 +143,7 @@ test.cb('should return error when we set response to error explicitely', t => {
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
-    t.is(err.message, 'boom')
+    t.true(err.message.indexOf('boom') >= 0)
     t.falsy(response)
     t.falsy(errCtx)
     app.close().then(() => t.end())
@@ -179,7 +179,7 @@ test.cb('should handle an error with code in the handler in req/res app', t => {
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
-    t.is(err.message, 'crash')
+    t.true(err.message.indexOf('crash') >= 0)
     t.is(err.code, 2000)
     t.falsy(response)
     t.is(errMsg, 'crash')
@@ -226,7 +226,7 @@ test.cb('should handle custom error in the handler in req/res app', t => {
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
-    t.is(err.message, 'burn')
+    t.true(err.message.indexOf('burn') >= 0)
     t.is(err.code, 1234)
     t.falsy(response)
     t.is(errMsg, 'burn')
@@ -437,8 +437,10 @@ test('should handle error in response stream', async t => {
   call.on('end', () => {
     t.fail('not expecting end')
   })
-  t.is((await appErrorPromise).message, 'stream error')
-  t.is((await callErrorPromise).message, 'stream error')
+  const msg1 = (await appErrorPromise).message
+  const msg2 = (await callErrorPromise).message
+  t.true(msg1.indexOf('stream error') >= 0)
+  t.true(msg2.indexOf('stream error') >= 0)
   t.is(resData.length, 3)
 })
 
