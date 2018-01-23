@@ -1,5 +1,7 @@
 # [![Mali](https://raw.githubusercontent.com/malijs/mali/master/mali-logo.png)](https://malijs.github.io)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/malijs/mali.svg)](https://greenkeeper.io/)
+
 **A minimalistic [gRPC](http://www.grpc.io) microservice framework.**
 
 [![npm version](https://img.shields.io/npm/v/mali.svg?style=flat-square)](https://www.npmjs.com/package/mali)
