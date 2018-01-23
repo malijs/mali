@@ -27,10 +27,10 @@ Represents a gRPC service
 
 * [Mali](#Mali) ⇐ <code>Emitter</code>
     * [new Mali(proto, name, options)](#new_Mali_new)
-    * [.silent](#Malisilent) : <code>Boolean</code>
     * [.name](#Maliname) : <code>String</code>
     * [.env](#Malienv) : <code>String</code>
     * [.ports](#Maliports) : <code>Array</code>
+    * [.silent](#Malisilent) : <code>Boolean</code>
     * [.addService(proto, name, options)](#MaliaddService)
     * [.use(service, name, ...fns)](#Maliuse)
     * [.onerror(err)](#Malionerror)
@@ -65,12 +65,6 @@ const services = require('./static/helloworld_grpc_pb')
 const app = new Mali(services, 'GreeterService')
 ```
 
-<a name="malisilent" id="malisilent" data-id="malisilent"></a>
-
-#### mali.silent : <code>Boolean</code>
-Whether to log errors in <code>onerror</code>. Default: <code>false</code>
-
-**Kind**: instance property of [<code>Mali</code>](#Mali)  
 <a name="maliname" id="maliname" data-id="maliname"></a>
 
 #### mali.name : <code>String</code>
@@ -108,6 +102,12 @@ The ports of the started service(s)
 console.log(app.ports) // [ 52239 ]
 ```
 
+<a name="malisilent" id="malisilent" data-id="malisilent"></a>
+
+#### mali.silent : <code>Boolean</code>
+Whether to log errors in <code>onerror</code>. Default: <code>false</code>
+
+**Kind**: instance property of [<code>Mali</code>](#Mali)  
 <a name="maliaddservice" id="maliaddservice" data-id="maliaddservice"></a>
 
 #### mali.addService(proto, name, options)

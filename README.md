@@ -1,7 +1,5 @@
 # [![Mali](https://raw.githubusercontent.com/malijs/mali/master/mali-logo.png)](https://malijs.github.io)
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/malijs/mali.svg)](https://greenkeeper.io/)
-
 **A minimalistic [gRPC](http://www.grpc.io) microservice framework.**
 
 [![npm version](https://img.shields.io/npm/v/mali.svg?style=flat-square)](https://www.npmjs.com/package/mali)
@@ -9,6 +7,7 @@
 [![coverage status](https://img.shields.io/coveralls/github/malijs/mali.svg?style=flat-square)](https://coveralls.io/github/malijs/mali)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square)](https://standardjs.com)
 [![License](https://img.shields.io/github/license/malijs/mali.svg?style=flat-square)](https://raw.githubusercontent.com/malijs/mali/master/LICENSE)
+[![Greenkeeper badge](https://badges.greenkeeper.io/malijs/mali.svg)](https://greenkeeper.io/)
 [![chat on gitter](https://img.shields.io/gitter/room/malijs/Lobby.svg?style=flat-square)](https://gitter.im/malijs/Lobby)
 
 ## Installation

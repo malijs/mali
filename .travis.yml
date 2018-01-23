@@ -1,9 +1,8 @@
 language: node_js
-after_success: npm run coverage
 node_js:
-  - "6.9"
-  - "8.0"
   - "8"
+  - "8.0"
+  - "6.9"
 env:
   - CXX=g++-4.8
 addons:
@@ -12,3 +11,9 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+before_install:
+  - npm install -g npm
+  - npm install -g greenkeeper-lockfile@1
+before_script: greenkeeper-lockfile-update
+after_script: greenkeeper-lockfile-upload
+after_success: npm run coverage
