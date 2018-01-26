@@ -60,7 +60,7 @@
     "grpc": "^1.0.0"
   },
   "devDependencies": {
-    "ava": "^0.24.0",
+    "ava": "^0.25.0",
     "google-protobuf": "^3.5.0",
     "greenkeeper-lockfile": "^1.13.0",
     "grpc": "^1.8.0",
