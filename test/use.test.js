@@ -776,3 +776,40 @@ test('multi: should add handlers using object notation for all services with ser
   t.is(app.handlers.Greeter4.sayHello[0], mw1)
   t.is(app.handlers.Greeter4.sayHello[1], handler)
 })
+
+test('should add multiple middleware if just functions passed to use()', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  async function mw1 (ctx, next) {
+    ctx.mw1 = 'mw1'
+    await next()
+  }
+
+  async function mw2 (ctx, next) {
+    ctx.mw1 = 'mw2'
+    await next()
+  }
+
+  async function mw3 (ctx, next) {
+    ctx.mw1 = 'mw3'
+    await next()
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  app.use(mw1, mw2, mw3)
+  app.use('sayHello', handler)
+
+  t.truthy(app.handlers.Greeter.sayHello)
+  t.true(Array.isArray(app.handlers.Greeter.sayHello))
+  t.is(app.handlers.Greeter.sayHello.length, 4)
+  t.is(app.handlers.Greeter.sayHello[0], mw1)
+  t.is(app.handlers.Greeter.sayHello[1], mw2)
+  t.is(app.handlers.Greeter.sayHello[2], mw3)
+  t.is(app.handlers.Greeter.sayHello[3], handler)
+})
