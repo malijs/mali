@@ -62,16 +62,16 @@
   "devDependencies": {
     "ava": "^0.25.0",
     "google-protobuf": "^3.5.0",
-    "greenkeeper-lockfile": "^1.13.0",
-    "grpc": "^1.8.0",
+    "greenkeeper-lockfile": "^1.14.0",
+    "grpc": "^1.9.0",
     "highland": "^3.0.0-beta.3",
     "jsdoc-to-markdown": "^4.0.1",
     "md-wrap-code": "^0.1.1",
-    "nyc": "^11.4.1",
+    "nyc": "^11.5.0",
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
-    "snazzy": "^7.0.0",
-    "standard": "^11.0.0",
+    "snazzy": "^7.1.0",
+    "standard": "^10.0.0",
     "test-console": "^1.1.0"
   },
   "standard": {
