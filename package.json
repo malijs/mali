@@ -71,7 +71,7 @@
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
     "snazzy": "^7.0.0",
-    "standard": "^10.0.3",
+    "standard": "^11.0.0",
     "test-console": "^1.1.0"
   },
   "standard": {
