@@ -8,11 +8,11 @@
 <dd><p>Represents the application and call context. Clients to not create this. Mali does it for us.</p>
 </dd>
 <dt><a href="#Request">Request</a></dt>
-<dd><p>Mali Request class that encasulates the request of a call.
+<dd><p>Mali Request class that encapsulates the request of a call.
 Clients to not create this. Mali does it for us.</p>
 </dd>
 <dt><a href="#Response">Response</a></dt>
-<dd><p>Mali Response class that encasulates the response of a call.
+<dd><p>Mali Response class that encapsulates the response of a call.
 Clients to not create this. Mali does it for us.</p>
 </dd>
 </dl>
@@ -69,7 +69,7 @@ const app = new Mali(services, 'GreeterService')
 
 #### mali.name : <code>String</code>
 The service name.
-                      If multiple services are initalized, this will be equal to the first service loaded.
+                      If multiple services are initialized, this will be equal to the first service loaded.
 
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 **Example**  
@@ -111,9 +111,9 @@ Whether to log errors in <code>onerror</code>. Default: <code>false</code>
 <a name="maliaddservice" id="maliaddservice" data-id="maliaddservice"></a>
 
 #### mali.addService(proto, name, options)
-Add the service and initalizes the app with the proto.
+Add the service and initialize the app with the proto.
 Basically this can be used if you don't have the data at app construction time for some reason.
-This is different than `grpc.Server.addService()`.
+This is different with `grpc.Server.addService()`.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
@@ -138,7 +138,7 @@ one service.
 If an <code>object</code> is provided, you can set middleware and handlers for all services.
 If <code>object</code> provided but <code>0</code>th key does not match any of the services in
 proto, we try to match the key to one of the rpc function names in one of the services.
-if we can't find the matching rpc function name just tries the `0`th service name.
+If we can't find the matching rpc function name just tries the `0`th service name.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
@@ -172,7 +172,7 @@ app.use('Service2', 'fn2', mw1, mw2, fn2)
 app.use({ fn1, fn2 })
 ```
 
-**Example** *(Apply middleware to all handers for a service)*  
+**Example** *(Apply middleware to all handlers for a service)*  
 
 ```js
 app.use('Service1', mw1)
@@ -189,7 +189,7 @@ app.use({ MyService: { fn1, fn2: [mw1, mw2, fn2] } })
 
 ```js
 app.use(mw1) // global for all services
-app.use('Service1', mw2) // applies to all Service1 handers
+app.use('Service1', mw2) // applies to all Service1 handlers
 app.use({
   Service1: {
     sayGoodbye: handler1, // has mw1, mw2
@@ -543,7 +543,7 @@ ctx.setStatus({
 <a name="request" id="request" data-id="request"></a>
 
 ### Request
-Mali Request class that encasulates the request of a call.
+Mali Request class that encapsulates the request of a call.
 Clients to not create this. Mali does it for us.
 
 **Kind**: global class  
@@ -629,7 +629,7 @@ Gets the requests metadata as a `grpc.Metadata` object instance
 <a name="requestget" id="requestget" data-id="requestget"></a>
 
 #### request.get(field) ⇒ <code>\*</code>
-Gets specific request meatadata field value
+Gets specific request metadata field value
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Returns**: <code>\*</code> - the metadata value for the field  
@@ -647,7 +647,7 @@ console.log(ctx.request.get('foo')) // 'bar'
 <a name="response" id="response" data-id="response"></a>
 
 ### Response
-Mali Response class that encasulates the response of a call.
+Mali Response class that encapsulates the response of a call.
 Clients to not create this. Mali does it for us.
 
 **Kind**: global class  
@@ -751,7 +751,7 @@ ctx.response.res.write({ foo: 'bar' })
 <a name="responseset" id="responseset" data-id="responseset"></a>
 
 #### response.set(field, val)
-Sets specific response header meatadata field value
+Sets specific response header metadata field value
 
 **Kind**: instance method of [<code>Response</code>](#Response)  
 
@@ -847,7 +847,7 @@ console.log(ctx.response.getStatus('bar')) // 'baz'
 <a name="responsesetstatus" id="responsesetstatus" data-id="responsesetstatus"></a>
 
 #### response.setStatus(field, val)
-Sets specific response status / trailer meatadata field value
+Sets specific response status / trailer metadata field value
 
 **Kind**: instance method of [<code>Response</code>](#Response)  
 
