@@ -68,7 +68,7 @@
     "highland": "^3.0.0-beta.3",
     "jsdoc-to-markdown": "^4.0.1",
     "md-wrap-code": "^0.1.1",
-    "nyc": "^11.5.0",
+    "nyc": "^12.0.1",
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
     "snazzy": "^7.1.0",
