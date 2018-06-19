@@ -1,6 +1,8 @@
 /**
  * @fileoverview
  * @enhanceable
+ * @suppress {messageConventions} JS Compiler reports an error if a variable or
+ *     field starts with 'MSG_' and isn't a translatable message.
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
@@ -54,10 +56,11 @@ proto.helloworld.HelloRequest.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.helloworld.HelloRequest} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.helloworld.HelloRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    name: msg.getName()
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -108,35 +111,26 @@ proto.helloworld.HelloRequest.deserializeBinaryFromReader = function(msg, reader
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.helloworld.HelloRequest} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.helloworld.HelloRequest.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.helloworld.HelloRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.helloworld.HelloRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.helloworld.HelloRequest} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.helloworld.HelloRequest.prototype.serializeBinaryToWriter = function (writer) {
+proto.helloworld.HelloRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getName();
+  f = message.getName();
   if (f.length > 0) {
     writer.writeString(
       1,
@@ -147,26 +141,17 @@ proto.helloworld.HelloRequest.prototype.serializeBinaryToWriter = function (writ
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.helloworld.HelloRequest} The clone.
- */
-proto.helloworld.HelloRequest.prototype.cloneMessage = function() {
-  return /** @type {!proto.helloworld.HelloRequest} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional string name = 1;
  * @return {string}
  */
 proto.helloworld.HelloRequest.prototype.getName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldProto3(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {string} value  */
+/** @param {string} value */
 proto.helloworld.HelloRequest.prototype.setName = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -213,10 +198,11 @@ proto.helloworld.HelloReply.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.helloworld.HelloReply} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.helloworld.HelloReply.toObject = function(includeInstance, msg) {
   var f, obj = {
-    message: msg.getMessage()
+    message: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -267,35 +253,26 @@ proto.helloworld.HelloReply.deserializeBinaryFromReader = function(msg, reader) 
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.helloworld.HelloReply} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.helloworld.HelloReply.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.helloworld.HelloReply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.helloworld.HelloReply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.helloworld.HelloReply} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.helloworld.HelloReply.prototype.serializeBinaryToWriter = function (writer) {
+proto.helloworld.HelloReply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getMessage();
+  f = message.getMessage();
   if (f.length > 0) {
     writer.writeString(
       1,
@@ -306,26 +283,17 @@ proto.helloworld.HelloReply.prototype.serializeBinaryToWriter = function (writer
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.helloworld.HelloReply} The clone.
- */
-proto.helloworld.HelloReply.prototype.cloneMessage = function() {
-  return /** @type {!proto.helloworld.HelloReply} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional string message = 1;
  * @return {string}
  */
 proto.helloworld.HelloReply.prototype.getMessage = function() {
-  return /** @type {string} */ (jspb.Message.getFieldProto3(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {string} value  */
+/** @param {string} value */
 proto.helloworld.HelloReply.prototype.setMessage = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

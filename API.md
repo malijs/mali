@@ -34,7 +34,7 @@ Represents a gRPC service
     * [.addService(proto, name, options)](#MaliaddService)
     * [.use(service, name, ...fns)](#Maliuse)
     * [.onerror(err)](#Malionerror)
-    * [.start(port, creds)](#Malistart) ⇒ <code>Object</code>
+    * [.start(port, creds, options)](#Malistart) ⇒ <code>Object</code>
     * [.close()](#Maliclose)
     * [.toJSON()](#MalitoJSON) ⇒ <code>Object</code>
     * [.inspect()](#Maliinspect) ⇒ <code>Object</code>
@@ -214,7 +214,7 @@ Default error handler.
 
 <a name="malistart" id="malistart" data-id="malistart"></a>
 
-#### mali.start(port, creds) ⇒ <code>Object</code>
+#### mali.start(port, creds, options) ⇒ <code>Object</code>
 Start the service. All middleware and handlers have to be set up prior to calling <code>start</code>.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
@@ -224,6 +224,7 @@ Start the service. All middleware and handlers have to be set up prior to callin
 | --- | --- | --- |
 | port | <code>String</code> | The hostport for the service. Default: <code>127.0.0.1:0</code> |
 | creds | <code>Object</code> | Credentials options. Default: <code>grpc.ServerCredentials.createInsecure()</code> |
+| options | <code>Object</code> | The start options to be passed to `grpc.Server` constructor. |
 
 **Example**  
 

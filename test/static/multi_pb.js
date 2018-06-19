@@ -1,6 +1,8 @@
 /**
  * @fileoverview
  * @enhanceable
+ * @suppress {messageConventions} JS Compiler reports an error if a variable or
+ *     field starts with 'MSG_' and isn't a translatable message.
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
@@ -54,6 +56,7 @@ proto.helloworld.Request.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.helloworld.Request} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.helloworld.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -123,6 +126,7 @@ proto.helloworld.Request.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.helloworld.Request} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.helloworld.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -147,7 +151,7 @@ proto.helloworld.Request.prototype.getName = function() {
 
 /** @param {string} value */
 proto.helloworld.Request.prototype.setName = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -194,6 +198,7 @@ proto.helloworld.Reply.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.helloworld.Reply} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.helloworld.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -263,6 +268,7 @@ proto.helloworld.Reply.prototype.serializeBinary = function() {
  * format), writing to the given BinaryWriter.
  * @param {!proto.helloworld.Reply} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.helloworld.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
@@ -287,7 +293,7 @@ proto.helloworld.Reply.prototype.getMessage = function() {
 
 /** @param {string} value */
 proto.helloworld.Reply.prototype.setMessage = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

@@ -1,6 +1,8 @@
 /**
  * @fileoverview
  * @enhanceable
+ * @suppress {messageConventions} JS Compiler reports an error if a variable or
+ *     field starts with 'MSG_' and isn't a translatable message.
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
@@ -57,11 +59,12 @@ proto.routeguide.Point.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.routeguide.Point} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.routeguide.Point.toObject = function(includeInstance, msg) {
   var f, obj = {
-    latitude: msg.getLatitude(),
-    longitude: msg.getLongitude()
+    latitude: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    longitude: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {
@@ -116,42 +119,33 @@ proto.routeguide.Point.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.routeguide.Point} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.routeguide.Point.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.routeguide.Point.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.routeguide.Point.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.routeguide.Point} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.routeguide.Point.prototype.serializeBinaryToWriter = function (writer) {
+proto.routeguide.Point.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getLatitude();
+  f = message.getLatitude();
   if (f !== 0) {
     writer.writeInt32(
       1,
       f
     );
   }
-  f = this.getLongitude();
+  f = message.getLongitude();
   if (f !== 0) {
     writer.writeInt32(
       2,
@@ -162,26 +156,17 @@ proto.routeguide.Point.prototype.serializeBinaryToWriter = function (writer) {
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.routeguide.Point} The clone.
- */
-proto.routeguide.Point.prototype.cloneMessage = function() {
-  return /** @type {!proto.routeguide.Point} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional int32 latitude = 1;
  * @return {number}
  */
 proto.routeguide.Point.prototype.getLatitude = function() {
-  return /** @type {number} */ (jspb.Message.getFieldProto3(this, 1, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
-/** @param {number} value  */
+/** @param {number} value */
 proto.routeguide.Point.prototype.setLatitude = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -190,13 +175,13 @@ proto.routeguide.Point.prototype.setLatitude = function(value) {
  * @return {number}
  */
 proto.routeguide.Point.prototype.getLongitude = function() {
-  return /** @type {number} */ (jspb.Message.getFieldProto3(this, 2, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
-/** @param {number} value  */
+/** @param {number} value */
 proto.routeguide.Point.prototype.setLongitude = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -243,6 +228,7 @@ proto.routeguide.Rectangle.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.routeguide.Rectangle} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.routeguide.Rectangle.toObject = function(includeInstance, msg) {
   var f, obj = {
@@ -304,35 +290,26 @@ proto.routeguide.Rectangle.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.routeguide.Rectangle} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.routeguide.Rectangle.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.routeguide.Rectangle.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.routeguide.Rectangle.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.routeguide.Rectangle} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.routeguide.Rectangle.prototype.serializeBinaryToWriter = function (writer) {
+proto.routeguide.Rectangle.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getLo();
+  f = message.getLo();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -340,7 +317,7 @@ proto.routeguide.Rectangle.prototype.serializeBinaryToWriter = function (writer)
       proto.routeguide.Point.serializeBinaryToWriter
     );
   }
-  f = this.getHi();
+  f = message.getHi();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -352,25 +329,16 @@ proto.routeguide.Rectangle.prototype.serializeBinaryToWriter = function (writer)
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.routeguide.Rectangle} The clone.
- */
-proto.routeguide.Rectangle.prototype.cloneMessage = function() {
-  return /** @type {!proto.routeguide.Rectangle} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional Point lo = 1;
- * @return {proto.routeguide.Point}
+ * @return {?proto.routeguide.Point}
  */
 proto.routeguide.Rectangle.prototype.getLo = function() {
-  return /** @type{proto.routeguide.Point} */ (
+  return /** @type{?proto.routeguide.Point} */ (
     jspb.Message.getWrapperField(this, proto.routeguide.Point, 1));
 };
 
 
-/** @param {proto.routeguide.Point|undefined} value  */
+/** @param {?proto.routeguide.Point|undefined} value */
 proto.routeguide.Rectangle.prototype.setLo = function(value) {
   jspb.Message.setWrapperField(this, 1, value);
 };
@@ -382,16 +350,25 @@ proto.routeguide.Rectangle.prototype.clearLo = function() {
 
 
 /**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.routeguide.Rectangle.prototype.hasLo = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
  * optional Point hi = 2;
- * @return {proto.routeguide.Point}
+ * @return {?proto.routeguide.Point}
  */
 proto.routeguide.Rectangle.prototype.getHi = function() {
-  return /** @type{proto.routeguide.Point} */ (
+  return /** @type{?proto.routeguide.Point} */ (
     jspb.Message.getWrapperField(this, proto.routeguide.Point, 2));
 };
 
 
-/** @param {proto.routeguide.Point|undefined} value  */
+/** @param {?proto.routeguide.Point|undefined} value */
 proto.routeguide.Rectangle.prototype.setHi = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
@@ -399,6 +376,15 @@ proto.routeguide.Rectangle.prototype.setHi = function(value) {
 
 proto.routeguide.Rectangle.prototype.clearHi = function() {
   this.setHi(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.routeguide.Rectangle.prototype.hasHi = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 
@@ -445,10 +431,11 @@ proto.routeguide.Feature.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.routeguide.Feature} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.routeguide.Feature.toObject = function(includeInstance, msg) {
   var f, obj = {
-    name: msg.getName(),
+    name: jspb.Message.getFieldWithDefault(msg, 1, ""),
     location: (f = msg.getLocation()) && proto.routeguide.Point.toObject(includeInstance, f)
   };
 
@@ -505,42 +492,33 @@ proto.routeguide.Feature.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.routeguide.Feature} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.routeguide.Feature.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.routeguide.Feature.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.routeguide.Feature.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.routeguide.Feature} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.routeguide.Feature.prototype.serializeBinaryToWriter = function (writer) {
+proto.routeguide.Feature.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getName();
+  f = message.getName();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = this.getLocation();
+  f = message.getLocation();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -552,40 +530,31 @@ proto.routeguide.Feature.prototype.serializeBinaryToWriter = function (writer) {
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.routeguide.Feature} The clone.
- */
-proto.routeguide.Feature.prototype.cloneMessage = function() {
-  return /** @type {!proto.routeguide.Feature} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional string name = 1;
  * @return {string}
  */
 proto.routeguide.Feature.prototype.getName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldProto3(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {string} value  */
+/** @param {string} value */
 proto.routeguide.Feature.prototype.setName = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
  * optional Point location = 2;
- * @return {proto.routeguide.Point}
+ * @return {?proto.routeguide.Point}
  */
 proto.routeguide.Feature.prototype.getLocation = function() {
-  return /** @type{proto.routeguide.Point} */ (
+  return /** @type{?proto.routeguide.Point} */ (
     jspb.Message.getWrapperField(this, proto.routeguide.Point, 2));
 };
 
 
-/** @param {proto.routeguide.Point|undefined} value  */
+/** @param {?proto.routeguide.Point|undefined} value */
 proto.routeguide.Feature.prototype.setLocation = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
@@ -593,6 +562,15 @@ proto.routeguide.Feature.prototype.setLocation = function(value) {
 
 proto.routeguide.Feature.prototype.clearLocation = function() {
   this.setLocation(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.routeguide.Feature.prototype.hasLocation = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 
@@ -639,11 +617,12 @@ proto.routeguide.RouteNote.prototype.toObject = function(opt_includeInstance) {
  *     http://goto/soy-param-migration
  * @param {!proto.routeguide.RouteNote} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.routeguide.RouteNote.toObject = function(includeInstance, msg) {
   var f, obj = {
     location: (f = msg.getLocation()) && proto.routeguide.Point.toObject(includeInstance, f),
-    message: msg.getMessage()
+    message: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -699,35 +678,26 @@ proto.routeguide.RouteNote.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.routeguide.RouteNote} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.routeguide.RouteNote.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.routeguide.RouteNote.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.routeguide.RouteNote.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.routeguide.RouteNote} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.routeguide.RouteNote.prototype.serializeBinaryToWriter = function (writer) {
+proto.routeguide.RouteNote.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getLocation();
+  f = message.getLocation();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -735,7 +705,7 @@ proto.routeguide.RouteNote.prototype.serializeBinaryToWriter = function (writer)
       proto.routeguide.Point.serializeBinaryToWriter
     );
   }
-  f = this.getMessage();
+  f = message.getMessage();
   if (f.length > 0) {
     writer.writeString(
       2,
@@ -746,25 +716,16 @@ proto.routeguide.RouteNote.prototype.serializeBinaryToWriter = function (writer)
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.routeguide.RouteNote} The clone.
- */
-proto.routeguide.RouteNote.prototype.cloneMessage = function() {
-  return /** @type {!proto.routeguide.RouteNote} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional Point location = 1;
- * @return {proto.routeguide.Point}
+ * @return {?proto.routeguide.Point}
  */
 proto.routeguide.RouteNote.prototype.getLocation = function() {
-  return /** @type{proto.routeguide.Point} */ (
+  return /** @type{?proto.routeguide.Point} */ (
     jspb.Message.getWrapperField(this, proto.routeguide.Point, 1));
 };
 
 
-/** @param {proto.routeguide.Point|undefined} value  */
+/** @param {?proto.routeguide.Point|undefined} value */
 proto.routeguide.RouteNote.prototype.setLocation = function(value) {
   jspb.Message.setWrapperField(this, 1, value);
 };
@@ -776,17 +737,26 @@ proto.routeguide.RouteNote.prototype.clearLocation = function() {
 
 
 /**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.routeguide.RouteNote.prototype.hasLocation = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
  * optional string message = 2;
  * @return {string}
  */
 proto.routeguide.RouteNote.prototype.getMessage = function() {
-  return /** @type {string} */ (jspb.Message.getFieldProto3(this, 2, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
-/** @param {string} value  */
+/** @param {string} value */
 proto.routeguide.RouteNote.prototype.setMessage = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -833,13 +803,14 @@ proto.routeguide.RouteSummary.prototype.toObject = function(opt_includeInstance)
  *     http://goto/soy-param-migration
  * @param {!proto.routeguide.RouteSummary} msg The msg instance to transform.
  * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.routeguide.RouteSummary.toObject = function(includeInstance, msg) {
   var f, obj = {
-    pointCount: msg.getPointCount(),
-    featureCount: msg.getFeatureCount(),
-    distance: msg.getDistance(),
-    elapsedTime: msg.getElapsedTime()
+    pointCount: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    featureCount: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    distance: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    elapsedTime: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -902,56 +873,47 @@ proto.routeguide.RouteSummary.deserializeBinaryFromReader = function(msg, reader
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.routeguide.RouteSummary} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.routeguide.RouteSummary.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.routeguide.RouteSummary.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.routeguide.RouteSummary.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.routeguide.RouteSummary} message
  * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.routeguide.RouteSummary.prototype.serializeBinaryToWriter = function (writer) {
+proto.routeguide.RouteSummary.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getPointCount();
+  f = message.getPointCount();
   if (f !== 0) {
     writer.writeInt32(
       1,
       f
     );
   }
-  f = this.getFeatureCount();
+  f = message.getFeatureCount();
   if (f !== 0) {
     writer.writeInt32(
       2,
       f
     );
   }
-  f = this.getDistance();
+  f = message.getDistance();
   if (f !== 0) {
     writer.writeInt32(
       3,
       f
     );
   }
-  f = this.getElapsedTime();
+  f = message.getElapsedTime();
   if (f !== 0) {
     writer.writeInt32(
       4,
@@ -962,26 +924,17 @@ proto.routeguide.RouteSummary.prototype.serializeBinaryToWriter = function (writ
 
 
 /**
- * Creates a deep clone of this proto. No data is shared with the original.
- * @return {!proto.routeguide.RouteSummary} The clone.
- */
-proto.routeguide.RouteSummary.prototype.cloneMessage = function() {
-  return /** @type {!proto.routeguide.RouteSummary} */ (jspb.Message.cloneMessage(this));
-};
-
-
-/**
  * optional int32 point_count = 1;
  * @return {number}
  */
 proto.routeguide.RouteSummary.prototype.getPointCount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldProto3(this, 1, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
-/** @param {number} value  */
+/** @param {number} value */
 proto.routeguide.RouteSummary.prototype.setPointCount = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -990,13 +943,13 @@ proto.routeguide.RouteSummary.prototype.setPointCount = function(value) {
  * @return {number}
  */
 proto.routeguide.RouteSummary.prototype.getFeatureCount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldProto3(this, 2, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
-/** @param {number} value  */
+/** @param {number} value */
 proto.routeguide.RouteSummary.prototype.setFeatureCount = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -1005,13 +958,13 @@ proto.routeguide.RouteSummary.prototype.setFeatureCount = function(value) {
  * @return {number}
  */
 proto.routeguide.RouteSummary.prototype.getDistance = function() {
-  return /** @type {number} */ (jspb.Message.getFieldProto3(this, 3, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
-/** @param {number} value  */
+/** @param {number} value */
 proto.routeguide.RouteSummary.prototype.setDistance = function(value) {
-  jspb.Message.setField(this, 3, value);
+  jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
@@ -1020,13 +973,13 @@ proto.routeguide.RouteSummary.prototype.setDistance = function(value) {
  * @return {number}
  */
 proto.routeguide.RouteSummary.prototype.getElapsedTime = function() {
-  return /** @type {number} */ (jspb.Message.getFieldProto3(this, 4, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
-/** @param {number} value  */
+/** @param {number} value */
 proto.routeguide.RouteSummary.prototype.setElapsedTime = function(value) {
-  jspb.Message.setField(this, 4, value);
+  jspb.Message.setProto3IntField(this, 4, value);
 };
 
 
