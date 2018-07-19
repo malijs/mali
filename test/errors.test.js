@@ -8,6 +8,7 @@ import _ from 'lodash'
 import Mali from '../'
 import * as tu from './util'
 
+const pl = require('@grpc/proto-loader')
 const CallType = require('mali-call-types')
 
 const ARRAY_DATA = [
@@ -59,7 +60,8 @@ test.cb('should handle an error in the handler in req/res app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
@@ -102,7 +104,8 @@ test.cb('should handle an error in the handler in req/res app where ctx.res is a
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
@@ -139,7 +142,8 @@ test.cb('should return error when we set response to error explicitely', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
@@ -175,7 +179,8 @@ test.cb('should handle an error with code in the handler in req/res app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
@@ -222,7 +227,8 @@ test.cb('should handle custom error in the handler in req/res app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.truthy(err)
@@ -265,7 +271,8 @@ test.cb('should handle an error in the handler in res stream app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
@@ -350,7 +357,8 @@ test.cb('should handle an error in the handler in req stream app', t => {
 
   let w = true
   let ended = false
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
     w = false
@@ -422,7 +430,8 @@ test('should handle error in response stream', async t => {
   })
   app.start(APP_HOST)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
   const callErrorPromise = new Promise(resolve => {
@@ -484,7 +493,8 @@ test.cb('should handle an error in the handler of duplex call', t => {
   app.use({ processStuff })
   const server = app.start(APP_HOST)
   t.truthy(server)
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
@@ -581,7 +591,8 @@ test.cb('should handle an error in the handler of duplex call that returns a pro
   app.use({ processStuff })
   const server = app.start(APP_HOST)
   t.truthy(server)
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 

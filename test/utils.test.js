@@ -11,6 +11,8 @@ import * as tu from './util'
 import Mali from '../'
 import utils from '../lib/utils'
 
+const pl = require('@grpc/proto-loader')
+
 const ARRAY_DATA = [
   { message: '1 foo' },
   { message: '2 bar' },
@@ -230,7 +232,8 @@ test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
   app.use({ sayHello })
   app.start(APP_HOST)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (e_, response) => {
     t.is(callType, CallType.UNARY)
@@ -258,7 +261,8 @@ test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', 
   app.use({ listStuff })
   app.start(APP_HOST)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
@@ -313,7 +317,8 @@ test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t
   app.use({ writeStuff })
   app.start(APP_HOST)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
     t.ifError(err)
@@ -359,7 +364,8 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
   app.use({ processStuff })
   app.start(APP_HOST)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 

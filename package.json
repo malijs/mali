@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "ascallback": "^1.1.1",
-    "coveralls": "^3.0.1",
+    "coveralls": "^3.0.2",
     "delegates": "^1.0.0",
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
@@ -57,14 +57,16 @@
     "pify": "^3.0.0"
   },
   "peerDependencies": {
-    "grpc": "^1.0.0"
+    "grpc": "^1.0.0",
+    "@grpc/proto-loader": "~0.3.0"
   },
   "devDependencies": {
+    "@grpc/proto-loader": "^0.3.0",
     "ava": "^0.25.0",
     "eslint-import-resolver-node": "^0.3.2",
-    "google-protobuf": "^3.5.0",
+    "google-protobuf": "^3.6.0",
     "greenkeeper-lockfile": "^1.15.1",
-    "grpc": "^1.12.3",
+    "grpc": "^1.13.0",
     "highland": "^3.0.0-beta.6",
     "jsdoc-to-markdown": "^4.0.1",
     "md-wrap-code": "^0.1.1",
