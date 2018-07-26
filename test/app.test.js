@@ -177,6 +177,7 @@ test.cb('app.start() should throw when binding to taken port', t => {
 
   const app = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
   const port = tu.getHost()
+  console.log(port)
 
   app.use({ sayHello })
   const server = app.start(port)
@@ -186,9 +187,12 @@ test.cb('app.start() should throw when binding to taken port', t => {
   app2.use({ sayHello })
 
   const error = t.throws(() => {
+    console.log('starting')
     app2.start(port)
+    console.log('started')
   }, Error)
 
+  console.log(error)
   t.is(error.message, `Failed to bind to port: ${port}`)
 
   app.close().then(() => t.end())
