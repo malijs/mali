@@ -169,6 +169,31 @@ test.cb('app.start() with port param and invalid creds', t => {
   app.close().then(() => t.end())
 })
 
+test.cb('app.start() should throw when binding to taken port', t => {
+  t.plan(3)
+  function sayHello (ctx) {
+    ctx.res = { message: `Hello ${ctx.req.name}!` }
+  }
+
+  const app = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  const port = tu.getHost()
+
+  app.use({ sayHello })
+  const server = app.start(port)
+  t.truthy(server)
+
+  const app2 = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  app2.use({ sayHello })
+
+  const error = t.throws(() => {
+    app2.start(port)
+  }, Error)
+
+  t.is(error.message, `Failed to bind to port: ${port}`)
+
+  app.close().then(() => t.end())
+})
+
 test.cb('should handle req/res request', t => {
   t.plan(5)
   const APP_HOST = tu.getHost()
