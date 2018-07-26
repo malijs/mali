@@ -188,7 +188,8 @@ test.cb('app.start() should throw when binding to taken port', t => {
 
   const error = t.throws(() => {
     console.log('starting')
-    app2.start(port)
+    console.log(app.ports)
+    app2.start(`127.0.0.1:${app.ports[0]}`)
     console.log('started')
   }, Error)
 
