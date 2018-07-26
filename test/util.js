@@ -5,7 +5,7 @@ function getPort () {
 }
 
 function getHostport (port) {
-  return '127.0.0.1:'.concat(port || getPort())
+  return '0.0.0.0:'.concat(port || getPort())
 }
 
 exports.getHost = getHostport
