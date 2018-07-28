@@ -8,6 +8,8 @@ import _ from 'lodash'
 import Mali from '../'
 import * as tu from './util'
 
+const pl = require('@grpc/proto-loader')
+
 const fs = BB.promisifyAll(require('fs'))
 
 const PROTO_PATH = path.resolve(__dirname, './protos/transform.proto')
@@ -144,7 +146,8 @@ test.before('should dynamically create service', t => {
 
 test.cb('single sync middleware', t => {
   t.plan(8)
-  const ts = grpc.load(PROTO_PATH).Transform
+  const pd = pl.loadSync(PROTO_PATH)
+  const ts = grpc.loadPackageDefinition(pd).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.upper({ id, message: 'hello world' }, (err, response) => {
@@ -162,7 +165,8 @@ test.cb('single sync middleware', t => {
 
 test.cb('single async middleware', t => {
   t.plan(8)
-  const ts = grpc.load(PROTO_PATH).Transform
+  const pd = pl.loadSync(PROTO_PATH)
+  const ts = grpc.loadPackageDefinition(pd).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.lower({ id, message: 'HELLO WORLD' }, (err, response) => {
@@ -180,7 +184,8 @@ test.cb('single async middleware', t => {
 
 test.cb('sync + async middleware', t => {
   t.plan(8)
-  const ts = grpc.load(PROTO_PATH).Transform
+  const pd = pl.loadSync(PROTO_PATH)
+  const ts = grpc.loadPackageDefinition(pd).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.reverse({ id, message: 'Hello WORLD' }, (err, response) => {
@@ -198,7 +203,8 @@ test.cb('sync + async middleware', t => {
 
 test.cb('multiple sync + async middleware', t => {
   t.plan(8)
-  const ts = grpc.load(PROTO_PATH).Transform
+  const pd = pl.loadSync(PROTO_PATH)
+  const ts = grpc.loadPackageDefinition(pd).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.rot13({ id, message: 'HELLO world' }, (err, response) => {
@@ -216,7 +222,8 @@ test.cb('multiple sync + async middleware', t => {
 
 test.cb('mutate + payload middleware', t => {
   t.plan(8)
-  const ts = grpc.load(PROTO_PATH).Transform
+  const pd = pl.loadSync(PROTO_PATH)
+  const ts = grpc.loadPackageDefinition(pd).Transform
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.reverseRot13({ id, message: 'hello WORLD' }, (err, response) => {
@@ -267,7 +274,8 @@ test.cb('should compose middleware w/ async functions', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -309,7 +317,8 @@ test.cb('should not call middleware downstream of one that does not call next', 
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -354,7 +363,8 @@ test.cb('multi: call multiple services with middleware', t => {
   const server = app.start(host)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).helloworld
   const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
   const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
   client2.sayHello({ name: 'Bob' }, (err, response) => {

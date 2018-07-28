@@ -4,9 +4,12 @@ import grpc from 'grpc'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
+import isCI from 'is-ci'
 
 import Mali from '../'
 import * as tu from './util'
+
+const pl = require('@grpc/proto-loader')
 
 const ARRAY_DATA = [
   { message: '1 foo' },
@@ -167,6 +170,39 @@ test.cb('app.start() with port param and invalid creds', t => {
   app.close().then(() => t.end())
 })
 
+test.cb('app.start() should throw when binding to taken port', t => {
+  // workround for https://github.com/travis-ci/travis-ci/issues/9918
+  if (isCI) {
+    t.pass()
+    t.end()
+    return
+  }
+
+  t.plan(3)
+  function sayHello (ctx) {
+    ctx.res = { message: `Hello ${ctx.req.name}!` }
+  }
+
+  const app = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  const port = tu.getHost()
+
+  app.use({ sayHello })
+  const server = app.start(port)
+  t.truthy(server)
+
+  const app2 = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
+  app2.use({ sayHello })
+
+  const error = t.throws(() => {
+    app2.start(`0.0.0.0:${app.ports[0]}`)
+  }, Error)
+
+  console.log(error)
+  t.is(error.message, `Failed to bind to port: ${port}`)
+
+  app.close().then(() => t.end())
+})
+
 test.cb('should handle req/res request', t => {
   t.plan(5)
   const APP_HOST = tu.getHost()
@@ -182,7 +218,8 @@ test.cb('should handle req/res request', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -211,7 +248,8 @@ test.cb('should handle req/res request where res is a promise', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Jim' }, (err, response) => {
     t.ifError(err)
@@ -240,7 +278,8 @@ test.cb('should handle res stream request', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
@@ -295,7 +334,8 @@ test.cb('should handle req stream app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
     t.ifError(err)
@@ -343,7 +383,8 @@ test.cb('should handle duplex call', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
@@ -390,7 +431,8 @@ test.cb('should start multipe servers from same application and handle requests'
   t.is(app.servers.length, 2)
   t.is(app.ports.length, 2)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST1, grpc.credentials.createInsecure())
   const client2 = new helloproto.Greeter(APP_HOST2, grpc.credentials.createInsecure())
 
@@ -420,7 +462,8 @@ test.cb('should work with multi package proto', t => {
   const server = app.start(port)
   t.truthy(server)
 
-  const greet = grpc.load({ file: 'protos/multipkg.proto', root: __dirname }).greet
+  const pd = pl.loadSync('protos/multipkg.proto', { includeDirs: [ __dirname ] })
+  const greet = grpc.loadPackageDefinition(pd).greet
   const client = new greet.Greeter(port, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Kate' }, (err, response) => {
     t.ifError(err)

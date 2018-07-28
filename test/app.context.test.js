@@ -10,6 +10,8 @@ import pMap from 'p-map'
 import Mali from '../'
 import * as tu from './util'
 
+const pl = require('@grpc/proto-loader')
+
 const ARRAY_DATA = [
   { message: '1 foo' },
   { message: '2 bar' },
@@ -53,7 +55,9 @@ test.before('should merge properties', t => {
 
 test.cb('should merge properties', t => {
   t.plan(4)
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
+
   const client = new helloproto.Greeter(APP1_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -66,7 +70,9 @@ test.cb('should merge properties', t => {
 
 test.cb('should not affect the original prototype', t => {
   t.plan(3)
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
+
   const client = new helloproto.Greeter(APP2_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -106,7 +112,8 @@ test.cb('should have correct properties for req / res', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -151,7 +158,8 @@ test.cb('should have correct properties for req / res with proto', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
     t.ifError(err)
@@ -196,7 +204,8 @@ test.cb('should have correct properties res stream request', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
@@ -264,7 +273,8 @@ test.cb('should have correct properties for req stream', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
     t.ifError(err)
@@ -330,7 +340,8 @@ test.cb('should have correct properties for duplex call', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const proto = grpc.load(PROTO_PATH).argservice
+  const pd = pl.loadSync(PROTO_PATH)
+  const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 

@@ -7,6 +7,8 @@ import grpc from 'grpc'
 import Mali from '../'
 import * as tu from './util'
 
+const pl = require('@grpc/proto-loader')
+
 test('should throw an error if a non-error is given', t => {
   const app = new Mali()
   t.truthy(app)
@@ -70,7 +72,8 @@ test.cb('should log an error in the handler in req/res app', t => {
   const server = app.start(APP_HOST)
   t.truthy(server)
 
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const inspect = stderr.inspect()
   client.sayHello({ name: 'Bob' }, (err, response) => {

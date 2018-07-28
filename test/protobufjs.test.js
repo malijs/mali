@@ -5,6 +5,7 @@ import grpc from 'grpc'
 import Mali from '../'
 import * as tu from './util'
 
+const pl = require('@grpc/proto-loader')
 const protobuf67 = require('protobufjs67')
 const protobuf68 = require('protobufjs68')
 
@@ -42,7 +43,8 @@ tester('should handle req/res request with protobufjs 6.7', t => {
     const server = app.start(APP_HOST)
     t.truthy(server)
 
-    const helloproto = grpc.load(PROTO_PATH).helloworld
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
     const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
     client.sayHello({ name: 'Bob' }, (err, response) => {
       t.ifError(err)
@@ -74,7 +76,8 @@ tester('should handle req/res request with protobufjs 6.8', t => {
     const server = app.start(APP_HOST)
     t.truthy(server)
 
-    const helloproto = grpc.load(PROTO_PATH).helloworld
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
     const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
     client.sayHello({ name: 'Bob' }, (err, response) => {
       t.ifError(err)
