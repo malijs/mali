@@ -216,6 +216,7 @@ Default error handler.
 
 #### mali.start(port, creds, options) ⇒ <code>Object</code>
 Start the service. All middleware and handlers have to be set up prior to calling <code>start</code>.
+Throws in case we fail to bind to the given port.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 **Returns**: <code>Object</code> - server - The <code>grpc.Server</code> instance  
