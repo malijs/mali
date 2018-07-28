@@ -68,6 +68,7 @@
     "greenkeeper-lockfile": "^1.15.1",
     "grpc": "^1.13.1",
     "highland": "^3.0.0-beta.6",
+    "is-ci": "^1.1.0",
     "jsdoc-to-markdown": "^4.0.1",
     "md-wrap-code": "^0.1.1",
     "nyc": "^12.0.0",
