@@ -10,6 +10,7 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/malijs/mali.svg)](https://greenkeeper.io/)
 [![chat on gitter](https://img.shields.io/gitter/room/malijs/Lobby.svg?style=flat-square)](https://gitter.im/malijs/Lobby)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=flat-square)](https://www.paypal.me/bojandj)
+[![Buy me a coffee](https://img.shields.io/badge/buy%20me-a%20coffee-orange.svg?style=flat-square)](https://www.buymeacoffee.com/bojand)
 
 ## Installation
 
