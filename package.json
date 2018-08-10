@@ -55,7 +55,7 @@
     "mali-call-types": "~0.1.0",
     "mali-compose": "~1.1.0",
     "p-map": "^1.2.0",
-    "pify": "^3.0.0"
+    "pify": "^4.0.0"
   },
   "peerDependencies": {
     "grpc": "^1.0.0",
