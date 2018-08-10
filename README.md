@@ -39,7 +39,7 @@ function main () {
 
 ## Documentation
 
-Full [documentation](https://malijs.github.io).
+Full [documentation](https://mali.js.org).
 
 ## License
 
