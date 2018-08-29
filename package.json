@@ -75,7 +75,7 @@
     "nyc": "^12.0.0",
     "protobufjs67": "./test/protobufjs67",
     "protobufjs68": "./test/protobufjs68",
-    "snazzy": "^7.1.0",
+    "snazzy": "^8.0.0",
     "standard": "^11.0.1",
     "test-console": "^1.1.0"
   },
