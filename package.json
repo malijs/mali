@@ -98,6 +98,7 @@
       "test/*.test.js"
     ]
   },
+  "types": "./index.d.ts",
   "nyc": {
     "include": [
       "lib/*.js"
