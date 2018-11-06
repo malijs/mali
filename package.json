@@ -91,7 +91,8 @@
     "test": "test"
   },
   "files": [
-    "lib"
+    "lib",
+    "index.d.ts"
   ],
   "ava": {
     "files": [
