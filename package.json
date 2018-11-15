@@ -53,7 +53,7 @@
     "lodash.upperfirst": "^4.3.1",
     "lodash.values": "^4.3.0",
     "mali-call-types": "~0.1.0",
-    "mali-compose": "~1.1.0",
+    "mali-compose": "~1.2.0",
     "p-map": "^2.0.0",
     "pify": "^3.0.0"
   },
