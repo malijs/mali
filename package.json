@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@grpc/proto-loader": "^0.3.0",
-    "ava": "^0.25.0",
+    "ava": "^1.0.1",
     "eslint-import-resolver-node": "^0.3.2",
     "google-protobuf": "^3.6.1",
     "greenkeeper-lockfile": "^1.15.1",
