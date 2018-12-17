@@ -1,0 +1,48 @@
+{
+  "name": "@malijs/call-types",
+  "version": "1.0.0-pre.0",
+  "description": "gRPC call types Mali",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malijs/mali.git"
+  },
+  "author": {
+    "name": "Bojan D.",
+    "email": "dbojan@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/malijs/mali/issues"
+  },
+  "homepage": "https://github.com/malijs/mali",
+  "keywords": [
+    "mali",
+    "grpc",
+    "service",
+    "server",
+    "microservice"
+  ],
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "npm run lint && npm run build && jest",
+    "lint": "standard src/*.ts | snazzy",
+    "docs": "jsdoc2md \"dist/*.js\" --heading-depth 3 > README.md"
+  },
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "standard": {
+    "parser": "typescript-eslint-parser",
+    "plugins": [
+      "typescript"
+    ],
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  }
+}

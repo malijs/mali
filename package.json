@@ -1,108 +1,31 @@
 {
-  "name": "mali",
-  "version": "0.10.2",
-  "description": "Minimalistic gRPC microservice framework",
-  "main": "lib/app.js",
-  "scripts": {
-    "lint": "standard | snazzy",
-    "linttest": "npm run lint && ava -v",
-    "test": "nyc npm run linttest",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "apidocs": "jsdoc2md lib/*.js >  api2.md",
-    "docs": "jsdoc2md lib/*.js --heading-depth 3 | md-wrap-code | ./fixdocs > api.md"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/malijs/mali.git"
-  },
-  "author": {
-    "name": "Bojan D.",
-    "email": "dbojan@gmail.com"
-  },
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/malijs/mali/issues"
-  },
-  "homepage": "https://mali.js.org",
-  "keywords": [
-    "mali",
-    "grpc",
-    "service",
-    "server",
-    "microservice"
-  ],
-  "dependencies": {
-    "ascallback": "^1.1.1",
-    "coveralls": "^3.0.2",
-    "delegates": "^1.0.0",
-    "destroy": "^1.0.4",
-    "ee-first": "^1.1.1",
-    "error-inject": "^1.0.0",
-    "grpc-create-metadata": "^3.0.0",
-    "grpc-inspect": "^0.6.0",
-    "is-stream": "^1.1.0",
-    "lodash": "^4.17.11",
-    "lodash.camelcase": "^4.3.0",
-    "lodash.concat": "^4.5.0",
-    "lodash.find": "^4.6.0",
-    "lodash.forown": "^4.4.0",
-    "lodash.intersection": "^4.4.0",
-    "lodash.isplainobject": "^4.0.6",
-    "lodash.pick": "^4.4.0",
-    "lodash.pull": "^4.1.0",
-    "lodash.upperfirst": "^4.3.1",
-    "lodash.values": "^4.3.0",
-    "mali-call-types": "~0.1.0",
-    "mali-compose": "~1.2.0",
-    "p-map": "^2.0.0",
-    "pify": "^3.0.0"
-  },
-  "peerDependencies": {
-    "grpc": "^1.0.0",
-    "@grpc/proto-loader": "~0.3.0"
-  },
+  "name": "root",
+  "private": true,
   "devDependencies": {
-    "@grpc/proto-loader": "^0.3.0",
-    "ava": "^0.25.0",
-    "eslint-import-resolver-node": "^0.3.2",
-    "google-protobuf": "^3.6.1",
-    "greenkeeper-lockfile": "^1.15.1",
-    "grpc": "^1.16.0",
-    "highland": "^3.0.0-beta.7",
-    "is-ci": "^1.2.1",
+    "jest": "^23.6.0",
     "jsdoc-to-markdown": "^4.0.1",
-    "md-wrap-code": "^0.1.1",
-    "nyc": "^13.0.0",
-    "protobufjs67": "./test/protobufjs67",
-    "protobufjs68": "./test/protobufjs68",
+    "lerna": "^3.6.0",
+    "nyc": "^13.1.0",
     "snazzy": "^8.0.0",
-    "standard": "^12.0.0",
-    "test-console": "^1.1.0"
+    "standard": "^12.0.1",
+    "typescript": "^3.2.2",
+    "typescript-eslint-parser": "^21.0.2"
   },
   "standard": {
-    "ignore": [
-      "test/protobufjs67/*.*",
-      "test/protobufjs68/*.*",
-      "test/protos/*.*",
-      "test/static/*.*"
-    ]
+    "parser": "typescript-eslint-parser",
+    "plugins": [
+      "typescript"
+    ],
+    "env": {
+      "node": true,
+      "jest": true
+    }
   },
-  "directories": {
-    "test": "test"
-  },
-  "files": [
-    "lib",
-    "index.d.ts"
-  ],
-  "ava": {
-    "files": [
-      "test/*.test.js"
-    ]
-  },
-  "types": "index.d.ts",
-  "nyc": {
-    "include": [
-      "lib/*.js"
-    ]
+  "scripts": {
+    "docs": "lerna run docs",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "build": "lerna run build",
+    "publish": "lerna run build && lerna publish"
   }
 }
