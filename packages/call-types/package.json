@@ -2,8 +2,8 @@
   "name": "@malijs/call-types",
   "version": "1.0.0-pre.0",
   "description": "gRPC call types Mali",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/malijs/mali.git"
@@ -29,10 +29,10 @@
     "build": "tsc",
     "test": "npm run lint && npm run build && jest",
     "lint": "standard src/*.ts | snazzy",
-    "docs": "jsdoc2md \"dist/*.js\" --heading-depth 3 > README.md"
+    "docs": "jsdoc2md \"lib/*.js\" --heading-depth 3 > README.md"
   },
   "directories": {
-    "lib": "dist",
+    "lib": "lib",
     "test": "test"
   },
   "standard": {
