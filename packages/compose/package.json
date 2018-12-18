@@ -1,0 +1,67 @@
+{
+    "name": "@malijs/compose",
+    "version": "1.0.0-pre.0",
+    "description": "Middleware composition utility",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/malijs/mali.git"
+    },
+    "author": {
+      "name": "Bojan D.",
+      "email": "dbojan@gmail.com"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+      "url": "https://github.com/malijs/mali/issues"
+    },
+    "homepage": "https://github.com/malijs/mali",
+    "keywords": [
+      "mali",
+      "grpc",
+      "service",
+      "server",
+      "microservice"
+    ],
+    "scripts": {
+      "prepublish": "npm run build",
+      "build": "tsc",
+      "test": "npm run lint && npm run build && jest",
+      "lint": "standard src/*.ts | snazzy",
+      "docs": "jsdoc2md \"lib/*.js\" --heading-depth 3 > README.md"
+    },
+    "directories": {
+      "lib": "lib",
+      "test": "test"
+    },
+    "standard": {
+      "parser": "typescript-eslint-parser",
+      "plugins": [
+        "typescript"
+      ],
+      "env": {
+        "node": true,
+        "jest": true
+      }
+    },
+    "jest": {
+      "moduleFileExtensions": [
+        "ts",
+        "tsx",
+        "js"
+      ],
+      "transform": {
+        "^.+\\.(ts|tsx)$": "ts-jest"
+      },
+      "globals": {
+        "ts-jest": {
+          "tsConfigFile": "tsconfig.json"
+        }
+      },
+      "testMatch": [
+        "**/test/*.+(ts|tsx|js)"
+      ]
+  }
+  }
+  

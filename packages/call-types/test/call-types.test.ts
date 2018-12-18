@@ -1,4 +1,4 @@
-const { CallType } = require('../');
+import { CallType } from '../';
 
 describe('call-types package', function () {
   test('should have exported enums', () => {
