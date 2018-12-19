@@ -1,0 +1,35 @@
+{
+  "name": "@malijs/call-types",
+  "version": "1.0.0-pre.0",
+  "description": "Call gRPC types for Mali",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malijs/mali.git"
+  },
+  "author": {
+    "name": "Bojan D.",
+    "email": "dbojan@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/malijs/mali/issues"
+  },
+  "homepage": "https://mali.js.org",
+  "keywords": [
+    "mali",
+    "grpc",
+    "service",
+    "server",
+    "microservice"
+  ],
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "standard index.js | snazzy",
+    "docs": "jsdoc2md index.js --heading-depth 3 > README.md"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^3.0.3",
+    "standard": "^10.0.0"
+  }
+}
