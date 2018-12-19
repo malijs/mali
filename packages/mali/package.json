@@ -1,0 +1,99 @@
+{
+  "name": "@malijs/mali",
+  "version": "1.0.0-pre.0",
+  "description": "Minimalistic gRPC microservice framework",
+  "main": "lib/app.js",
+  "types": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malijs/mali.git"
+  },
+  "author": {
+    "name": "Bojan D.",
+    "email": "dbojan@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/malijs/mali/issues"
+  },
+  "homepage": "https://github.com/malijs/mali",
+  "keywords": [
+    "mali",
+    "grpc",
+    "service",
+    "server",
+    "microservice"
+  ],
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "npm run lint && npm run build && jest",
+    "lint": "standard src/*.ts | snazzy"
+  },
+  "dependencies": {
+    "@malijs/call-types": "file:../call-types",
+    "@malijs/compose": "file:../compose",
+    "ascallback": "^1.1.1",
+    "delegates": "^1.0.0",
+    "destroy": "^1.0.4",
+    "ee-first": "^1.1.1",
+    "error-inject": "^1.0.0",
+    "grpc-create-metadata": "^3.0.0",
+    "is-stream": "^1.1.0",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.concat": "^4.5.0",
+    "lodash.find": "^4.6.0",
+    "lodash.forown": "^4.4.0",
+    "lodash.intersection": "^4.4.0",
+    "lodash.isplainobject": "^4.0.6",
+    "lodash.pick": "^4.4.0",
+    "lodash.pull": "^4.1.0",
+    "lodash.upperfirst": "^4.3.1",
+    "lodash.values": "^4.3.0",
+    "p-map": "^2.0.0"
+  },
+  "peerDependencies": {
+    "grpc": "^1.11.0",
+    "@grpc/proto-loader": "~0.3.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.2",
+    "google-protobuf": "^3.6.1",
+    "grpc": "^1.16.0",
+    "highland": "^3.0.0-beta.7",
+    "is-ci": "^1.2.1",
+    "test-console": "^1.1.0"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "standard": {
+    "parser": "typescript-eslint-parser",
+    "plugins": [
+      "typescript"
+    ],
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/test/*.+(ts|tsx|js)"
+    ]
+  }
+}

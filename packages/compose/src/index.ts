@@ -8,8 +8,8 @@
  * @api public
  */
 
-type Middleware<T> = (context: T, next: () => Promise<any>) => any;
-type ComposedMiddleware<T> = (context: T, next?: () => Promise<any>) => Promise<any>;
+export type Middleware<T> = (context: T, next: () => Promise<any>) => any;
+export type ComposedMiddleware<T> = (context: T, next?: () => Promise<any>) => Promise<void>;
 
 export function compose<T> (middleware: Array<Middleware<T>>): ComposedMiddleware<T> {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array.')
