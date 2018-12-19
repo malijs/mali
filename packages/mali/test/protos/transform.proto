@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package Transform;
+
+service TransformService {
+  rpc Upper (TranformRequest) returns (TranformResponse) {}
+  rpc Lower (TranformRequest) returns (TranformResponse) {}
+  rpc Reverse (TranformRequest) returns (TranformResponse) {}
+  rpc Rot13 (TranformRequest) returns (TranformResponse) {}
+  rpc ReverseRot13 (TranformRequest) returns (TranformResponse) {}
+}
+
+message TranformRequest {
+  string message = 1;
+  string id = 2;
+}
+
+message TranformResponse {
+  string message = 1;
+  string value = 2;
+  string mw = 3;
+}

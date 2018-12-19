@@ -52,22 +52,21 @@
     "lodash.upperfirst": "^4.3.1",
     "lodash.values": "^4.3.0",
     "p-map": "^2.0.0",
-    "pify": "^3.0.0"
+    "pify": "^4.0.1"
   },
   "peerDependencies": {
-    "grpc": "^1.0.0",
+    "grpc": "^1.11.0",
     "@grpc/proto-loader": "~0.3.0"
   },
   "devDependencies": {
     "@grpc/proto-loader": "^0.3.0",
-    "ava": "^0.25.0",
     "coveralls": "^3.0.2",
     "eslint-import-resolver-node": "^0.3.2",
     "google-protobuf": "^3.6.1",
     "greenkeeper-lockfile": "^1.15.1",
     "grpc": "^1.16.0",
     "highland": "^3.0.0-beta.7",
-    "is-ci": "^1.2.1",
+    "is-ci": "^2.0.0",
     "jsdoc-to-markdown": "^4.0.1",
     "md-wrap-code": "^0.1.1",
     "nyc": "^13.0.0",

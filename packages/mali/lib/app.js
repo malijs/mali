@@ -1,11 +1,11 @@
 const assert = require('assert')
 const Emitter = require('events')
 const pify = require('pify')
-const compose = require('mali-compose')
 const grpc = require('grpc')
-const gi = require('grpc-inspect')
 const pMap = require('p-map')
 const pl = require('@grpc/proto-loader')
+
+const compose = require('@malijs/compose')
 
 const _ = require('./lo')
 const Context = require('./context')

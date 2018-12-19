@@ -1,0 +1,6 @@
+{
+  "name": "protobufjs68",
+  "version": "1.0.0",
+  "description": "protobufjs 6.8",
+  "dependencies": { "protobufjs": "~6.8.0" }
+}
