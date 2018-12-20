@@ -222,7 +222,7 @@ test.cb('should handle req/res request', t => {
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     app.close().then(() => t.end())
@@ -252,7 +252,7 @@ test.cb('should handle req/res request where res is a promise', t => {
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Jim' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Jim')
     app.close().then(() => t.end())
@@ -338,7 +338,7 @@ test.cb('should handle req stream app', t => {
   const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(res)
     t.truthy(res.message)
     t.is(res.message, '1 FOO:2 BAR:3 ASD:4 QWE:5 RTY:6 ZXC')
@@ -440,7 +440,7 @@ test.cb('should start multipe servers from same application and handle requests'
     req1: aecb => client.sayHello({ name: 'Bob' }, aecb),
     req2: aecb => client2.sayHello({ name: 'Kate' }, aecb)
   }, (err, results) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(results.req1)
     t.is(results.req1.message, 'Hello Bob')
     t.truthy(results.req2)
@@ -466,7 +466,7 @@ test.cb('should work with multi package proto', t => {
   const greet = grpc.loadPackageDefinition(pd).greet
   const client = new greet.Greeter(port, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Kate' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Kate!')
     app.close().then(() => t.end())

@@ -151,7 +151,7 @@ test.cb('single sync middleware', t => {
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.upper({ id, message: 'hello world' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.truthy(response.message)
     t.is(response.message, 'HELLO WORLD')
@@ -170,7 +170,7 @@ test.cb('single async middleware', t => {
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.lower({ id, message: 'HELLO WORLD' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.truthy(response.message)
     t.is(response.message, 'hello world')
@@ -189,7 +189,7 @@ test.cb('sync + async middleware', t => {
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.reverse({ id, message: 'Hello WORLD' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.truthy(response.message)
     t.is(response.message, 'DLROW olleH')
@@ -208,7 +208,7 @@ test.cb('multiple sync + async middleware', t => {
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.rot13({ id, message: 'HELLO world' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.truthy(response.message)
     t.is(response.message, 'URYYB jbeyq')
@@ -227,7 +227,7 @@ test.cb('mutate + payload middleware', t => {
   const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
   const id = _.random(10, 10000).toString()
   client.reverseRot13({ id, message: 'hello WORLD' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.truthy(response.message)
     t.is(response.message, 'QYEBJ byyru')
@@ -278,7 +278,7 @@ test.cb('should compose middleware w/ async functions', t => {
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     t.deepEqual(calls, [1, 2, 3, 4, 5, 6])
@@ -321,7 +321,7 @@ test.cb('should not call middleware downstream of one that does not call next', 
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     t.deepEqual(calls, [1, 2, 5, 6])
@@ -368,17 +368,17 @@ test.cb('multi: call multiple services with middleware', t => {
   const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
   const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
   client2.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, ':mw1:Hello Bob')
 
     client4.sayHello({ name: 'Jane' }, (err, response) => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, ':mw1:Hello Jane')
 
       client4.sayGoodbye({ name: 'Bill' }, (err, response) => {
-        t.ifError(err)
+        t.falsy(err)
         t.truthy(response)
         t.is(response.message, ':Goodbye Bill')
         app.close().then(() => t.end())

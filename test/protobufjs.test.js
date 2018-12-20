@@ -32,7 +32,7 @@ tester('should handle req/res request with protobufjs 6.7', t => {
   }
 
   protobuf67.load(PROTO_PATH, (err, root) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(root)
     const loaded = grpc.loadObject(root)
     t.truthy(loaded)
@@ -47,7 +47,7 @@ tester('should handle req/res request with protobufjs 6.7', t => {
     const helloproto = grpc.loadPackageDefinition(pd).helloworld
     const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
     client.sayHello({ name: 'Bob' }, (err, response) => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       app.close().then(() => t.end())
@@ -65,7 +65,7 @@ tester('should handle req/res request with protobufjs 6.8', t => {
   }
 
   protobuf68.load(PROTO_PATH, (err, root) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(root)
     const loaded = grpc.loadObject(root)
     t.truthy(loaded)
@@ -80,7 +80,7 @@ tester('should handle req/res request with protobufjs 6.8', t => {
     const helloproto = grpc.loadPackageDefinition(pd).helloworld
     const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
     client.sayHello({ name: 'Bob' }, (err, response) => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       app.close().then(() => t.end())

@@ -8,6 +8,8 @@ import _ from 'lodash'
 import Mali from '../'
 import * as tu from './util'
 
+const pl = require('@grpc/proto-loader')
+
 const ARRAY_DATA = [
   { message: '1 foo' },
   { message: '2 bar' },
@@ -20,6 +22,18 @@ const ARRAY_DATA = [
 function getArrayData () {
   return _.cloneDeep(ARRAY_DATA)
 }
+
+const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+const pd = pl.loadSync(PROTO_PATH)
+const helloproto = grpc.loadPackageDefinition(pd).helloworld
+
+const ARG_PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
+const apd = pl.loadSync(ARG_PROTO_PATH)
+const argproto = grpc.loadPackageDefinition(apd).argservice
+
+const DUPLEX_PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+const dpd = pl.loadSync(DUPLEX_PROTO_PATH)
+const duplexproto = grpc.loadPackageDefinition(dpd).argservice
 
 test.cb('req/res: no metadata', t => {
   t.plan(13)
@@ -38,11 +52,11 @@ test.cb('req/res: no metadata', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -71,7 +85,6 @@ test.cb('req/res: no metadata', t => {
 test.cb('req/res: header metadata set', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     ctx.set('foo', 'bar')
@@ -86,11 +99,11 @@ test.cb('req/res: header metadata set', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
+
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -121,7 +134,6 @@ test.cb('req/res: header metadata set', t => {
 test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     ctx.sendMetadata({ baz: 'foo' })
@@ -136,11 +148,10 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -171,7 +182,6 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
 test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     const md = new grpc.Metadata()
@@ -188,11 +198,10 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -223,7 +232,6 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
 test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     ctx.set('foo', 'bar')
@@ -239,11 +247,10 @@ test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -274,7 +281,6 @@ test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
 test.cb('req/res: header metadata set and then new metadata sent using ctx.sendMetadata', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     ctx.set('foo', 'bar')
@@ -290,11 +296,10 @@ test.cb('req/res: header metadata set and then new metadata sent using ctx.sendM
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -327,7 +332,6 @@ test.cb(
   t => {
     t.plan(13)
     const APP_HOST = tu.getHost()
-    const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
     function sayHello (ctx) {
       ctx.sendMetadata({ biz: 'baz' })
@@ -343,11 +347,10 @@ test.cb(
 
     let metadata
     let status
-    const helloproto = grpc.load(PROTO_PATH).helloworld
     const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
-        t.ifError(err)
+        t.falsy(err)
         t.truthy(response)
         t.is(response.message, 'Hello Bob')
         t.truthy(metadata)
@@ -381,7 +384,6 @@ test.cb(
   t => {
     t.plan(13)
     const APP_HOST = tu.getHost()
-    const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
     function sayHello (ctx) {
       ctx.set('foo', 'bar')
@@ -397,11 +399,10 @@ test.cb(
 
     let metadata
     let status
-    const helloproto = grpc.load(PROTO_PATH).helloworld
     const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
-        t.ifError(err)
+        t.falsy(err)
         t.truthy(response)
         t.is(response.message, 'Hello Bob')
         t.truthy(metadata)
@@ -433,7 +434,6 @@ test.cb(
 test.cb('req/res: trailer metadata set', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     ctx.setStatus('foo', 'bar')
@@ -448,11 +448,10 @@ test.cb('req/res: trailer metadata set', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -483,7 +482,6 @@ test.cb('req/res: trailer metadata set', t => {
 test.cb('req/res: header and trailer metadata set', t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
     ctx.set('asdf', 'qwerty')
@@ -499,11 +497,10 @@ test.cb('req/res: header and trailer metadata set', t => {
 
   let metadata
   let status
-  const helloproto = grpc.load(PROTO_PATH).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   const call = client.sayHello({ name: 'Bob' }, (err, response) => {
     setTimeout(() => {
-      t.ifError(err)
+      t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
       t.truthy(metadata)
@@ -536,7 +533,6 @@ test.cb('req/res: header and trailer metadata set', t => {
 test.cb('res stream: no metadata', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.res = hl(getArrayData()).map(d => {
@@ -545,7 +541,7 @@ test.cb('res stream: no metadata', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -553,8 +549,7 @@ test.cb('res stream: no metadata', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -595,7 +590,6 @@ test.cb('res stream: no metadata', t => {
 test.cb('res stream: header metadata set', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.set('foo', 'bar')
@@ -605,7 +599,7 @@ test.cb('res stream: header metadata set', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -613,8 +607,7 @@ test.cb('res stream: header metadata set', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -657,7 +650,6 @@ test.cb('res stream: header metadata set', t => {
 test.cb('res stream: header metadata sendMetadata(object)', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.sendMetadata({ foo: 'bar' })
@@ -667,7 +659,7 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -675,8 +667,7 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -721,7 +712,6 @@ test.cb(
   t => {
     t.plan(11)
     const APP_HOST = tu.getHost()
-    const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
     function listStuff (ctx) {
       ctx.sendMetadata({ asdf: 'qwerty' })
@@ -732,7 +722,7 @@ test.cb(
       })
     }
 
-    const app = new Mali(PROTO_PATH, 'ArgService')
+    const app = new Mali(ARG_PROTO_PATH, 'ArgService')
     t.truthy(app)
     app.use({ listStuff })
     const server = app.start(APP_HOST)
@@ -740,8 +730,7 @@ test.cb(
 
     let metadata
     let status
-    const proto = grpc.load(PROTO_PATH).argservice
-    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
     const call = client.listStuff({ message: 'Hello' })
 
     const resData = []
@@ -785,7 +774,6 @@ test.cb(
 test.cb('res stream: trailer metadata set', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.setStatus('foo', 'bar')
@@ -795,7 +783,7 @@ test.cb('res stream: trailer metadata set', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -803,8 +791,7 @@ test.cb('res stream: trailer metadata set', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -847,7 +834,6 @@ test.cb('res stream: trailer metadata set', t => {
 test.cb('res stream: trailer metadata set and also sent using res.end() should get 2nd', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.setStatus('foo', 'bar')
@@ -861,7 +847,7 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
       })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -869,8 +855,7 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -913,7 +898,6 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
 test.cb('res stream: trailer metadata set and also use empty res.end() should get 1st', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.setStatus('foo', 'bar')
@@ -927,7 +911,7 @@ test.cb('res stream: trailer metadata set and also use empty res.end() should ge
       })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -935,8 +919,7 @@ test.cb('res stream: trailer metadata set and also use empty res.end() should ge
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -979,7 +962,6 @@ test.cb('res stream: trailer metadata set and also use empty res.end() should ge
 test.cb('res stream: trailer metadata set and also use invalid res.end() should get 1st', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.setStatus('foo', 'bar')
@@ -993,7 +975,7 @@ test.cb('res stream: trailer metadata set and also use invalid res.end() should 
       })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -1001,8 +983,7 @@ test.cb('res stream: trailer metadata set and also use invalid res.end() should 
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -1045,7 +1026,6 @@ test.cb('res stream: trailer metadata set and also use invalid res.end() should 
 test.cb('res stream: header and trailer metadata set', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
   function listStuff (ctx) {
     ctx.set('asdf', 'qwerty')
@@ -1056,7 +1036,7 @@ test.cb('res stream: header and trailer metadata set', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
   const server = app.start(APP_HOST)
@@ -1064,8 +1044,7 @@ test.cb('res stream: header and trailer metadata set', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.listStuff({ message: 'Hello' })
 
   const resData = []
@@ -1110,7 +1089,7 @@ test.cb('res stream: header and trailer metadata set', t => {
 test.cb('duplex: no metadata', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+
   async function processStuff (ctx) {
     ctx.req.on('data', d => {
       ctx.req.pause()
@@ -1130,7 +1109,7 @@ test.cb('duplex: no metadata', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1139,8 +1118,7 @@ test.cb('duplex: no metadata', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1190,7 +1168,7 @@ test.cb('duplex: no metadata', t => {
 test.cb('duplex: header metadata set', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+
   async function processStuff (ctx) {
     ctx.set('foo', 'bar')
     ctx.req.on('data', d => {
@@ -1211,7 +1189,7 @@ test.cb('duplex: header metadata set', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1220,8 +1198,7 @@ test.cb('duplex: header metadata set', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1273,7 +1250,6 @@ test.cb('duplex: header metadata set', t => {
 test.cb('duplex: header metadata sendMetadata(object)', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
   async function processStuff (ctx) {
     ctx.sendMetadata({ foo: 'bar' })
     ctx.req.on('data', d => {
@@ -1294,7 +1270,7 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1303,8 +1279,7 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1356,7 +1331,6 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
 test.cb('duplex: header metadata sendMetadata(object) with set after, set no effect', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
   async function processStuff (ctx) {
     ctx.sendMetadata({ asdf: 'qwerty' })
     ctx.set('foo', 'bar')
@@ -1378,7 +1352,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1387,8 +1361,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1440,7 +1413,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
 test.cb('duplex: trailer metadata', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+
   async function processStuff (ctx) {
     ctx.setStatus('foo', 'bar')
     ctx.req.on('data', d => {
@@ -1461,7 +1434,7 @@ test.cb('duplex: trailer metadata', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1470,8 +1443,7 @@ test.cb('duplex: trailer metadata', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1523,7 +1495,7 @@ test.cb('duplex: trailer metadata', t => {
 test.cb('duplex: trailer metadata using end()', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+
   async function processStuff (ctx) {
     ctx.req.on('data', d => {
       ctx.req.pause()
@@ -1543,7 +1515,7 @@ test.cb('duplex: trailer metadata using end()', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1552,8 +1524,7 @@ test.cb('duplex: trailer metadata using end()', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1605,7 +1576,7 @@ test.cb('duplex: trailer metadata using end()', t => {
 test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+
   async function processStuff (ctx) {
     ctx.setStatus('foo', 'bar')
     ctx.req.on('data', d => {
@@ -1626,7 +1597,7 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1635,8 +1606,7 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []
@@ -1688,7 +1658,6 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
 test.cb('duplex: header and trailer metadata', t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
   async function processStuff (ctx) {
     ctx.set('asdf', 'qwerty')
     ctx.setStatus('foo', 'bar')
@@ -1710,7 +1679,7 @@ test.cb('duplex: header and trailer metadata', t => {
     })
   }
 
-  const app = new Mali(PROTO_PATH, 'ArgService')
+  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
   t.truthy(app)
 
   app.use({ processStuff })
@@ -1719,8 +1688,7 @@ test.cb('duplex: header and trailer metadata', t => {
 
   let metadata
   let status
-  const proto = grpc.load(PROTO_PATH).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+  const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
   let resData = []

@@ -60,7 +60,7 @@ test.cb('should merge properties', t => {
 
   const client = new helloproto.Greeter(APP1_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.truthy(response.message)
     t.is(response.message, 'app1 msg')
@@ -75,7 +75,7 @@ test.cb('should not affect the original prototype', t => {
 
   const client = new helloproto.Greeter(APP2_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.falsy(response.message)
     t.end()
@@ -116,7 +116,7 @@ test.cb('should have correct properties for req / res', t => {
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     app.close().then(() => t.end())
@@ -162,7 +162,7 @@ test.cb('should have correct properties for req / res with proto', t => {
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
   const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
     app.close().then(() => t.end())
@@ -277,7 +277,7 @@ test.cb('should have correct properties for req stream', t => {
   const proto = grpc.loadPackageDefinition(pd).argservice
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.writeStuff((err, res) => {
-    t.ifError(err)
+    t.falsy(err)
     t.truthy(res)
     t.truthy(res.message)
     t.is(res.message, '1 FOO:2 BAR:3 ASD:4 QWE:5 RTY:6 ZXC')
