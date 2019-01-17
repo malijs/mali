@@ -62,7 +62,7 @@
     "@grpc/proto-loader": "~0.3.0"
   },
   "devDependencies": {
-    "@grpc/proto-loader": "^0.3.0",
+    "@grpc/proto-loader": "^0.4.0",
     "ava": "^0.25.0",
     "eslint-import-resolver-node": "^0.3.2",
     "google-protobuf": "^3.6.1",
