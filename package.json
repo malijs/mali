@@ -53,20 +53,19 @@
     "lodash.values": "^4.3.0",
     "mali-call-types": "~0.1.0",
     "mali-compose": "~1.2.0",
-    "p-map": "^2.0.0",
-    "pify": "^3.0.0"
+    "p-map": "^2.0.0"
   },
   "peerDependencies": {
     "grpc": "^1.11.0",
-    "@grpc/proto-loader": "~0.3.0"
+    "@grpc/proto-loader": "^0.3.0"
   },
   "devDependencies": {
-    "@grpc/proto-loader": "^0.3.0",
-    "ava": "^1.0.0",
+    "@grpc/proto-loader": "^0.4.0",
+    "ava": "^1.1.0",
     "coveralls": "^3.0.2",
     "google-protobuf": "^3.6.1",
     "greenkeeper-lockfile": "^1.15.1",
-    "grpc": "^1.17.0",
+    "grpc": "^1.18.0",
     "highland": "^3.0.0-beta.7",
     "is-ci": "^2.0.0",
     "jsdoc-to-markdown": "^4.0.1",
