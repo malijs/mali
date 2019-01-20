@@ -64,7 +64,6 @@
     "ava": "^1.1.0",
     "coveralls": "^3.0.2",
     "google-protobuf": "^3.6.1",
-    "greenkeeper-lockfile": "^1.15.1",
     "grpc": "^1.18.0",
     "highland": "^3.0.0-beta.7",
     "is-ci": "^2.0.0",
