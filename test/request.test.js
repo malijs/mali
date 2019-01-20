@@ -1,6 +1,6 @@
 import test from 'ava'
 import grpc from 'grpc'
-import CallType from 'mali-call-types'
+import CallType from '@malijs/call-types'
 
 import Request from '../lib/request'
 
