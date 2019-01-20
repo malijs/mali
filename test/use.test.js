@@ -551,7 +551,7 @@ test('multi: should add service level global middleware', t => {
   t.is(app.handlers.Greeter4.sayGoodbye[0], handler)
 })
 
-test('multi: should add service level global middleware', t => {
+test('multi: should add service level global middleware 2', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
 
   function handler (ctx) {

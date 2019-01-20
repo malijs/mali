@@ -9,7 +9,7 @@ import Mali from '../'
 import * as tu from './util'
 
 const pl = require('@grpc/proto-loader')
-const CallType = require('mali-call-types')
+const CallType = require('@malijs/call-types')
 
 const ARRAY_DATA = [
   { message: '1 foo' },

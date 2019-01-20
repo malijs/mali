@@ -1,5 +1,5 @@
 import test from 'ava'
-import CallType from 'mali-call-types'
+import CallType from '@malijs/call-types'
 
 import Request from '../lib/request'
 import Response from '../lib/response'

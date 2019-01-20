@@ -341,7 +341,7 @@ console.dir(ctx.req) // { name: 'Bob' }
 <a name="Context+type"></a>
 
 ### context.type : <code>String</code>
-The call's type. One of `mali-call-types` enums.
+The call's type. One of `@malijs/call-types` enums.
 This is an alias to `ctx.request.type`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
@@ -506,7 +506,7 @@ Creates a Mali Request instance
 | Param | Type | Description |
 | --- | --- | --- |
 | call | <code>Object</code> | the grpc call instance |
-| type | <code>String</code> | the call type. one of `mali-call-types` enums. |
+| type | <code>String</code> | the call type. one of `@malijs/call-types` enums. |
 
 <a name="Request+call"></a>
 
@@ -538,7 +538,7 @@ console.log(ctx.request.metadata)
 <a name="Request+type"></a>
 
 ### request.type : <code>String</code>
-The call's type. One of `mali-call-types` enums.
+The call's type. One of `@malijs/call-types` enums.
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
 **Example**  
@@ -606,7 +606,7 @@ Creates a Mali Response instance
 | Param | Type | Description |
 | --- | --- | --- |
 | call | <code>Object</code> | the grpc call instance |
-| type | <code>String</code> | the call type. one of `mali-call-types` enums. |
+| type | <code>String</code> | the call type. one of `@malijs/call-types` enums. |
 
 <a name="Response+call"></a>
 
@@ -617,7 +617,7 @@ The internal gRPC call instance reference.
 <a name="Response+type"></a>
 
 ### response.type : <code>String</code>
-The call's type. One of `mali-call-types` enums.
+The call's type. One of `@malijs/call-types` enums.
 This will match Request's type.
 
 **Kind**: instance property of [<code>Response</code>](#Response)  
