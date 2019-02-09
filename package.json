@@ -101,5 +101,8 @@
     "include": [
       "lib/*.js"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
