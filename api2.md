@@ -662,6 +662,15 @@ ctx.response.res = { foo: 'bar' }
 ```js
 ctx.response.res = createResponseStream()
 ```
+**Example** *(CUSTOM RESPONSE STREAM calls)*  
+```js
+const Response = require('stream').Response;
+ctx.response.res = new Response({ object: true});
+ctx.response.res.push({ data: 'hello 1' });
+ctx.response.res.push({ data: 'hello 2' });
+ctx.response.res.push({ data: 'hello 3' });
+ctx.response.res.push(null);
+```
 **Example** *(DUPLEX calls)*  
 ```js
 ctx.response.res.write({ foo: 'bar' })
