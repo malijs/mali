@@ -23,7 +23,7 @@ function serialize_Feature(arg) {
   if (!(arg instanceof route_guide_pb.Feature)) {
     throw new Error('Expected argument of type Feature');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_Feature(buffer_arg) {
@@ -34,7 +34,7 @@ function serialize_Point(arg) {
   if (!(arg instanceof route_guide_pb.Point)) {
     throw new Error('Expected argument of type Point');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_Point(buffer_arg) {
@@ -45,7 +45,7 @@ function serialize_Rectangle(arg) {
   if (!(arg instanceof route_guide_pb.Rectangle)) {
     throw new Error('Expected argument of type Rectangle');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_Rectangle(buffer_arg) {
@@ -56,7 +56,7 @@ function serialize_RouteNote(arg) {
   if (!(arg instanceof route_guide_pb.RouteNote)) {
     throw new Error('Expected argument of type RouteNote');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_RouteNote(buffer_arg) {
@@ -67,7 +67,7 @@ function serialize_RouteSummary(arg) {
   if (!(arg instanceof route_guide_pb.RouteSummary)) {
     throw new Error('Expected argument of type RouteSummary');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_RouteSummary(buffer_arg) {

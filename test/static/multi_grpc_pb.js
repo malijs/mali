@@ -8,7 +8,7 @@ function serialize_helloworld_Reply(arg) {
   if (!(arg instanceof test_protos_multi_pb.Reply)) {
     throw new Error('Expected argument of type helloworld.Reply');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_helloworld_Reply(buffer_arg) {
@@ -19,7 +19,7 @@ function serialize_helloworld_Request(arg) {
   if (!(arg instanceof test_protos_multi_pb.Request)) {
     throw new Error('Expected argument of type helloworld.Request');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_helloworld_Request(buffer_arg) {

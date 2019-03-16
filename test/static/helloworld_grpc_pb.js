@@ -38,7 +38,7 @@ function serialize_HelloReply(arg) {
   if (!(arg instanceof helloworld_pb.HelloReply)) {
     throw new Error('Expected argument of type HelloReply');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_HelloReply(buffer_arg) {
@@ -49,7 +49,7 @@ function serialize_HelloRequest(arg) {
   if (!(arg instanceof helloworld_pb.HelloRequest)) {
     throw new Error('Expected argument of type HelloRequest');
   }
-  return new Buffer(arg.serializeBinary());
+  return Buffer.from(arg.serializeBinary());
 }
 
 function deserialize_HelloRequest(buffer_arg) {

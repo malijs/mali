@@ -26,6 +26,7 @@ function getArrayData () {
 
 function crashMapper (d) {
   if (d.message.indexOf(3) >= 0) {
+    console.log('crashing')
     // cause a crash
     let str = JSON.stringify(d)
     str = str.concat('asdf')
@@ -33,6 +34,8 @@ function crashMapper (d) {
     return no
   } else {
     d.message = d.message.toUpperCase()
+
+    console.log(`sending ${d.message}`)
     return d
   }
 }
@@ -250,6 +253,7 @@ test.cb('should handle an error in the handler in res stream app', t => {
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
+  // TODO fix this so it works with newer Beta's of Highland
   function listStuff (ctx) {
     const s = hl(getArrayData())
       .map(crashMapper)
