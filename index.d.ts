@@ -4,17 +4,17 @@ import { EventEmitter } from 'events';
 import { Stream } from 'stream';
 import * as grpc from 'grpc';
 
-type GrpcRequest =
-  | grpc.ServerUnaryCall<any>
-  | grpc.ServerReadableStream<any>
-  | grpc.ServerWriteableStream<any>
-  | grpc.ServerDuplexStream<any, any>;
+type GrpcRequest<RequestType> =
+  | RequestType
+  | grpc.ServerReadableStream<RequestType>
+  | grpc.ServerWriteableStream<RequestType>
+  | grpc.ServerDuplexStream<RequestType, RequestType>;
 
-type GrpcResponse =
-  | grpc.ClientUnaryCall
-  | grpc.ClientReadableStream<any>
-  | grpc.ClientWritableStream<any>
-  | grpc.ClientDuplexStream<any, any>;
+type GrpcResponse<ResponseType> =
+  | ResponseType
+  | grpc.ClientReadableStream<ResponseType>
+  | grpc.ClientWritableStream<ResponseType>
+  | grpc.ClientDuplexStream<ResponseType, ResponseType>;
 
 declare class Mali extends EventEmitter {
   constructor(path: any, name?: string | ReadonlyArray<string>, options?: any);
