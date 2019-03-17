@@ -37,7 +37,6 @@ Represents a gRPC service
     * [.start(port, creds, options)](#Mali+start) ⇒ <code>Object</code>
     * [.close()](#Mali+close)
     * [.toJSON()](#Mali+toJSON) ⇒ <code>Object</code>
-    * [.inspect()](#Mali+inspect) ⇒ <code>Object</code>
 
 <a name="new_Mali_new"></a>
 
@@ -103,7 +102,7 @@ Whether to log errors in <code>onerror</code>. Default: <code>false</code>
 ### mali.addService(proto, name, options)
 Add the service and initialize the app with the proto.
 Basically this can be used if you don't have the data at app construction time for some reason.
-This is different with `grpc.Server.addService()`.
+This is different than `grpc.Server.addService()`.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
@@ -230,12 +229,6 @@ We only bother showing settings.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 **Api**: public  
-<a name="Mali+inspect"></a>
-
-### mali.inspect() ⇒ <code>Object</code>
-Inspect implementation.
-
-**Kind**: instance method of [<code>Mali</code>](#Mali)  
 <a name="Context"></a>
 
 ## Context
@@ -665,6 +658,14 @@ ctx.response.res = createResponseStream()
 **Example** *(DUPLEX calls)*  
 ```js
 ctx.response.res.write({ foo: 'bar' })
+```
+**Example** *(Custom Response Stream calls)*  
+```js
+ctx.response.res = new Response({ object: true});
+ctx.response.res.push({ data: 'hello 1' });
+ctx.response.res.push({ data: 'hello 2' });
+ctx.response.res.push({ data: 'hello 3' });
+ctx.response.res.push(null);
 ```
 <a name="Response+set"></a>
 

@@ -37,7 +37,6 @@ Represents a gRPC service
     * [.start(port, creds, options)](#Malistart) ⇒ <code>Object</code>
     * [.close()](#Maliclose)
     * [.toJSON()](#MalitoJSON) ⇒ <code>Object</code>
-    * [.inspect()](#Maliinspect) ⇒ <code>Object</code>
 
 <a name="new_mali_new" id="new_mali_new" data-id="new_mali_new"></a>
 
@@ -52,19 +51,15 @@ Create a gRPC service
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
 **Example** *(Create service dynamically)*  
-
 ```js
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 const app = new Mali(PROTO_PATH, 'Greeter')
 ```
-
 **Example** *(Create service from static definition)*  
-
 ```js
 const services = require('./static/helloworld_grpc_pb')
 const app = new Mali(services, 'GreeterService')
 ```
-
 <a name="maliname" id="maliname" data-id="maliname"></a>
 
 #### mali.name : <code>String</code>
@@ -73,11 +68,9 @@ The service name.
 
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 **Example**  
-
 ```js
 console.log(app.name) // 'Greeter'
 ```
-
 <a name="malienv" id="malienv" data-id="malienv"></a>
 
 #### mali.env : <code>String</code>
@@ -85,11 +78,9 @@ The environment. Taken from <code>process.end.NODE_ENV</code>. Default: <code>de
 
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 **Example**  
-
 ```js
 console.log(app.env) // 'development'
 ```
-
 <a name="maliports" id="maliports" data-id="maliports"></a>
 
 #### mali.ports : <code>Array</code>
@@ -97,11 +88,9 @@ The ports of the started service(s)
 
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 **Example**  
-
 ```js
 console.log(app.ports) // [ 52239 ]
 ```
-
 <a name="malisilent" id="malisilent" data-id="malisilent"></a>
 
 #### mali.silent : <code>Boolean</code>
@@ -113,7 +102,7 @@ Whether to log errors in <code>onerror</code>. Default: <code>false</code>
 #### mali.addService(proto, name, options)
 Add the service and initialize the app with the proto.
 Basically this can be used if you don't have the data at app construction time for some reason.
-This is different with `grpc.Server.addService()`.
+This is different than `grpc.Server.addService()`.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
@@ -149,44 +138,31 @@ If we can't find the matching rpc function name just tries the `0`th service nam
 | ...fns | <code>function</code> \| <code>Array</code> | Middleware and/or handler |
 
 **Example** *(Define handler for rpc function &#x27;fn1&#x27;)*  
-
 ```js
 app.use('fn1', fn1)
 ```
-
 **Example** *(Define handler with middleware for rpc function &#x27;fn2&#x27;)*  
-
 ```js
 app.use('fn2', mw1, mw2, fn2)
 ```
-
 **Example** *(Define handler with middleware for rpc function &#x27;fn2&#x27; in service &#x27;Service2&#x27;)*  
-
 ```js
 app.use('Service2', 'fn2', mw1, mw2, fn2)
 ```
-
 **Example** *(Using destructuring define handlers for rpc functions &#x27;fn1&#x27; and &#x27;fn2&#x27;)*  
-
 ```js
 app.use({ fn1, fn2 })
 ```
-
 **Example** *(Apply middleware to all handlers for a service)*  
-
 ```js
 app.use('Service1', mw1)
 ```
-
 **Example** *(Using destructuring define handlers for rpc functions &#x27;fn1&#x27; and &#x27;fn2&#x27;)*  
-
 ```js
 // fn2 has middleware mw1 and mw2
 app.use({ MyService: { fn1, fn2: [mw1, mw2, fn2] } })
 ```
-
 **Example** *(Multiple services using object notation)*  
-
 ```js
 app.use(mw1) // global for all services
 app.use('Service1', mw2) // applies to all Service1 handlers
@@ -200,7 +176,6 @@ app.use({
   }
 })
 ```
-
 <a name="malionerror" id="malionerror" data-id="malionerror"></a>
 
 #### mali.onerror(err)
@@ -228,18 +203,14 @@ Throws in case we fail to bind to the given port.
 | options | <code>Object</code> | The start options to be passed to `grpc.Server` constructor. |
 
 **Example**  
-
 ```js
 app.start('localhost:50051')
 ```
-
 **Example** *(Start same app on multiple ports)*  
-
 ```js
 app.start('127.0.0.1:50050')
 app.start('127.0.0.1:50051')
 ```
-
 <a name="maliclose" id="maliclose" data-id="maliclose"></a>
 
 #### mali.close()
@@ -247,11 +218,9 @@ Close the service(s).
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 **Example**  
-
 ```js
 app.close()
 ```
-
 <a name="malitojson" id="malitojson" data-id="malitojson"></a>
 
 #### mali.toJSON() ⇒ <code>Object</code>
@@ -260,12 +229,6 @@ We only bother showing settings.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 **Api**: public  
-<a name="maliinspect" id="maliinspect" data-id="maliinspect"></a>
-
-#### mali.inspect() ⇒ <code>Object</code>
-Inspect implementation.
-
-**Kind**: instance method of [<code>Mali</code>](#Mali)  
 <a name="context" id="context" data-id="context"></a>
 
 ### Context
@@ -300,11 +263,9 @@ The call function name.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.log(ctx.name) // 'SayHello'
 ```
-
 <a name="contextfullname" id="contextfullname" data-id="contextfullname"></a>
 
 #### context.fullName : <code>String</code>
@@ -312,11 +273,9 @@ The full name of the call.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.log(ctx.fullName) // '/helloworld.Greeter/SayHello'
 ```
-
 <a name="contextservice" id="contextservice" data-id="contextservice"></a>
 
 #### context.service : <code>String</code>
@@ -324,11 +283,9 @@ The service name of the call.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.log(ctx.service) // 'Greeter'
 ```
-
 <a name="contextpackage" id="contextpackage" data-id="contextpackage"></a>
 
 #### context.package : <code>String</code>
@@ -336,11 +293,9 @@ The package name of the call.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.log(ctx.package) // 'helloworld'
 ```
-
 <a name="contextapp" id="contextapp" data-id="contextapp"></a>
 
 #### context.app : <code>Object</code>
@@ -373,11 +328,9 @@ The call request object or stream. This is an alias to `ctx.request.res`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.dir(ctx.req) // { name: 'Bob' }
 ```
-
 <a name="contexttype" id="contexttype" data-id="contexttype"></a>
 
 #### context.type : <code>String</code>
@@ -386,19 +339,15 @@ This is an alias to `ctx.request.type`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.log(ctx.type) // 'unary'
 ```
-
 **Example**  
-
 ```js
 if(ctx.type === CallType.DUPLEX) {
   console.log('Duplex stream call')
 }
 ```
-
 <a name="contextmetadata" id="contextmetadata" data-id="contextmetadata"></a>
 
 #### context.metadata : <code>String</code>
@@ -407,12 +356,10 @@ This is an alias to `ctx.request.metadata`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 console.log(ctx.metadata)
 // { 'user-agent': 'grpc-node/1.7.1 grpc-c/1.7.1 (osx; chttp2)' }
 ```
-
 <a name="contextget" id="contextget" data-id="contextget"></a>
 
 #### context.get ⇒ <code>\*</code>
@@ -427,12 +374,10 @@ This is an alias to `ctx.request.get()`.
 | field | <code>String</code> | the field name |
 
 **Example**  
-
 ```js
 console.log(ctx.get('user-agent'))
 // 'grpc-node/1.7.1 grpc-c/1.7.1 (osx; chttp2)'
 ```
-
 <a name="contextres" id="contextres" data-id="contextres"></a>
 
 #### context.res : <code>Object</code> \| <code>Stream</code>
@@ -441,11 +386,9 @@ This is an alias to `ctx.response.res`.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 **Example**  
-
 ```js
 ctx.res = { message: 'Hello World!' }
 ```
-
 <a name="contextset" id="contextset" data-id="contextset"></a>
 
 #### context.set : <code>function</code>
@@ -460,19 +403,15 @@ This is an alias to `ctx.response.set()`.
 | val | <code>\*</code> | the value of the field |
 
 **Example** *(Using string field name and value)*  
-
 ```js
 ctx.set('foo', 'bar')
 ```
-
 **Example** *(Using object)*  
-
 ```js
 ctx.set({
   foo: 'bar'
 })
 ```
-
 <a name="contextsendmetadata" id="contextsendmetadata" data-id="contextsendmetadata"></a>
 
 #### context.sendMetadata : <code>function</code>
@@ -486,21 +425,17 @@ This is an alias to `ctx.response.sendMetadata()`.
 | md | <code>Object</code> | optional header metadata object to set into the request before sending                    if there is existing metadata in the response it is cleared                    if param is not provided `sendMetadata` sends the existing metadata in the response |
 
 **Example** *(Set and send)*  
-
 ```js
 ctx.sendMetadata({
   foo: 'bar'
 })
 ```
-
 **Example** *(Set and send later)*  
-
 ```js
 ctx.set('foo', 'bar')
 // ... later
 ctx.response.sendMetadata()
 ```
-
 <a name="contextgetstatus" id="contextgetstatus" data-id="contextgetstatus"></a>
 
 #### context.getStatus ⇒ <code>\*</code>
@@ -529,19 +464,15 @@ This is an alias to `ctx.response.setStatus()`.
 | val | <code>\*</code> | the value of the field |
 
 **Example**  
-
 ```js
 ctx.setStatus('foo', 'bar')
 ```
-
 **Example** *(Using object)*  
-
 ```js
 ctx.setStatus({
   foo: 'bar'
 })
 ```
-
 <a name="request" id="request" data-id="request"></a>
 
 ### Request
@@ -583,11 +514,9 @@ The call request object or stream.
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
 **Example**  
-
 ```js
 console.log(ctx.request.req) // { name: 'Bob' }
 ```
-
 <a name="requestmetadata" id="requestmetadata" data-id="requestmetadata"></a>
 
 #### request.metadata : <code>Object</code>
@@ -595,12 +524,10 @@ The call's request metadata plain object if present.
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
 **Example**  
-
 ```js
 console.log(ctx.request.metadata)
 // { 'user-agent': 'grpc-node/1.7.1 grpc-c/1.7.1 (osx; chttp2)' }
 ```
-
 <a name="requesttype" id="requesttype" data-id="requesttype"></a>
 
 #### request.type : <code>String</code>
@@ -608,19 +535,15 @@ The call's type. One of `@malijs/call-types` enums.
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
 **Example**  
-
 ```js
 console.log(ctx.request.type) // 'unary'
 ```
-
 **Example**  
-
 ```js
 if(ctx.request.type === CallType.DUPLEX) {
   console.log('Duplex stream call')
 }
 ```
-
 <a name="requestgetmetadata" id="requestgetmetadata" data-id="requestgetmetadata"></a>
 
 #### request.getMetadata() ⇒ <code>Object</code>
@@ -641,11 +564,9 @@ Gets specific request metadata field value
 | field | <code>\*</code> | the metadata field name |
 
 **Example**  
-
 ```js
 console.log(ctx.request.get('foo')) // 'bar'
 ```
-
 <a name="response" id="response" data-id="response"></a>
 
 ### Response
@@ -694,11 +615,9 @@ This will match Request's type.
 
 **Kind**: instance property of [<code>Response</code>](#Response)  
 **Example**  
-
 ```js
 console.log(ctx.response.type) // 'unary'
 ```
-
 <a name="responsemetadata" id="responsemetadata" data-id="responsemetadata"></a>
 
 #### response.metadata : <code>Object</code>
@@ -706,12 +625,10 @@ The call's response header metadata plain object if present.
 
 **Kind**: instance property of [<code>Response</code>](#Response)  
 **Example**  
-
 ```js
 ctx.response.set('foo', 'bar')
 console.log(ctx.response.metadata)  // { 'foo': 'bar' }
 ```
-
 <a name="responsestatus" id="responsestatus" data-id="responsestatus"></a>
 
 #### response.status : <code>Object</code>
@@ -719,12 +636,10 @@ The call's response trailer / status metadata plain object if present.
 
 **Kind**: instance property of [<code>Response</code>](#Response)  
 **Example**  
-
 ```js
 ctx.response.setStatus('biz', 'baz')
 console.log(ctx.response.status) // { biz: 'baz' }
 ```
-
 <a name="responseres" id="responseres" data-id="responseres"></a>
 
 #### response.res : <code>Object</code> \| <code>Stream</code>
@@ -733,23 +648,25 @@ In case of `DUPLEX` call this is automatically set the actual `call` instance.
 
 **Kind**: instance property of [<code>Response</code>](#Response)  
 **Example** *(UNARY or REQUEST STREAM calls)*  
-
 ```js
 ctx.response.res = { foo: 'bar' }
 ```
-
 **Example** *(RESPONSE STREAM calls)*  
-
 ```js
 ctx.response.res = createResponseStream()
 ```
-
 **Example** *(DUPLEX calls)*  
-
 ```js
 ctx.response.res.write({ foo: 'bar' })
 ```
-
+**Example** *(Custom Response Stream calls)*  
+```js
+ctx.response.res = new Response({ object: true});
+ctx.response.res.push({ data: 'hello 1' });
+ctx.response.res.push({ data: 'hello 2' });
+ctx.response.res.push({ data: 'hello 3' });
+ctx.response.res.push(null);
+```
 <a name="responseset" id="responseset" data-id="responseset"></a>
 
 #### response.set(field, val)
@@ -763,19 +680,15 @@ Sets specific response header metadata field value
 | val | <code>\*</code> | the value of the field |
 
 **Example** *(Using string field name and value)*  
-
 ```js
 ctx.response.set('foo', 'bar')
 ```
-
 **Example** *(Using object)*  
-
 ```js
 ctx.response.set({
   foo: 'bar'
 })
 ```
-
 <a name="responseget" id="responseget" data-id="responseget"></a>
 
 #### response.get(field) ⇒ <code>\*</code>
@@ -789,11 +702,9 @@ Gets the response header metadata value
 | field | <code>String</code> | the field name |
 
 **Example**  
-
 ```js
 console.log(ctx.response.get('foo')) // 'bar'
 ```
-
 <a name="responsegetmetadata" id="responsegetmetadata" data-id="responsegetmetadata"></a>
 
 #### response.getMetadata() ⇒ <code>Object</code>
@@ -813,21 +724,17 @@ Sends the response header metadata. Optionally (re)sets the header metadata as w
 | md | <code>Object</code> | optional header metadata object to set into the request before sending                    if there is existing metadata in the response it is cleared                    if param is not provided `sendMetadata` sends the existing metadata in the response |
 
 **Example** *(Set and send)*  
-
 ```js
 ctx.response.sendMetadata({
   foo: 'bar'
 })
 ```
-
 **Example** *(Set and send later)*  
-
 ```js
 ctx.response.set('foo', 'bar')
 // ... later
 ctx.response.sendMetadata()
 ```
-
 <a name="responsegetstatus" id="responsegetstatus" data-id="responsegetstatus"></a>
 
 #### response.getStatus(field) ⇒ <code>\*</code>
@@ -841,11 +748,9 @@ Gets the response status / trailer metadata value
 | field | <code>String</code> | the field name |
 
 **Example**  
-
 ```js
 console.log(ctx.response.getStatus('bar')) // 'baz'
 ```
-
 <a name="responsesetstatus" id="responsesetstatus" data-id="responsesetstatus"></a>
 
 #### response.setStatus(field, val)
@@ -859,19 +764,15 @@ Sets specific response status / trailer metadata field value
 | val | <code>\*</code> | the value of the field |
 
 **Example** *(Using string field name and value)*  
-
 ```js
 ctx.response.setStatus('foo', 'bar')
 ```
-
 **Example** *(Using object)*  
-
 ```js
 ctx.response.setStatus({
   foo: 'bar'
 })
 ```
-
 <a name="responsegetstatusmetadata" id="responsegetstatusmetadata" data-id="responsegetstatusmetadata"></a>
 
 #### response.getStatusMetadata() ⇒ <code>Object</code>
