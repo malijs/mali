@@ -26,7 +26,6 @@ function getArrayData () {
 
 function crashMapper (d) {
   if (d.message.indexOf(3) >= 0) {
-    console.log('crashing')
     // cause a crash
     let str = JSON.stringify(d)
     str = str.concat('asdf')
@@ -35,7 +34,6 @@ function crashMapper (d) {
   } else {
     d.message = d.message.toUpperCase()
 
-    console.log(`sending ${d.message}`)
     return d
   }
 }
