@@ -4,17 +4,15 @@ import { EventEmitter } from 'events';
 import { Stream } from 'stream';
 import * as grpc from 'grpc';
 
-type GrpcRequest<RequestType> =
-  | RequestType
-  | grpc.ServerReadableStream<RequestType>
-  | grpc.ServerWriteableStream<RequestType>
-  | grpc.ServerDuplexStream<RequestType, RequestType>;
+type GrpcRequest = any;
 
-type GrpcResponse<ResponseType> =
-  | ResponseType
-  | grpc.ClientReadableStream<ResponseType>
-  | grpc.ClientWritableStream<ResponseType>
-  | grpc.ClientDuplexStream<ResponseType, ResponseType>;
+type GrpcResponse = any;
+
+type GrpcCall =
+  grpc.ServerUnaryCall<any> |
+  grpc.ServerReadableStream<any> |
+  grpc.ServerWriteableStream<any> |
+  grpc.ServerDuplexStream<any, any>
 
 declare class Mali extends EventEmitter {
   constructor(path: any, name?: string | ReadonlyArray<string>, options?: any);
@@ -23,12 +21,12 @@ declare class Mali extends EventEmitter {
   ports: ReadonlyArray<number>;
   silent: boolean;
 
-  addService(path: any, name: string | ReadonlyArray<string>, options?: any): void;
-  use(service?: any, name?: any, fns?: any): void;
-  start(port: number | string, creds?: any, options?: any): grpc.Server;
-  toJSON(): any;
-  close(): Promise<void>;
-  inspect(): any;
+  addService (path: any, name: string | ReadonlyArray<string>, options?: any): void;
+  use (service?: any, name?: any, fns?: any): void;
+  start (port: number | string, creds?: any, options?: any): grpc.Server;
+  toJSON (): any;
+  close (): Promise<void>;
+  inspect (): any;
 }
 
 declare namespace Mali {
@@ -38,18 +36,18 @@ declare namespace Mali {
     service: string;
     package: string;
     app: Mali;
-    call: any;
+    call: GrpcCall;
     request: Request;
     response: Response;
     req: GrpcRequest;
     res: GrpcResponse;
     type: string;
     metadata: any;
-    get(field: string): any;
-    set(field: any, val?: any): void;
-    sendMetadata(md: any): void;
-    getStatus(field: string): any;
-    setStatus(field: any, val?: any): void;
+    get (field: string): any;
+    set (field: any, val?: any): void;
+    sendMetadata (md: any): void;
+    getStatus (field: string): any;
+    setStatus (field: any, val?: any): void;
   }
 
   class Request {
@@ -59,8 +57,8 @@ declare namespace Mali {
     metadata: any;
     req: GrpcRequest;
 
-    getMetadata(): grpc.Metadata;
-    get(field: string): any;
+    getMetadata (): grpc.Metadata;
+    get (field: string): any;
   }
 
   class Response {
@@ -70,15 +68,14 @@ declare namespace Mali {
     metadata: any;
     status: any;
     res: GrpcResponse;
-    set(field: any, val?: any): void;
-    get(field: string): any;
-    getMetadata(): grpc.Metadata;
-    sendMetadata(md?: any): void;
-    getStatus(field: string): any;
-    setStatus(field: any, val?: any): void;
+    set (field: any, val?: any): void;
+    get (field: string): any;
+    getMetadata (): grpc.Metadata;
+    sendMetadata (md?: any): void;
+    getStatus (field: string): any;
+    setStatus (field: any, val?: any): void;
   }
 
-  function exec(ctx: Context, handler: any, cb?: any): void;
 }
 
 export = Mali;
