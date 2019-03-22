@@ -44,6 +44,7 @@
     "is-stream": "^1.1.0",
     "lodash": "^4.17.11",
     "lodash.camelcase": "^4.3.0",
+    "lodash.compact": "^3.0.1",
     "lodash.concat": "^4.5.0",
     "lodash.find": "^4.6.0",
     "lodash.forown": "^4.4.0",
@@ -53,7 +54,8 @@
     "lodash.pull": "^4.1.0",
     "lodash.upperfirst": "^4.3.1",
     "lodash.values": "^4.3.0",
-    "p-map": "^2.0.0"
+    "p-map": "^2.0.0",
+    "traverse": "^0.6.6"
   },
   "peerDependencies": {
     "grpc": "^1.11.0",

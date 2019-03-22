@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package acmecorp.greeter.v1;
+
+import "messages/hello_request.proto";
+import "messages/hello_reply.proto";
+
+service Greeter {
+  rpc SayHello (helloworld.HelloRequest) returns (helloworld.HelloReply) {}
+}
+
+service Greeter2 {
+  rpc SayHello (Request) returns (Reply) {}
+}
+
+service Greeter3 {
+  rpc SayHello (Request) returns (helloworld.HelloReply) {}
+  rpc SayGoodbye (helloworld.HelloRequest) returns (Reply) {}
+}
+
+message Request {
+  string name = 1;
+}
+
+message Reply {
+  string message = 1;
+}
