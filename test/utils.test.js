@@ -263,3 +263,35 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
     app.close().then(() => t.end())
   }
 })
+
+test('getPackageNameFromPath() should get the package name', t => {
+  const testData = [{
+    input: '/helloworld.Greeter/SayHello',
+    expected: 'helloworld'
+  }, {
+    input: '/Greeter/SayHello',
+    expected: ''
+  }]
+
+  testData.forEach(td => {
+    const { input, expected } = td
+    const actual = utils.getPackageNameFromPath(input)
+    t.is(actual, expected)
+  })
+})
+
+test('getShortServiceNameFromPath() should get the short service name name', t => {
+  const testData = [{
+    input: '/helloworld.Greeter/SayHello',
+    expected: 'Greeter'
+  }, {
+    input: '/Greeter/SayHello',
+    expected: 'Greeter'
+  }]
+
+  testData.forEach(td => {
+    const { input, expected } = td
+    const actual = utils.getShortServiceNameFromPath(input)
+    t.is(actual, expected)
+  })
+})

@@ -135,6 +135,60 @@ test('should add handler using name and function', t => {
   t.pass()
 })
 
+test('should add handler using service name and function', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  app.use('Greeter', 'sayHello', handler)
+
+  t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
+  t.true(Array.isArray(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello']))
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'].length, 1)
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0], handler)
+})
+
+test('should add handler using full service name and function', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  app.use('helloworld.Greeter', 'SayHello', handler)
+
+  t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
+  t.true(Array.isArray(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello']))
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'].length, 1)
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0], handler)
+})
+
+test('should add handler using full service name and full function name', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function handler (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+
+  app.use('helloworld.Greeter', '/helloworld.Greeter/SayHello', handler)
+
+  t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
+  t.true(Array.isArray(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello']))
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'].length, 1)
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0], handler)
+})
+
 test('should throw on duplicate handlers', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
