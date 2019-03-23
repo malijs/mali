@@ -121,6 +121,24 @@ test('should add handler using object notation', t => {
   t.pass()
 })
 
+test('should add handler for consecutive upper case', t => {
+  const PROTO_PATH = path.resolve(__dirname, './protos/multipkg2.proto')
+
+  function getFOOBar (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH)
+  t.truthy(app)
+
+  app.use({ getFOOBar })
+
+  t.truthy(app.data['acmecorp.greeter.v1.Greeter2'].handlers['/acmecorp.greeter.v1.Greeter2/GetFOOBar'])
+  t.true(Array.isArray(app.data['acmecorp.greeter.v1.Greeter2'].handlers['/acmecorp.greeter.v1.Greeter2/GetFOOBar']))
+  t.is(app.data['acmecorp.greeter.v1.Greeter2'].handlers['/acmecorp.greeter.v1.Greeter2/GetFOOBar'].length, 1)
+  t.is(app.data['acmecorp.greeter.v1.Greeter2'].handlers['/acmecorp.greeter.v1.Greeter2/GetFOOBar'][0], getFOOBar)
+})
+
 test('should add handler using name and function', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 

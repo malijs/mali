@@ -11,6 +11,7 @@ service Greeter {
 
 service Greeter2 {
   rpc SayHello (Request) returns (Reply) {}
+  rpc GetFOOBar (Request) returns (Reply) {}
 }
 
 service Greeter3 {
