@@ -116,18 +116,6 @@ This is different than `grpc.Server.addService()`.
 
 ### mali.use(service, name, ...fns)
 Define middleware and handlers.
-If <code>service</code> and name are given applies fns for that call under that service.
-If <code>service</code> name is provided and matches one of the services defined in proto,
-but no </code>name</code> is provided applies the fns as service level middleware
-for all handlers in that service.
-If <code>service</code> is provided and no <code>name</code> is provided, and service does not
-match any of the service names in the proto, assumes <code>service</code> is actually rpc call
-name. Uses <code>0</code>th property in internal services object. Useful for protos with only
-one service.
-If an <code>object</code> is provided, you can set middleware and handlers for all services.
-If <code>object</code> provided but <code>0</code>th key does not match any of the services in
-proto, we try to match the key to one of the rpc function names in one of the services.
-If we can't find the matching rpc function name just tries the `0`th service name.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
 
@@ -137,41 +125,54 @@ If we can't find the matching rpc function name just tries the `0`th service nam
 | name | <code>String</code> \| <code>function</code> | RPC name |
 | ...fns | <code>function</code> \| <code>Array</code> | Middleware and/or handler |
 
-**Example** *(Define handler for rpc function &#x27;fn1&#x27;)*  
+**Example** *(Define handler for RPC function &#x27;getUser&#x27; in first service we find that has that call name.)*  
 ```js
-app.use('fn1', fn1)
+app.use('getUser', getUser)
 ```
-**Example** *(Define handler with middleware for rpc function &#x27;fn2&#x27;)*  
+**Example** *(Define handler with middleware for RPC function &#x27;getUser&#x27; in first service we find that has that call name.)*  
 ```js
-app.use('fn2', mw1, mw2, fn2)
+app.use('getUser', mw1, mw2, getUser)
 ```
-**Example** *(Define handler with middleware for rpc function &#x27;fn2&#x27; in service &#x27;Service2&#x27;)*  
+**Example** *(Define handler with middleware for RPC function &#x27;getUser&#x27; in service &#x27;MyService&#x27;. We pick first service that matches the name.)*  
 ```js
-app.use('Service2', 'fn2', mw1, mw2, fn2)
+app.use('MyService', 'getUser', mw1, mw2, getUser)
 ```
-**Example** *(Using destructuring define handlers for rpc functions &#x27;fn1&#x27; and &#x27;fn2&#x27;)*  
+**Example** *(Define handler with middleware for rpc function &#x27;getUser&#x27; in service &#x27;MyService&#x27; with full package name.)*  
 ```js
-app.use({ fn1, fn2 })
+app.use('myorg.myapi.v1.MyService', 'getUser', mw1, mw2, getUser)
 ```
-**Example** *(Apply middleware to all handlers for a service)*  
+**Example** *(Using destructuring define handlers for rpc functions &#x27;getUser&#x27; and &#x27;deleteUser&#x27;. Here we would match the first service that has a &#x60;getUser&#x60; RPC method.)*  
 ```js
-app.use('Service1', mw1)
+app.use({ getUser, deleteUser })
 ```
-**Example** *(Using destructuring define handlers for rpc functions &#x27;fn1&#x27; and &#x27;fn2&#x27;)*  
+**Example** *(Apply middleware to all handlers for a given service. We match first service that has the given name.)*  
 ```js
-// fn2 has middleware mw1 and mw2
-app.use({ MyService: { fn1, fn2: [mw1, mw2, fn2] } })
+app.use('MyService', mw1)
 ```
-**Example** *(Multiple services using object notation)*  
+**Example** *(Apply middleware to all handlers for a given service using full namespaced package name.)*  
+```js
+app.use('myorg.myapi.v1.MyService', mw1)
+```
+**Example** *(Using destructuring define handlers for RPC functions &#x27;getUser&#x27; and &#x27;deleteUser&#x27;. We match first service that has the given name.)*  
+```js
+// deleteUser has middleware mw1 and mw2
+app.use({ MyService: { getUser, deleteUser: [mw1, mw2, deleteUser] } })
+```
+**Example** *(Using destructuring define handlers for RPC functions &#x27;getUser&#x27; and &#x27;deleteUser&#x27;.)*  
+```js
+// deleteUser has middleware mw1 and mw2
+app.use({ 'myorg.myapi.v1.MyService': { getUser, deleteUser: [mw1, mw2, deleteUser] } })
+```
+**Example** *(Multiple services using object notation.)*  
 ```js
 app.use(mw1) // global for all services
-app.use('Service1', mw2) // applies to all Service1 handlers
+app.use('MyService', mw2) // applies to first matched service named 'MyService'
 app.use({
-  Service1: {
+  'myorg.myapi.v1.MyService': { // matches MyService
     sayGoodbye: handler1, // has mw1, mw2
     sayHello: [ mw3, handler2 ] // has mw1, mw2, mw3
   },
-  Service2: {
+  'myorg.myapi.v1.MyOtherService': {
     saySomething: handler3 // only has mw1
   }
 })

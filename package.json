@@ -40,10 +40,9 @@
     "ee-first": "^1.1.1",
     "error-inject": "^1.0.0",
     "grpc-create-metadata": "^3.0.0",
-    "grpc-inspect": "^0.6.0",
     "is-stream": "^1.1.0",
-    "lodash": "^4.17.11",
     "lodash.camelcase": "^4.3.0",
+    "lodash.compact": "^3.0.1",
     "lodash.concat": "^4.5.0",
     "lodash.find": "^4.6.0",
     "lodash.forown": "^4.4.0",
@@ -53,7 +52,8 @@
     "lodash.pull": "^4.1.0",
     "lodash.upperfirst": "^4.3.1",
     "lodash.values": "^4.3.0",
-    "p-map": "^2.0.0"
+    "p-map": "^2.0.0",
+    "traverse": "^0.6.6"
   },
   "peerDependencies": {
     "grpc": "^1.11.0",
@@ -66,9 +66,10 @@
     "coveralls": "^3.0.2",
     "google-protobuf": "^3.6.1",
     "grpc": "^1.19.0",
-    "highland": "^3.0.0-beta.7",
+    "highland": "3.0.0-beta.7",
     "is-ci": "^2.0.0",
     "jsdoc-to-markdown": "^4.0.1",
+    "lodash": "^4.17.11",
     "nyc": "^13.0.0",
     "snazzy": "^8.0.0",
     "standard": "^12.0.0",
