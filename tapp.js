@@ -3,7 +3,7 @@ const Mali = require('./')
 
 const PROTO_PATH = path.resolve(__dirname, './protos/multipkg.proto')
 
-const services = require('./test/static/multi_grpc_pb')
+// const services = require('./test/static/multi_grpc_pb')
 
 // console.dir(services, {depth: 3, colors: true})
 

@@ -11,18 +11,34 @@ const PROTO_PATH_MULTI = path.resolve(__dirname, './protos/multi.proto')
 
 const apps = []
 
-test.serial('should dynamically create service', t => {
+test.serial('should dynamically create service ', t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  const app = new Mali(PROTO_PATH, 'Greeter')
+  const app = new Mali(PROTO_PATH)
   t.truthy(app)
   apps.push(app)
 
   app.use({ sayHello })
   const server = app.start(tu.getHost())
   t.truthy(server)
+  t.is(app.name, 'helloworld.Greeter')
+})
+
+test.serial('should dynamically create service with name', t => {
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'helloworld.Greeter')
+  t.truthy(app)
+  apps.push(app)
+
+  app.use({ sayHello })
+  const server = app.start(tu.getHost())
+  t.truthy(server)
+  t.is(app.name, 'helloworld.Greeter')
 })
 
 test.serial('should dynamically create service without specifying a name and default to the one in proto', t => {
@@ -37,9 +53,9 @@ test.serial('should dynamically create service without specifying a name and def
   app.use({ sayHello })
   const server = app.start(tu.getHost())
   t.truthy(server)
-  t.is(app.name, 'Greeter')
-  t.truthy(app.handlers.Greeter.sayHello)
-  t.true(typeof app.handlers.Greeter.sayHello[0] === 'function')
+  t.is(app.name, 'helloworld.Greeter')
+  t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
+  t.true(typeof app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0] === 'function')
 })
 
 test.serial('should dynamically create service using addService() without specifying a name and default to the one in proto', t => {
@@ -55,9 +71,9 @@ test.serial('should dynamically create service using addService() without specif
   app.use({ sayHello })
   const server = app.start(tu.getHost())
   t.truthy(server)
-  t.is(app.name, 'Greeter')
-  t.truthy(app.handlers.Greeter.sayHello)
-  t.true(typeof app.handlers.Greeter.sayHello[0] === 'function')
+  t.is(app.name, 'helloworld.Greeter')
+  t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
+  t.true(typeof app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0] === 'function')
 })
 
 test.serial('should dynamically create service without a service name', t => {
@@ -65,7 +81,7 @@ test.serial('should dynamically create service without a service name', t => {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  const app = new Mali(PROTO_PATH, 'Greeter')
+  const app = new Mali(PROTO_PATH, 'helloworld.Greeter')
   t.truthy(app)
   apps.push(app)
 
@@ -84,7 +100,7 @@ test.serial('should statically create service', t => {
     ctx.res = reply
   }
 
-  const app = new Mali(services, 'GreeterService')
+  const app = new Mali(services, 'helloworld.Greeter')
   t.truthy(app)
   apps.push(app)
 
@@ -124,7 +140,7 @@ test.serial('should dynamically create service using object specifying root and 
     file: 'protos/helloworld.proto'
   }
 
-  const app = new Mali(load, 'Greeter')
+  const app = new Mali(load, 'helloworld.Greeter')
   t.truthy(app)
   apps.push(app)
 
@@ -146,7 +162,7 @@ test.serial('should dynamically create service using object specifying root and 
     file: 'protos/load.proto'
   }
 
-  const app = new Mali(load, 'Greeter')
+  const app = new Mali(load, 'helloworld.Greeter')
   t.truthy(app)
   apps.push(app)
 
@@ -161,7 +177,7 @@ test.serial('should dynamically create a named service from defition with multip
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  const app = new Mali(PROTO_PATH_MULTI, 'Greeter')
+  const app = new Mali(PROTO_PATH_MULTI, 'helloworld.Greeter')
   t.truthy(app)
   apps.push(app)
 
@@ -175,10 +191,10 @@ test.serial('should dynamically create all named services from defition with mul
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
-  const app = new Mali(PROTO_PATH_MULTI, [ 'Greeter', 'Greeter2' ])
+  const app = new Mali(PROTO_PATH_MULTI, ['helloworld.Greeter', 'helloworld.Greeter2'])
   t.truthy(app)
-  t.truthy(app.services)
-  t.is(_.keys(app.services).length, 2)
+  t.truthy(app.data)
+  t.is(_.keys(app.data).length, 2)
   apps.push(app)
 
   app.use({ sayHello })
@@ -193,8 +209,8 @@ test.serial('should dynamically create all services from defition with multiple 
 
   const app = new Mali(PROTO_PATH_MULTI)
   t.truthy(app)
-  t.truthy(app.services)
-  t.is(_.keys(app.services).length, 4)
+  t.truthy(app.data)
+  t.is(_.keys(app.data).length, 4)
   apps.push(app)
 
   app.use({ sayHello })
@@ -212,7 +228,7 @@ test.serial('should statically create a named service from defition with multipl
     ctx.res = reply
   }
 
-  const app = new Mali(services, 'GreeterService')
+  const app = new Mali(services, 'helloworld.Greeter')
   t.truthy(app)
   apps.push(app)
 
@@ -231,10 +247,10 @@ test.serial('should statically create all named services from defition with mult
     ctx.res = reply
   }
 
-  const app = new Mali(services, [ 'GreeterService', 'Greeter2Service' ])
+  const app = new Mali(services, ['helloworld.Greeter', 'helloworld.Greeter2'])
   t.truthy(app)
-  t.truthy(app.services)
-  t.is(_.keys(app.services).length, 2)
+  t.truthy(app.data)
+  t.is(_.keys(app.data).length, 2)
   apps.push(app)
 
   app.use({ sayHello })
@@ -254,8 +270,8 @@ test.serial('should statically create all services from defition with multiple s
 
   const app = new Mali(services)
   t.truthy(app)
-  t.truthy(app.services)
-  t.is(_.keys(app.services).length, 4)
+  t.truthy(app.data)
+  t.is(_.keys(app.data).length, 4)
   apps.push(app)
 
   app.use({ sayHello })
@@ -302,14 +318,14 @@ test.serial('should dynamically create service from multiple protos', t => {
   app.use({ sayHello })
   app.use({ doSomething })
 
-  t.is(app.name, 'Greeter')
-  t.truthy(app.handlers.Greeter.sayHello)
-  t.true(typeof app.handlers.Greeter.sayHello[0] === 'function')
-  t.is(app.handlers.Greeter.sayHello[0], sayHello)
+  t.is(app.name, 'helloworld.Greeter')
+  t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
+  t.true(typeof app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0] === 'function')
+  t.is(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0], sayHello)
 
-  t.truthy(app.handlers.ArgService.doSomething)
-  t.true(typeof app.handlers.ArgService.doSomething[0] === 'function')
-  t.is(app.handlers.ArgService.doSomething[0], doSomething)
+  t.truthy(app.data['argservice.ArgService'].handlers['/argservice.ArgService/DoSomething'])
+  t.true(typeof app.data['argservice.ArgService'].handlers['/argservice.ArgService/DoSomething'][0] === 'function')
+  t.is(app.data['argservice.ArgService'].handlers['/argservice.ArgService/DoSomething'][0], doSomething)
 
   const server = app.start(tu.getHost())
   t.truthy(server)
