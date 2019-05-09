@@ -68,6 +68,26 @@ test.cb('app.start() with a default port from OS when no params given', t => {
   app.close().then(() => t.end())
 })
 
+test.cb('app.start() should start and not throw with incomplete API', t => {
+  t.plan(5)
+  const PROTO_PATH = path.resolve(__dirname, './protos/transform.proto')
+
+  function upper (ctx) {
+    ctx.res = { message: ctx.req.message.toUpperCase() }
+  }
+
+  const app = new Mali(PROTO_PATH, 'TransformService')
+  t.truthy(app)
+  app.use({ upper })
+  const server = app.start()
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  app.close().then(() => t.end())
+})
+
 test.cb('app.start() with a default port from OS with object param', t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
