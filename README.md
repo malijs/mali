@@ -13,24 +13,23 @@
 
 ## Installation
 
+Install module and required peer dependencies.
+
 ```
-$ npm install mali
+$ npm install mali grpc @grpc/proto-loader
 ```
 
 ## Example
 
 ```js
-const path = require('path')
 const Mali = require('mali')
-
-const PROTO_PATH = path.resolve(__dirname, '../protos/helloworld.proto')
 
 async function sayHello (ctx) {
   ctx.res = { message: 'Hello '.concat(ctx.req.name) }
 }
 
 function main () {
-  const app = new Mali(PROTO_PATH)
+  const app = new Mali('helloworld.proto')
   app.use({ sayHello })
   app.start('127.0.0.1:50051')
 }
