@@ -68,7 +68,7 @@
     "grpc": "^1.19.0",
     "highland": "3.0.0-beta.7",
     "is-ci": "^2.0.0",
-    "jsdoc-to-markdown": "^4.0.1",
+    "jsdoc-to-markdown": "^5.0.0",
     "lodash": "^4.17.11",
     "nyc": "^14.0.0",
     "snazzy": "^8.0.0",
