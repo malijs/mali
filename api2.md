@@ -94,7 +94,7 @@ console.log(app.ports) // [ 52239 ]
 <a name="Mali+silent"></a>
 
 ### mali.silent : <code>Boolean</code>
-Whether to log errors in <code>onerror</code>. Default: <code>false</code>
+Whether to supress logging errors in <code>onerror</code>. Default: <code>false</code>, that is errors will be logged to `stderr`.
 
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 <a name="Mali+addService"></a>
