@@ -20,6 +20,7 @@ declare class Mali extends EventEmitter {
   env: string;
   ports: ReadonlyArray<number>;
   silent: boolean;
+  context: any
 
   addService (path: any, name: string | ReadonlyArray<string>, options?: any): void;
   use (service?: any, name?: any, fns?: any): void;
