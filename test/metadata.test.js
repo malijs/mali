@@ -1094,7 +1094,7 @@ test.cb('duplex: no metadata', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1121,7 +1121,7 @@ test.cb('duplex: no metadata', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1174,7 +1174,7 @@ test.cb('duplex: header metadata set', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1201,7 +1201,7 @@ test.cb('duplex: header metadata set', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1255,7 +1255,7 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1282,7 +1282,7 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1337,7 +1337,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1364,7 +1364,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1419,7 +1419,7 @@ test.cb('duplex: trailer metadata', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1446,7 +1446,7 @@ test.cb('duplex: trailer metadata', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1500,7 +1500,7 @@ test.cb('duplex: trailer metadata using end()', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1527,7 +1527,7 @@ test.cb('duplex: trailer metadata using end()', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1582,7 +1582,7 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1609,7 +1609,7 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -1664,7 +1664,7 @@ test.cb('duplex: header and trailer metadata', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -1691,7 +1691,7 @@ test.cb('duplex: header and trailer metadata', t => {
   const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })

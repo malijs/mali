@@ -381,7 +381,7 @@ test.cb('should handle duplex call', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -408,7 +408,7 @@ test.cb('should handle duplex call', t => {
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })
@@ -482,7 +482,7 @@ test.cb('should work with multi package proto', t => {
   const server = app.start(port)
   t.truthy(server)
 
-  const pd = pl.loadSync('protos/multipkg.proto', { includeDirs: [ __dirname ] })
+  const pd = pl.loadSync('protos/multipkg.proto', { includeDirs: [__dirname] })
   const greet = grpc.loadPackageDefinition(pd).greet
   const client = new greet.Greeter(port, grpc.credentials.createInsecure())
   client.sayHello({ name: 'Kate' }, (err, response) => {

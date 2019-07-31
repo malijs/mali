@@ -218,7 +218,7 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
     ctx.req.on('data', d => {
       ctx.req.pause()
       _.delay(() => {
-        let ret = {
+        const ret = {
           message: d.message.toUpperCase()
         }
         ctx.res.write(ret)
@@ -242,7 +242,7 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
   const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
   const call = client.processStuff()
 
-  let resData = []
+  const resData = []
   call.on('data', d => {
     resData.push(d.message)
   })

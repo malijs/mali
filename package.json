@@ -65,14 +65,14 @@
     "ava": "^2.1.0",
     "coveralls": "^3.0.2",
     "google-protobuf": "^3.6.1",
-    "grpc": "^1.19.0",
+    "grpc": "^1.22.2",
     "highland": "3.0.0-beta.7",
     "is-ci": "^2.0.0",
     "jsdoc-to-markdown": "^5.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "nyc": "^14.0.0",
     "snazzy": "^8.0.0",
-    "standard": "^12.0.0",
+    "standard": "^13.1.0",
     "test-console": "^1.1.0"
   },
   "standard": {

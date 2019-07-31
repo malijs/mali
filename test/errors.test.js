@@ -29,7 +29,7 @@ function crashMapper (d) {
     // cause a crash
     let str = JSON.stringify(d)
     str = str.concat('asdf')
-    let no = JSON.parse(str)
+    const no = JSON.parse(str)
     return no
   } else {
     d.message = d.message.toUpperCase()

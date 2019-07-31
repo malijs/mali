@@ -354,7 +354,7 @@ test.cb('multi: call multiple services with middleware', t => {
   app.use({
     Greeter4: {
       sayGoodbye: goodbye,
-      sayHello: [ mw1, hello ]
+      sayHello: [mw1, hello]
     },
     Greeter2: { sayHello: hello }
   })
