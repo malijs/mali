@@ -62,17 +62,17 @@
   "devDependencies": {
     "@grpc/proto-loader": "^0.5.0",
     "async": "^3.0.0",
-    "ava": "^2.1.0",
-    "coveralls": "^3.0.2",
-    "google-protobuf": "^3.6.1",
-    "grpc": "^1.22.2",
+    "ava": "^2.3.0",
+    "coveralls": "^3.0.6",
+    "google-protobuf": "^3.9.1",
+    "grpc": "^1.23.3",
     "highland": "3.0.0-beta.7",
     "is-ci": "^2.0.0",
     "jsdoc-to-markdown": "^5.0.0",
     "lodash": "^4.17.15",
     "nyc": "^14.0.0",
     "snazzy": "^8.0.0",
-    "standard": "^13.1.0",
+    "standard": "^14.0.0",
     "test-console": "^1.1.0"
   },
   "standard": {
