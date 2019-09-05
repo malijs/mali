@@ -15,7 +15,7 @@ type GrpcCall =
   grpc.ServerDuplexStream<any, any>
 
 declare class Mali extends EventEmitter {
-  constructor(path: any, name?: string | ReadonlyArray<string>, options?: any);
+  constructor(path?: any, name?: string | ReadonlyArray<string>, options?: any);
   name: string;
   env: string;
   ports: ReadonlyArray<number>;
