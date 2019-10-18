@@ -29,6 +29,13 @@ jobs:
         npm test
       env:
         CI: true
+    - name: Generate coverage
+      if: success()
+      run: npm run coverage
+      env:
+        CI: true
+      with:
+        parallel-finished: true
     - name: Update coverage
       if: success()
       uses: coverallsapp/github-action@master

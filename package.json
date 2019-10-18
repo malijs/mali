@@ -7,7 +7,7 @@
     "lint": "standard | snazzy",
     "linttest": "npm run lint && ava -v",
     "test": "nyc npm run linttest",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov > ./coverage/lcov.info",
     "apidocs": "jsdoc2md lib/*.js >  api2.md",
     "docs": "jsdoc2md lib/*.js --heading-depth 3 | ./fixdocs > api.md"
   },
