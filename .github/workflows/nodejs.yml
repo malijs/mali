@@ -30,15 +30,19 @@ jobs:
       env:
         CI: true
     - name: Generate coverage
-      if: success() && startsWith(matrix['node-version'], '10.')
+      if: success()
       run: |
         mkdir coverage
         npm run coverage
       env:
         CI: true
-    - name: Update coverage
-      if: success() && startsWith(matrix['node-version'], '10.')
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel: true
+    - name: Coveralls Finished
+      if: success()
       uses: coverallsapp/github-action@master
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
