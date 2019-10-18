@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
 function getPort () {
-  return _.random(1000, 60000)
+  return _.random(1000, 65000)
 }
 
 function getHostport (port) {

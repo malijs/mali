@@ -45,7 +45,7 @@ test('app.inspect should return app properties', t => {
   t.truthy(app)
   const str = util.inspect(app)
   process.env.NODE_ENV = NODE_ENV
-  t.is('{ ports: [],\n  context: Context {},\n  env: \'development\',\n  name: \'Greeter\',\n  foo: \'bar\' }', str)
+  t.is('{ ports: [],\n  context: Context {},\n  env: \'development\',\n  name: \'Greeter\',\n  foo: \'bar\' }'.replace(/\s/g, ''), str.replace(/\s/g, ''))
 })
 
 test.cb('app.start() with a default port from OS when no params given', t => {
