@@ -3,7 +3,7 @@
 **A minimalistic [gRPC](http://www.grpc.io) microservice framework.**
 
 [![npm version](https://img.shields.io/npm/v/mali.svg?style=flat-square)](https://www.npmjs.com/package/mali)
-[![build status](https://img.shields.io/travis/malijs/mali/master.svg?style=flat-square)](https://travis-ci.org/malijs/mali)
+[![build status](https://github.com/malijs/mali/workflows/.github/workflows/nodejs.yml/badge.svg)](https://github.com/malijs/mali/actions)
 [![coverage status](https://img.shields.io/coveralls/github/malijs/mali.svg?style=flat-square)](https://coveralls.io/github/malijs/mali)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg?style=flat-square)](https://standardjs.com)
 [![License](https://img.shields.io/github/license/malijs/mali.svg?style=flat-square)](https://raw.githubusercontent.com/malijs/mali/master/LICENSE)
