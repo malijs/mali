@@ -37,6 +37,7 @@ jobs:
       env:
         CI: true
     - name: Coveralls Parallel
+      if: success()
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
