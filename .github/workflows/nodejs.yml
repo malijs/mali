@@ -30,12 +30,10 @@ jobs:
       env:
         CI: true
     - name: Generate coverage
-      if: success()
+      if: success() && startsWith(matrix['node-version'], '10.')
       run: npm run coverage
       env:
         CI: true
-      with:
-        parallel-finished: true
     - name: Update coverage
       if: success()
       uses: coverallsapp/github-action@master
