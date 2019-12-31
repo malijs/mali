@@ -367,6 +367,45 @@ test.cb('should have correct properties for duplex call', t => {
   }
 })
 
+test.cb('should reset locals in context req / res', t => {
+  t.plan(14)
+  const APP_HOST = tu.getHost()
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    t.truthy(ctx)
+    t.truthy(ctx.locals)
+    t.deepEqual(ctx.locals, {})
+
+    ctx.locals.foo = 'bar'
+
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  const server = app.start(APP_HOST)
+  t.truthy(server)
+
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
+  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.falsy(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Bob')
+
+    client.sayHello({ name: 'Kate' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Kate')
+
+      app.close().then(() => t.end())
+    })
+  })
+})
+
 test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
 })

@@ -45,6 +45,8 @@ test('createContext should create context for a UNARY call', t => {
   t.truthy(ctx.req)
   t.is(ctx.req, ctx.request.req)
   t.truthy(ctx.metadata)
+  t.truthy(ctx.locals)
+  t.deepEqual(ctx.locals, {})
   t.is(ctx.metadata, ctx.request.metadata)
   t.is(ctx.type, ctx.type)
 
@@ -101,6 +103,8 @@ test('createContext should create context for a REQUEST_STREAM call', t => {
   t.truthy(ctx.req)
   t.is(ctx.req, ctx.request.req)
   t.truthy(ctx.metadata)
+  t.truthy(ctx.locals)
+  t.deepEqual(ctx.locals, {})
   t.is(ctx.metadata, ctx.request.metadata)
   t.is(ctx.type, ctx.type)
 
@@ -153,6 +157,8 @@ test('createContext should create context for a RESPONSE_STREAM call', t => {
   t.truthy(ctx.req)
   t.is(ctx.req, ctx.request.req)
   t.truthy(ctx.metadata)
+  t.truthy(ctx.locals)
+  t.deepEqual(ctx.locals, {})
   t.is(ctx.metadata, ctx.request.metadata)
   t.is(ctx.type, ctx.type)
 
@@ -202,6 +208,8 @@ test('createContext should create context for a DUPLEX call', t => {
   t.truthy(ctx.req)
   t.is(ctx.req, ctx.request.req)
   t.truthy(ctx.metadata)
+  t.truthy(ctx.locals)
+  t.deepEqual(ctx.locals, {})
   t.is(ctx.metadata, ctx.request.metadata)
   t.is(ctx.type, ctx.type)
 

@@ -244,6 +244,7 @@ Represents the application and call context. Clients to not create this. Mali do
     * [.service](#Contextservice) : <code>String</code>
     * [.package](#Contextpackage) : <code>String</code>
     * [.app](#Contextapp) : <code>Object</code>
+    * [.locals](#Contextlocals) : <code>Object</code>
     * [.call](#Contextcall) : <code>Object</code>
     * [.request](#Contextrequest) : <code>Object</code>
     * [.response](#Contextresponse) : <code>Object</code>
@@ -301,6 +302,12 @@ console.log(ctx.package) // 'helloworld'
 
 #### context.app : <code>Object</code>
 The application instance reference.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+<a name="contextlocals" id="contextlocals" data-id="contextlocals"></a>
+
+#### context.locals : <code>Object</code>
+Request-scoped local variables. You can place anything you wish here.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 <a name="contextcall" id="contextcall" data-id="contextcall"></a>
