@@ -46,7 +46,7 @@ Create a gRPC service
 
 | Param | Type | Description |
 | --- | --- | --- |
-| proto | <code>String</code> \| <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - Loaded grpc object                              - The static service proto object itself |
+| proto | <code>String</code> \| <code>Object</code> | Optional path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - Loaded grpc object                              - The static service proto object itself |
 | name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
@@ -244,6 +244,7 @@ Represents the application and call context. Clients to not create this. Mali do
     * [.service](#Context+service) : <code>String</code>
     * [.package](#Context+package) : <code>String</code>
     * [.app](#Context+app) : <code>Object</code>
+    * [.locals](#Context+locals) : <code>Object</code>
     * [.call](#Context+call) : <code>Object</code>
     * [.request](#Context+request) : <code>Object</code>
     * [.response](#Context+response) : <code>Object</code>
@@ -301,6 +302,12 @@ console.log(ctx.package) // 'helloworld'
 
 ### context.app : <code>Object</code>
 The application instance reference.
+
+**Kind**: instance property of [<code>Context</code>](#Context)  
+<a name="Context+locals"></a>
+
+### context.locals : <code>Object</code>
+Request-scoped local variables. You can place anything you wish here.
 
 **Kind**: instance property of [<code>Context</code>](#Context)  
 <a name="Context+call"></a>
