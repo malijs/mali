@@ -52,7 +52,7 @@
     "lodash.pull": "^4.1.0",
     "lodash.upperfirst": "^4.3.1",
     "lodash.values": "^4.3.0",
-    "p-map": "^3.0.0",
+    "p-map": "^4.0.0",
     "traverse": "^0.6.6"
   },
   "peerDependencies": {
