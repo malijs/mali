@@ -1,11 +1,11 @@
-import test from 'ava'
-import { AssertionError } from 'assert'
-import { stderr } from 'test-console'
-import path from 'path'
-import grpc from 'grpc'
+const test = require('ava')
+const { AssertionError } = require('assert')
+const { stderr } = require('test-console')
+const path = require('path')
+const grpc = require('grpc')
 
-import Mali from '../'
-import * as tu from './util'
+const Mali = require('../')
+const tu = require('./util')
 
 const pl = require('@grpc/proto-loader')
 
@@ -15,7 +15,7 @@ test('should throw an error if a non-error is given', t => {
 
   const error = t.throws(() => {
     app.onerror('foo')
-  }, AssertionError)
+  }, { instanceOf: AssertionError })
 
   t.is(error.message, 'non-error thrown: foo')
 })

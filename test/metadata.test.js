@@ -1,12 +1,12 @@
-import test from 'ava'
-import path from 'path'
-import grpc from 'grpc'
-import hl from 'highland'
-import async from 'async'
-import _ from 'lodash'
+const test = require('ava')
+const path = require('path')
+const grpc = require('grpc')
+const hl = require('highland')
+const async = require('async')
+const _ = require('lodash')
 
-import Mali from '../'
-import * as tu from './util'
+const Mali = require('../')
+const tu = require('./util')
 
 const pl = require('@grpc/proto-loader')
 

@@ -1,10 +1,10 @@
-import test from 'ava'
-import path from 'path'
-import _ from 'lodash'
-import pMap from 'p-map'
+const test = require('ava')
+const path = require('path')
+const _ = require('lodash')
+const pMap = require('p-map')
 
-import Mali from '../'
-import * as tu from './util'
+const Mali = require('../')
+const tu = require('./util')
 
 const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 const PROTO_PATH_MULTI = path.resolve(__dirname, './protos/multi.proto')

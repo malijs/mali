@@ -1,8 +1,8 @@
-import test from 'ava'
-import grpc from 'grpc'
-import CallType from '@malijs/call-types'
+const test = require('ava')
+const grpc = require('grpc')
+const CallType = require('@malijs/call-types')
 
-import Request from '../lib/request'
+const Request = require('../lib/request')
 
 test('should create with UNARY type and no metadata', t => {
   const call = {

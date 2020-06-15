@@ -1,16 +1,17 @@
-import test from 'ava'
-import path from 'path'
-import grpc from 'grpc'
-import BB from 'bluebird'
-import pMap from 'p-map'
-import _ from 'lodash'
+const test = require('ava')
+const path = require('path')
+const grpc = require('grpc')
+const util = require('util')
+const pMap = require('p-map')
+const _ = require('lodash')
+const fs = require('fs')
 
-import Mali from '../'
-import * as tu from './util'
+const Mali = require('../')
+const tu = require('./util')
 
 const pl = require('@grpc/proto-loader')
 
-const fs = BB.promisifyAll(require('fs'))
+const readFileAsync = util.promisify(fs.readFile)
 
 const PROTO_PATH = path.resolve(__dirname, './protos/transform.proto')
 
@@ -58,7 +59,7 @@ async function mw1 (ctx, next) {
 
 async function mw2 (ctx, next) {
   const filepath = path.resolve(__dirname, './static/mw2.txt')
-  const v = await fs.readFileAsync(filepath, 'utf8')
+  const v = await readFileAsync(filepath, 'utf8')
   ctx.value = v ? v.trim() : ''
   ctx.mw = (ctx.mw || '').concat(':mw2')
   await next()

@@ -1,8 +1,8 @@
-import test from 'ava'
-import grpc from 'grpc'
-import CallType from '@malijs/call-types'
+const test = require('ava')
+const grpc = require('grpc')
+const CallType = require('@malijs/call-types')
 
-import Response from '../lib/response'
+const Response = require('../lib/response')
 
 test('should create with UNARY type', t => {
   const call = {

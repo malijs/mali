@@ -1,14 +1,14 @@
-import test from 'ava'
-import path from 'path'
-import grpc from 'grpc'
-import CallType from '@malijs/call-types'
-import hl from 'highland'
-import _ from 'lodash'
-import async from 'async'
+const test = require('ava')
+const path = require('path')
+const grpc = require('grpc')
+const CallType = require('@malijs/call-types')
+const hl = require('highland')
+const _ = require('lodash')
+const async = require('async')
 
-import * as tu from './util'
-import Mali from '../'
-import utils from '../lib/utils'
+const tu = require('./util')
+const Mali = require('../')
+const utils = require('../lib/utils')
 
 const pl = require('@grpc/proto-loader')
 

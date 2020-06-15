@@ -1,7 +1,7 @@
-import path from 'path'
-import test from 'ava'
-import _ from 'lodash'
-import Mali from '../'
+const path = require('path')
+const test = require('ava')
+const _ = require('lodash')
+const Mali = require('../')
 
 test('should throw on unknown function', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -15,7 +15,7 @@ test('should throw on unknown function', t => {
 
   const error = t.throws(() => {
     app.use({ saySomething })
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Unknown method: saySomething')
 })
@@ -32,7 +32,7 @@ test('should throw on unknown function name', t => {
 
   const error = t.throws(() => {
     app.use('saySomething', saySomething)
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Unknown identifier: saySomething')
 })
@@ -49,7 +49,7 @@ test('should throw on unknown function name with correct service', t => {
 
   const error = t.throws(() => {
     app.use('Greeter', 'saySomething', saySomething)
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Unknown method saySomething for service helloworld.Greeter')
 })
@@ -63,7 +63,7 @@ test('should throw on invalid parameter', t => {
 
   const error = t.throws(() => {
     app.use({ sayHello })
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Invalid type for handler for sayHello')
 })
@@ -80,7 +80,7 @@ test('should throw on invalid service name parameter', t => {
 
   const error = t.throws(() => {
     app.use('UnknownService', 'sayHello', sayHello)
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Unknown service UnknownService')
 })
@@ -102,7 +102,7 @@ test('should throw on invalid handler type', t => {
         sayHello: 2
       }
     })
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Handler for sayHello is not a function or array')
 })
@@ -224,7 +224,7 @@ test('should throw on duplicate handlers', t => {
   app.use({ sayHello })
   const error = t.throws(() => {
     app.use('sayHello', sayHello2)
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Handler for sayHello already defined for service helloworld.Greeter')
 })
@@ -547,7 +547,7 @@ test('multi: should throw on duplicate handlers using multimple services', t => 
 
   const error = t.throws(() => {
     app.use('Greeter2', 'sayHello', sayHello2)
-  }, Error)
+  }, { instanceOf: Error })
 
   t.is(error.message, 'Handler for sayHello already defined for service helloworld.Greeter2')
 })

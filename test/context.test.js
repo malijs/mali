@@ -1,9 +1,9 @@
-import test from 'ava'
-import CallType from '@malijs/call-types'
+const test = require('ava')
+const CallType = require('@malijs/call-types')
 
-import Request from '../lib/request'
-import Response from '../lib/response'
-import Mali from '../'
+const Request = require('../lib/request')
+const Response = require('../lib/response')
+const Mali = require('../')
 
 test('createContext should create context for a UNARY call', t => {
   const app = new Mali()

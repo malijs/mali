@@ -1,13 +1,13 @@
-import test from 'ava'
-import path from 'path'
-import grpc from 'grpc'
-import hl from 'highland'
-import async from 'async'
-import _ from 'lodash'
-import isCI from 'is-ci'
+const test = require('ava')
+const path = require('path')
+const grpc = require('grpc')
+const hl = require('highland')
+const async = require('async')
+const _ = require('lodash')
+const isCI = require('is-ci')
 
-import Mali from '../'
-import * as tu from './util'
+const Mali = require('../')
+const tu = require('./util')
 
 const pl = require('@grpc/proto-loader')
 
@@ -215,7 +215,7 @@ test.cb('app.start() should throw when binding to taken port', t => {
 
   const error = t.throws(() => {
     app2.start(`0.0.0.0:${app.ports[0]}`)
-  }, Error)
+  }, { instanceOf: Error })
 
   console.log(error)
   t.is(error.message, `Failed to bind to port: ${port}`)
