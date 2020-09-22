@@ -3,6 +3,7 @@
 import { EventEmitter } from 'events';
 import { Stream } from 'stream';
 import * as grpc from 'grpc';
+import {Context} from "mali";
 
 type GrpcRequest = any;
 
@@ -14,13 +15,17 @@ type GrpcCall =
   grpc.ServerWriteableStream<any> |
   grpc.ServerDuplexStream<any, any>
 
-declare class Mali extends EventEmitter {
+interface App<T> {
+  context: T
+}
+
+declare class Mali<T> extends EventEmitter implements App<T> {
   constructor(path?: any, name?: string | ReadonlyArray<string>, options?: any);
   name: string;
   env: string;
   ports: ReadonlyArray<number>;
   silent: boolean;
-  context: object
+  context: T
 
   addService (path: any, name: string | ReadonlyArray<string>, options?: any): void;
   use (service?: any, name?: any, fns?: any): void;
@@ -31,12 +36,12 @@ declare class Mali extends EventEmitter {
 }
 
 declare namespace Mali {
-  interface Context {
+  interface Context<R> {
     name: string;
     fullName: string;
     service: string;
     package: string;
-    app: Mali;
+    app: App<R>;
     call: GrpcCall;
     request: Request;
     response: Response;
