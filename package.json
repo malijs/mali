@@ -71,7 +71,7 @@
     "jsdoc-to-markdown": "^6.0.0",
     "lodash": "^4.17.15",
     "nyc": "^15.1.0",
-    "snazzy": "^8.0.0",
+    "snazzy": "^9.0.0",
     "standard": "^14.0.0",
     "test-console": "^1.1.0"
   },
