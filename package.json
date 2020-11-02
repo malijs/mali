@@ -72,7 +72,7 @@
     "lodash": "^4.17.15",
     "nyc": "^15.1.0",
     "snazzy": "^8.0.0",
-    "standard": "^14.0.0",
+    "standard": "^16.0.1",
     "test-console": "^1.1.0"
   },
   "standard": {
