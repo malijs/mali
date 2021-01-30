@@ -1,6 +1,6 @@
 const test = require('ava')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const CallType = require('@malijs/call-types')
 const hl = require('highland')
 const _ = require('lodash')
@@ -89,7 +89,7 @@ test('getCallTypeFromDescriptor() should get call type from DUPLEX call', t => {
   t.is(v, CallType.DUPLEX)
 })
 
-test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
+test.cb('getCallTypeFromCall() should get call type from UNARY call', async t => {
   t.plan(1)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -103,7 +103,7 @@ test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
 
   const app = new Mali(PROTO_PATH, 'Greeter')
   app.use({ sayHello })
-  app.start(APP_HOST)
+  await app.start(APP_HOST)
 
   const pd = pl.loadSync(PROTO_PATH)
   const helloproto = grpc.loadPackageDefinition(pd).helloworld
@@ -114,7 +114,7 @@ test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
   })
 })
 
-test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', t => {
+test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', async t => {
   t.plan(1)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
@@ -132,7 +132,7 @@ test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', 
 
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ listStuff })
-  app.start(APP_HOST)
+  await app.start(APP_HOST)
 
   const pd = pl.loadSync(PROTO_PATH)
   const proto = grpc.loadPackageDefinition(pd).argservice
@@ -156,7 +156,7 @@ test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', 
   }
 })
 
-test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t => {
+test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', async t => {
   t.plan(2)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
@@ -188,7 +188,7 @@ test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t
 
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ writeStuff })
-  app.start(APP_HOST)
+  await app.start(APP_HOST)
 
   const pd = pl.loadSync(PROTO_PATH)
   const proto = grpc.loadPackageDefinition(pd).argservice
@@ -207,7 +207,7 @@ test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t
   })
 })
 
-test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
+test.cb('getCallTypeFromCall() should get call type from DUPLEX call', async t => {
   t.plan(1)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -235,7 +235,7 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
 
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ processStuff })
-  app.start(APP_HOST)
+  await app.start(APP_HOST)
 
   const pd = pl.loadSync(PROTO_PATH)
   const proto = grpc.loadPackageDefinition(pd).argservice

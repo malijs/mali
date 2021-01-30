@@ -1,6 +1,6 @@
 const test = require('ava')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const hl = require('highland')
 const async = require('async')
 const _ = require('lodash')
@@ -38,7 +38,7 @@ function crashMapper (d) {
   }
 }
 
-test.cb('should handle an error in the handler in req/res app', t => {
+test.cb('should handle an error in the handler in req/res app', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -58,7 +58,7 @@ test.cb('should handle an error in the handler in req/res app', t => {
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -78,7 +78,7 @@ test.cb('should handle an error in the handler in req/res app', t => {
   })
 })
 
-test.cb('should handle an error in the handler in req/res app where ctx.res is a promise that rejects', t => {
+test.cb('should handle an error in the handler in req/res app where ctx.res is a promise that rejects', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -102,7 +102,7 @@ test.cb('should handle an error in the handler in req/res app where ctx.res is a
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -122,7 +122,7 @@ test.cb('should handle an error in the handler in req/res app where ctx.res is a
   })
 })
 
-test.cb('should return error when we set response to error explicitely', t => {
+test.cb('should return error when we set response to error explicitely', async t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -140,7 +140,7 @@ test.cb('should return error when we set response to error explicitely', t => {
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -155,7 +155,7 @@ test.cb('should return error when we set response to error explicitely', t => {
   })
 })
 
-test.cb('should handle an error with code in the handler in req/res app', t => {
+test.cb('should handle an error with code in the handler in req/res app', async t => {
   t.plan(12)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -177,7 +177,7 @@ test.cb('should handle an error with code in the handler in req/res app', t => {
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -198,7 +198,7 @@ test.cb('should handle an error with code in the handler in req/res app', t => {
   })
 })
 
-test.cb('should handle custom error in the handler in req/res app', t => {
+test.cb('should handle custom error in the handler in req/res app', async t => {
   class MyCustomError extends Error {
     constructor (message, code) {
       super(message)
@@ -225,7 +225,7 @@ test.cb('should handle custom error in the handler in req/res app', t => {
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -246,7 +246,7 @@ test.cb('should handle custom error in the handler in req/res app', t => {
   })
 })
 
-test.cb('should handle an error in the handler in res stream app', t => {
+test.cb('should handle an error in the handler in res stream app', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
@@ -270,7 +270,7 @@ test.cb('should handle an error in the handler in res stream app', t => {
   })
 
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -320,7 +320,7 @@ test.cb('should handle an error in the handler in res stream app', t => {
   }
 })
 
-test.cb('should handle an error in the handler in req stream app', t => {
+test.cb('should handle an error in the handler in req stream app', async t => {
   t.plan(12)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
@@ -354,7 +354,7 @@ test.cb('should handle an error in the handler in req stream app', t => {
   })
 
   app.use({ writeStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let w = true
@@ -455,7 +455,7 @@ test('should handle error in response stream', async t => {
   t.is(resData.length, 3)
 })
 
-test.cb('should handle an error in the handler of duplex call', t => {
+test.cb('should handle an error in the handler of duplex call', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -493,7 +493,7 @@ test.cb('should handle an error in the handler of duplex call', t => {
   })
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
   const pd = pl.loadSync(PROTO_PATH)
   const proto = grpc.loadPackageDefinition(pd).argservice
@@ -549,7 +549,7 @@ test.cb('should handle an error in the handler of duplex call', t => {
   }
 })
 
-test.cb('should handle an error in the handler of duplex call that returns a promise', t => {
+test.cb('should handle an error in the handler of duplex call that returns a promise', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -591,7 +591,7 @@ test.cb('should handle an error in the handler of duplex call that returns a pro
   })
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
   const pd = pl.loadSync(PROTO_PATH)
   const proto = grpc.loadPackageDefinition(pd).argservice

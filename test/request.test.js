@@ -1,5 +1,5 @@
 const test = require('ava')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const CallType = require('@malijs/call-types')
 
 const Request = require('../lib/request')

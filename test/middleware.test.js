@@ -1,6 +1,6 @@
 const test = require('ava')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const util = require('util')
 const pMap = require('p-map')
 const _ = require('lodash')
@@ -86,7 +86,7 @@ function payloadrot13 (ctx, next) {
   })
 }
 
-test.before('should dynamically create service', t => {
+test.before('should dynamically create service', async t => {
   // Handlers
   async function upper (ctx) {
     ctx.res = {
@@ -140,7 +140,7 @@ test.before('should dynamically create service', t => {
   app.use('rot13', mw1, mw2, mw3, rot13)
   app.use('reverseRot13', reverseMW, mw2, payloadrot13, echo)
   app.use(gmw3)
-  const server = app.start(DYNAMIC_HOST)
+  const server = await app.start(DYNAMIC_HOST)
 
   t.truthy(server)
 })
@@ -240,7 +240,7 @@ test.cb('mutate + payload middleware', t => {
   })
 })
 
-test.cb('should compose middleware w/ async functions', t => {
+test.cb('should compose middleware w/ async functions', async t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -272,7 +272,7 @@ test.cb('should compose middleware w/ async functions', t => {
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -287,7 +287,7 @@ test.cb('should compose middleware w/ async functions', t => {
   })
 })
 
-test.cb('should not call middleware downstream of one that does not call next', t => {
+test.cb('should not call middleware downstream of one that does not call next', async t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -315,7 +315,7 @@ test.cb('should not call middleware downstream of one that does not call next', 
   }
 
   app.use('sayHello', fn1, fn2, fn3)
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -330,7 +330,7 @@ test.cb('should not call middleware downstream of one that does not call next', 
   })
 })
 
-test.cb('multi: call multiple services with middleware', t => {
+test.cb('multi: call multiple services with middleware', async t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
 
   function hello (ctx) {
@@ -361,7 +361,7 @@ test.cb('multi: call multiple services with middleware', t => {
   })
 
   const host = tu.getHost()
-  const server = app.start(host)
+  const server = await app.start(host)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)

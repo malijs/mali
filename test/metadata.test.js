@@ -1,6 +1,6 @@
 const test = require('ava')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const hl = require('highland')
 const async = require('async')
 const _ = require('lodash')
@@ -35,7 +35,7 @@ const DUPLEX_PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
 const dpd = pl.loadSync(DUPLEX_PROTO_PATH)
 const duplexproto = grpc.loadPackageDefinition(dpd).argservice
 
-test.cb('req/res: no metadata', t => {
+test.cb('req/res: no metadata', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -47,7 +47,7 @@ test.cb('req/res: no metadata', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -82,7 +82,7 @@ test.cb('req/res: no metadata', t => {
   })
 })
 
-test.cb('req/res: header metadata set', t => {
+test.cb('req/res: header metadata set', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -94,7 +94,7 @@ test.cb('req/res: header metadata set', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -131,7 +131,7 @@ test.cb('req/res: header metadata set', t => {
   })
 })
 
-test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
+test.cb('req/res: header metadata sent using ctx.sendMetadata', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -143,7 +143,7 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -179,7 +179,7 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
   })
 })
 
-test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
+test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -193,7 +193,7 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -229,7 +229,7 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
   })
 })
 
-test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
+test.cb('req/res: header metadata set and sent using ctx.sendMetadata', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -242,7 +242,7 @@ test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -278,7 +278,7 @@ test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
   })
 })
 
-test.cb('req/res: header metadata set and then new metadata sent using ctx.sendMetadata', t => {
+test.cb('req/res: header metadata set and then new metadata sent using ctx.sendMetadata', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -291,7 +291,7 @@ test.cb('req/res: header metadata set and then new metadata sent using ctx.sendM
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -329,7 +329,7 @@ test.cb('req/res: header metadata set and then new metadata sent using ctx.sendM
 
 test.cb(
   'req/res: header metadata ctx.sendMetadata and then set new metadata, should get first',
-  t => {
+  async t => {
     t.plan(13)
     const APP_HOST = tu.getHost()
 
@@ -342,7 +342,7 @@ test.cb(
     const app = new Mali(PROTO_PATH, 'Greeter')
     t.truthy(app)
     app.use({ sayHello })
-    const server = app.start(APP_HOST)
+    const server = await app.start(APP_HOST)
     t.truthy(server)
 
     let metadata
@@ -381,7 +381,7 @@ test.cb(
 
 test.cb(
   'req/res: header metadata send invalid param usingctx.sendMetadata and then set new metadata, should get 2nd',
-  t => {
+  async t => {
     t.plan(13)
     const APP_HOST = tu.getHost()
 
@@ -394,7 +394,7 @@ test.cb(
     const app = new Mali(PROTO_PATH, 'Greeter')
     t.truthy(app)
     app.use({ sayHello })
-    const server = app.start(APP_HOST)
+    const server = await app.start(APP_HOST)
     t.truthy(server)
 
     let metadata
@@ -431,7 +431,7 @@ test.cb(
   }
 )
 
-test.cb('req/res: trailer metadata set', t => {
+test.cb('req/res: trailer metadata set', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -443,7 +443,7 @@ test.cb('req/res: trailer metadata set', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -479,7 +479,7 @@ test.cb('req/res: trailer metadata set', t => {
   })
 })
 
-test.cb('req/res: header and trailer metadata set', t => {
+test.cb('req/res: header and trailer metadata set', async t => {
   t.plan(13)
   const APP_HOST = tu.getHost()
 
@@ -492,7 +492,7 @@ test.cb('req/res: header and trailer metadata set', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -530,7 +530,7 @@ test.cb('req/res: header and trailer metadata set', t => {
   })
 })
 
-test.cb('res stream: no metadata', t => {
+test.cb('res stream: no metadata', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -544,7 +544,7 @@ test.cb('res stream: no metadata', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -587,7 +587,7 @@ test.cb('res stream: no metadata', t => {
   }
 })
 
-test.cb('res stream: header metadata set', t => {
+test.cb('res stream: header metadata set', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -602,7 +602,7 @@ test.cb('res stream: header metadata set', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -647,7 +647,7 @@ test.cb('res stream: header metadata set', t => {
   }
 })
 
-test.cb('res stream: header metadata sendMetadata(object)', t => {
+test.cb('res stream: header metadata sendMetadata(object)', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -662,7 +662,7 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -709,7 +709,7 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
 
 test.cb(
   'res stream: header metadata sendMetadata(object) with set after, set should not be sent',
-  t => {
+  async t => {
     t.plan(11)
     const APP_HOST = tu.getHost()
 
@@ -725,7 +725,7 @@ test.cb(
     const app = new Mali(ARG_PROTO_PATH, 'ArgService')
     t.truthy(app)
     app.use({ listStuff })
-    const server = app.start(APP_HOST)
+    const server = await app.start(APP_HOST)
     t.truthy(server)
 
     let metadata
@@ -771,7 +771,7 @@ test.cb(
   }
 )
 
-test.cb('res stream: trailer metadata set', t => {
+test.cb('res stream: trailer metadata set', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -786,7 +786,7 @@ test.cb('res stream: trailer metadata set', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -831,7 +831,7 @@ test.cb('res stream: trailer metadata set', t => {
   }
 })
 
-test.cb('res stream: trailer metadata set and also sent using res.end() should get 2nd', t => {
+test.cb('res stream: trailer metadata set and also sent using res.end() should get 2nd', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -850,7 +850,7 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -895,7 +895,7 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
   }
 })
 
-test.cb('res stream: trailer metadata set and also use empty res.end() should get 1st', t => {
+test.cb('res stream: trailer metadata set and also use empty res.end() should get 1st', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -914,7 +914,7 @@ test.cb('res stream: trailer metadata set and also use empty res.end() should ge
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -959,7 +959,7 @@ test.cb('res stream: trailer metadata set and also use empty res.end() should ge
   }
 })
 
-test.cb('res stream: trailer metadata set and also use invalid res.end() should get 1st', t => {
+test.cb('res stream: trailer metadata set and also use invalid res.end() should get 1st', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -978,7 +978,7 @@ test.cb('res stream: trailer metadata set and also use invalid res.end() should 
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1023,7 +1023,7 @@ test.cb('res stream: trailer metadata set and also use invalid res.end() should 
   }
 })
 
-test.cb('res stream: header and trailer metadata set', t => {
+test.cb('res stream: header and trailer metadata set', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -1039,7 +1039,7 @@ test.cb('res stream: header and trailer metadata set', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1086,7 +1086,7 @@ test.cb('res stream: header and trailer metadata set', t => {
   }
 })
 
-test.cb('duplex: no metadata', t => {
+test.cb('duplex: no metadata', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -1113,7 +1113,7 @@ test.cb('duplex: no metadata', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1165,7 +1165,7 @@ test.cb('duplex: no metadata', t => {
   }
 })
 
-test.cb('duplex: header metadata set', t => {
+test.cb('duplex: header metadata set', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -1193,7 +1193,7 @@ test.cb('duplex: header metadata set', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1247,7 +1247,7 @@ test.cb('duplex: header metadata set', t => {
   }
 })
 
-test.cb('duplex: header metadata sendMetadata(object)', t => {
+test.cb('duplex: header metadata sendMetadata(object)', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
   async function processStuff (ctx) {
@@ -1274,7 +1274,7 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1328,7 +1328,7 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
   }
 })
 
-test.cb('duplex: header metadata sendMetadata(object) with set after, set no effect', t => {
+test.cb('duplex: header metadata sendMetadata(object) with set after, set no effect', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
   async function processStuff (ctx) {
@@ -1356,7 +1356,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1410,7 +1410,7 @@ test.cb('duplex: header metadata sendMetadata(object) with set after, set no eff
   }
 })
 
-test.cb('duplex: trailer metadata', t => {
+test.cb('duplex: trailer metadata', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -1438,7 +1438,7 @@ test.cb('duplex: trailer metadata', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1492,7 +1492,7 @@ test.cb('duplex: trailer metadata', t => {
   }
 })
 
-test.cb('duplex: trailer metadata using end()', t => {
+test.cb('duplex: trailer metadata using end()', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -1519,7 +1519,7 @@ test.cb('duplex: trailer metadata using end()', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1573,7 +1573,7 @@ test.cb('duplex: trailer metadata using end()', t => {
   }
 })
 
-test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
+test.cb('duplex: trailer metadata valid setStatus() and invalid end()', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
 
@@ -1601,7 +1601,7 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata
@@ -1655,7 +1655,7 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
   }
 })
 
-test.cb('duplex: header and trailer metadata', t => {
+test.cb('duplex: header and trailer metadata', async t => {
   t.plan(11)
   const APP_HOST = tu.getHost()
   async function processStuff (ctx) {
@@ -1683,7 +1683,7 @@ test.cb('duplex: header and trailer metadata', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   let metadata

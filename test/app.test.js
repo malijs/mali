@@ -1,6 +1,6 @@
 const test = require('ava')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const hl = require('highland')
 const async = require('async')
 const _ = require('lodash')
@@ -24,7 +24,7 @@ function getArrayData () {
   return _.cloneDeep(ARRAY_DATA)
 }
 
-test('should set development env when NODE_ENV missing', t => {
+test('should set development env when NODE_ENV missing', async t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
   const NODE_ENV = process.env.NODE_ENV
   process.env.NODE_ENV = ''
@@ -48,7 +48,7 @@ test('app.inspect should return app properties', t => {
   t.is('{ ports: [],\n  context: Context {},\n  env: \'development\',\n  name: \'Greeter\',\n  foo: \'bar\' }'.replace(/\s/g, ''), str.replace(/\s/g, ''))
 })
 
-test.cb('app.start() with a default port from OS when no params given', t => {
+test.cb('app.start() with a default port from OS when no params given', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -59,7 +59,7 @@ test.cb('app.start() with a default port from OS when no params given', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start()
+  const server = await app.start()
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -68,7 +68,7 @@ test.cb('app.start() with a default port from OS when no params given', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() should start and not throw with incomplete API', t => {
+test.cb('app.start() should start and not throw with incomplete API', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/transform.proto')
 
@@ -79,7 +79,7 @@ test.cb('app.start() should start and not throw with incomplete API', t => {
   const app = new Mali(PROTO_PATH, 'TransformService')
   t.truthy(app)
   app.use({ upper })
-  const server = app.start()
+  const server = await app.start()
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -88,7 +88,7 @@ test.cb('app.start() should start and not throw with incomplete API', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() with a default port from OS with object param', t => {
+test.cb('app.start() with a default port from OS with object param', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -99,7 +99,7 @@ test.cb('app.start() with a default port from OS with object param', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(grpc.ServerCredentials.createInsecure())
+  const server = await app.start(grpc.ServerCredentials.createInsecure())
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -108,7 +108,7 @@ test.cb('app.start() with a default port from OS with object param', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
+test.cb('app.start() with a default port from OS with "127.0.0.1:0"', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -119,7 +119,7 @@ test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start('127.0.0.1:0')
+  const server = await app.start('127.0.0.1:0')
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -128,7 +128,7 @@ test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() with a default port from OS with ""', t => {
+test.cb('app.start() with a default port from OS with ""', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -139,7 +139,7 @@ test.cb('app.start() with a default port from OS with ""', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start('')
+  const server = await app.start('')
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -148,7 +148,7 @@ test.cb('app.start() with a default port from OS with ""', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() with param', t => {
+test.cb('app.start() with param', async t => {
   t.plan(5)
   const PORT = tu.getPort()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -160,7 +160,7 @@ test.cb('app.start() with param', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(`127.0.0.1:0${PORT}`)
+  const server = await app.start(`127.0.0.1:0${PORT}`)
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -169,7 +169,7 @@ test.cb('app.start() with param', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() with port param and invalid creds', t => {
+test.cb('app.start() with port param and invalid creds', async t => {
   t.plan(5)
   const PORT = tu.getPort()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -181,7 +181,7 @@ test.cb('app.start() with port param and invalid creds', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(`127.0.0.1:0${PORT}`, 'foo')
+  const server = await app.start(`127.0.0.1:0${PORT}`, 'foo')
   t.truthy(server)
   const ports = app.ports
   t.truthy(ports)
@@ -190,7 +190,7 @@ test.cb('app.start() with port param and invalid creds', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('app.start() should throw when binding to taken port', t => {
+test.cb('app.start() should throw when binding to taken port', async t => {
   // workround for https://github.com/travis-ci/travis-ci/issues/9918
   if (isCI) {
     t.pass()
@@ -207,7 +207,7 @@ test.cb('app.start() should throw when binding to taken port', t => {
   const port = tu.getHost()
 
   app.use({ sayHello })
-  const server = app.start(port)
+  const server = await app.start(port)
   t.truthy(server)
 
   const app2 = new Mali({ file: 'protos/multipkg.proto', root: __dirname })
@@ -223,7 +223,7 @@ test.cb('app.start() should throw when binding to taken port', t => {
   app.close().then(() => t.end())
 })
 
-test.cb('should handle req/res request', t => {
+test.cb('should handle req/res request', async t => {
   t.plan(5)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -235,7 +235,7 @@ test.cb('should handle req/res request', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -249,7 +249,7 @@ test.cb('should handle req/res request', t => {
   })
 })
 
-test.cb('should handle req/res request where res is a promise', t => {
+test.cb('should handle req/res request where res is a promise', async t => {
   t.plan(5)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -265,7 +265,7 @@ test.cb('should handle req/res request where res is a promise', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -279,7 +279,7 @@ test.cb('should handle req/res request where res is a promise', t => {
   })
 })
 
-test.cb('should handle res stream request', t => {
+test.cb('should handle res stream request', async t => {
   t.plan(3)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
@@ -295,7 +295,7 @@ test.cb('should handle res stream request', t => {
   const app = new Mali(PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -320,7 +320,7 @@ test.cb('should handle res stream request', t => {
   }
 })
 
-test.cb('should handle req stream app', t => {
+test.cb('should handle req stream app', async t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
@@ -351,7 +351,7 @@ test.cb('should handle req stream app', t => {
   const app = new Mali(PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ writeStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -373,7 +373,7 @@ test.cb('should handle req stream app', t => {
   })
 })
 
-test.cb('should handle duplex call', t => {
+test.cb('should handle duplex call', async t => {
   t.plan(3)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -400,7 +400,7 @@ test.cb('should handle duplex call', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = app.start(APP_HOST)
+  const server = await app.start(APP_HOST)
   t.truthy(server)
 
   const pd = pl.loadSync(PROTO_PATH)
@@ -430,7 +430,7 @@ test.cb('should handle duplex call', t => {
   }
 })
 
-test.cb('should start multipe servers from same application and handle requests', t => {
+test.cb('should start multipe servers from same application and handle requests', async t => {
   t.plan(11)
   const APP_HOST1 = tu.getHost()
   const APP_HOST2 = tu.getHost()
@@ -443,8 +443,8 @@ test.cb('should start multipe servers from same application and handle requests'
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server1 = app.start(APP_HOST1)
-  const server2 = app.start(APP_HOST2)
+  const server1 = await app.start(APP_HOST1)
+  const server2 = await app.start(APP_HOST2)
   t.truthy(server1)
   t.truthy(server2)
   t.truthy(Array.isArray(app.servers))
@@ -469,7 +469,7 @@ test.cb('should start multipe servers from same application and handle requests'
   })
 })
 
-test.cb('should work with multi package proto', t => {
+test.cb('should work with multi package proto', async t => {
   t.plan(4)
   function sayHello (ctx) {
     ctx.res = { message: `Hello ${ctx.req.name}!` }
@@ -479,7 +479,7 @@ test.cb('should work with multi package proto', t => {
   const port = tu.getHost()
 
   app.use({ sayHello })
-  const server = app.start(port)
+  const server = await app.start(port)
   t.truthy(server)
 
   const pd = pl.loadSync('protos/multipkg.proto', { includeDirs: [__dirname] })

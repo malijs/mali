@@ -2,7 +2,7 @@
 
 import { EventEmitter } from 'events';
 import { Stream } from 'stream';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 
 type GrpcRequest = any;
 

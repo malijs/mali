@@ -1,7 +1,7 @@
 // GENERATED CODE -- DO NOT EDIT!
 
 'use strict';
-var grpc = require('grpc');
+var grpc = require('@grpc/grpc-js');
 var test_protos_multi_pb = require('./multi_pb.js');
 
 function serialize_helloworld_Reply(arg) {
