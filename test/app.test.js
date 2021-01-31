@@ -48,7 +48,7 @@ test('app.inspect should return app properties', t => {
   t.is('{ ports: [],\n  context: Context {},\n  env: \'development\',\n  name: \'Greeter\',\n  foo: \'bar\' }'.replace(/\s/g, ''), str.replace(/\s/g, ''))
 })
 
-test.cb('app.start() with a default port from OS when no params given', t => {
+test('app.start() with a default port from OS when no params given', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -59,17 +59,16 @@ test.cb('app.start() with a default port from OS when no params given', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start().then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.true(typeof ports[0] === 'number')
-    app.close().then(() => t.end())
-  })
+  const server = await app.start()
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  await app.close()
 })
 
-test.cb('app.start() should start and not throw with incomplete API', t => {
+test('app.start() should start and not throw with incomplete API', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/transform.proto')
 
@@ -80,17 +79,16 @@ test.cb('app.start() should start and not throw with incomplete API', t => {
   const app = new Mali(PROTO_PATH, 'TransformService')
   t.truthy(app)
   app.use({ upper })
-  app.start().then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.true(typeof ports[0] === 'number')
-    app.close().then(() => t.end())
-  })
+  const server = await app.start()
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  await app.close()
 })
 
-test.cb('app.start() with a default port from OS with object param', t => {
+test('app.start() with a default port from OS with object param', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -101,17 +99,16 @@ test.cb('app.start() with a default port from OS with object param', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(grpc.ServerCredentials.createInsecure()).then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.true(typeof ports[0] === 'number')
-    app.close().then(() => t.end())
-  })
+  const server = await app.start(grpc.ServerCredentials.createInsecure())
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  await app.close()
 })
 
-test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
+test('app.start() with a default port from OS with "127.0.0.1:0"', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -122,17 +119,16 @@ test.cb('app.start() with a default port from OS with "127.0.0.1:0"', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start('127.0.0.1:0').then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.true(typeof ports[0] === 'number')
-    app.close().then(() => t.end())
-  })
+  const server = await app.start('127.0.0.1:0')
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  await app.close()
 })
 
-test.cb('app.start() with a default port from OS with ""', t => {
+test('app.start() with a default port from OS with ""', async t => {
   t.plan(5)
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
@@ -143,17 +139,16 @@ test.cb('app.start() with a default port from OS with ""', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start('').then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.true(typeof ports[0] === 'number')
-    app.close().then(() => t.end())
-  })
+  const server = await app.start('')
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.true(typeof ports[0] === 'number')
+  await app.close()
 })
 
-test.cb('app.start() with param', t => {
+test('app.start() with param', async t => {
   t.plan(5)
   const PORT = tu.getPort()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -165,17 +160,16 @@ test.cb('app.start() with param', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(`127.0.0.1:0${PORT}`).then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.is(ports[0], PORT)
-    app.close().then(() => t.end())
-  })
+  const server = await app.start(`127.0.0.1:0${PORT}`)
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.is(ports[0], PORT)
+  await app.close()
 })
 
-test.cb('app.start() with port param and invalid creds', t => {
+test('app.start() with port param and invalid creds', async t => {
   t.plan(5)
   const PORT = tu.getPort()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -187,14 +181,13 @@ test.cb('app.start() with port param and invalid creds', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(`127.0.0.1:0${PORT}`, 'foo').then(server => {
-    t.truthy(server)
-    const ports = app.ports
-    t.truthy(ports)
-    t.is(ports.length, 1)
-    t.is(ports[0], PORT)
-    app.close().then(() => t.end())
-  })
+  const server = await app.start(`127.0.0.1:0${PORT}`, 'foo')
+  t.truthy(server)
+  const ports = app.ports
+  t.truthy(ports)
+  t.is(ports.length, 1)
+  t.is(ports[0], PORT)
+  await app.close()
 })
 
 test.cb('app.start() should throw when binding to taken port', t => {

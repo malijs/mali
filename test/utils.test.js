@@ -189,7 +189,6 @@ test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ writeStuff })
   app.start(APP_HOST).then(server => {
-
     const pd = pl.loadSync(PROTO_PATH)
     const proto = grpc.loadPackageDefinition(pd).argservice
     const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
