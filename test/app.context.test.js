@@ -82,7 +82,7 @@ test.cb('should not affect the original prototype', t => {
   })
 })
 
-test.cb('should have correct properties for req / res', async t => {
+test.cb('should have correct properties for req / res', t => {
   t.plan(20)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -109,21 +109,22 @@ test.cb('should have correct properties for req / res', async t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      app.close().then(() => t.end())
+    })
   })
 })
 
-test.cb('should have correct properties for req / res with proto', async t => {
+test.cb('should have correct properties for req / res with proto', t => {
   t.plan(20)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -155,21 +156,22 @@ test.cb('should have correct properties for req / res with proto', async t => {
   const app = new Mali(services)
   t.truthy(app)
   app.use({ sayHello })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      app.close().then(() => t.end())
+    })
   })
 })
 
-test.cb('should have correct properties res stream request', async t => {
+test.cb('should have correct properties res stream request', t => {
   t.plan(18)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
@@ -201,32 +203,33 @@ test.cb('should have correct properties res stream request', async t => {
   const app = new Mali(PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-  const call = client.listStuff({ message: 'Hello' })
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).argservice
+    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.listStuff({ message: 'Hello' })
 
-  const resData = []
-  call.on('data', d => {
-    resData.push(d.message)
+    const resData = []
+    call.on('data', d => {
+      resData.push(d.message)
+    })
+
+    call.on('end', () => {
+      _.delay(() => {
+        endTest()
+      }, 200)
+    })
+
+    function endTest () {
+      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+      app.close().then(() => t.end())
+    }
   })
-
-  call.on('end', () => {
-    _.delay(() => {
-      endTest()
-    }, 200)
-  })
-
-  function endTest () {
-    t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-    app.close().then(() => t.end())
-  }
 })
 
-test.cb('should have correct properties for req stream', async t => {
+test.cb('should have correct properties for req stream', t => {
   t.plan(21)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
@@ -270,29 +273,30 @@ test.cb('should have correct properties for req stream', async t => {
   const app = new Mali(PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ writeStuff })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-  const call = client.writeStuff((err, res) => {
-    t.falsy(err)
-    t.truthy(res)
-    t.truthy(res.message)
-    t.is(res.message, '1 FOO:2 BAR:3 ASD:4 QWE:5 RTY:6 ZXC')
-    app.close().then(() => t.end())
-  })
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).argservice
+    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.writeStuff((err, res) => {
+      t.falsy(err)
+      t.truthy(res)
+      t.truthy(res.message)
+      t.is(res.message, '1 FOO:2 BAR:3 ASD:4 QWE:5 RTY:6 ZXC')
+      app.close().then(() => t.end())
+    })
 
-  async.eachSeries(ARRAY_DATA, (d, asfn) => {
-    call.write(d)
-    _.delay(asfn, _.random(10, 50))
-  }, () => {
-    call.end()
+    async.eachSeries(ARRAY_DATA, (d, asfn) => {
+      call.write(d)
+      _.delay(asfn, _.random(10, 50))
+    }, () => {
+      call.end()
+    })
   })
 })
 
-test.cb('should have correct properties for duplex call', async t => {
+test.cb('should have correct properties for duplex call', t => {
   t.plan(19)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -337,37 +341,38 @@ test.cb('should have correct properties for duplex call', async t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-  const call = client.processStuff()
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).argservice
+    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.processStuff()
 
-  const resData = []
-  call.on('data', d => {
-    resData.push(d.message)
+    const resData = []
+    call.on('data', d => {
+      resData.push(d.message)
+    })
+
+    call.on('end', () => {
+      endTest()
+    })
+
+    async.eachSeries(ARRAY_DATA, (d, asfn) => {
+      call.write(d)
+      _.delay(asfn, _.random(10, 50))
+    }, () => {
+      call.end()
+    })
+
+    function endTest () {
+      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+      app.close().then(() => t.end())
+    }
   })
-
-  call.on('end', () => {
-    endTest()
-  })
-
-  async.eachSeries(ARRAY_DATA, (d, asfn) => {
-    call.write(d)
-    _.delay(asfn, _.random(10, 50))
-  }, () => {
-    call.end()
-  })
-
-  function endTest () {
-    t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-    app.close().then(() => t.end())
-  }
 })
 
-test.cb('should reset locals in context req / res', async t => {
+test.cb('should reset locals in context req / res', t => {
   t.plan(14)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -385,23 +390,24 @@ test.cb('should reset locals in context req / res', async t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-
-    client.sayHello({ name: 'Kate' }, (err, response) => {
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
       t.falsy(err)
       t.truthy(response)
-      t.is(response.message, 'Hello Kate')
+      t.is(response.message, 'Hello Bob')
 
-      app.close().then(() => t.end())
+      client.sayHello({ name: 'Kate' }, (err, response) => {
+        t.falsy(err)
+        t.truthy(response)
+        t.is(response.message, 'Hello Kate')
+
+        app.close().then(() => t.end())
+      })
     })
   })
 })

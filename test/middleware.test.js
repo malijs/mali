@@ -240,7 +240,7 @@ test.cb('mutate + payload middleware', t => {
   })
 })
 
-test.cb('should compose middleware w/ async functions', async t => {
+test.cb('should compose middleware w/ async functions', t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -272,22 +272,23 @@ test.cb('should compose middleware w/ async functions', async t => {
   })
 
   app.use({ sayHello })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-    t.deepEqual(calls, [1, 2, 3, 4, 5, 6])
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      t.deepEqual(calls, [1, 2, 3, 4, 5, 6])
+      app.close().then(() => t.end())
+    })
   })
 })
 
-test.cb('should not call middleware downstream of one that does not call next', async t => {
+test.cb('should not call middleware downstream of one that does not call next', t => {
   t.plan(6)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -315,22 +316,23 @@ test.cb('should not call middleware downstream of one that does not call next', 
   }
 
   app.use('sayHello', fn1, fn2, fn3)
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-    t.deepEqual(calls, [1, 2, 5, 6])
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      t.deepEqual(calls, [1, 2, 5, 6])
+      app.close().then(() => t.end())
+    })
   })
 })
 
-test.cb('multi: call multiple services with middleware', async t => {
+test.cb('multi: call multiple services with middleware', t => {
   const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
 
   function hello (ctx) {
@@ -361,28 +363,29 @@ test.cb('multi: call multiple services with middleware', async t => {
   })
 
   const host = tu.getHost()
-  const server = await app.start(host)
-  t.truthy(server)
+  app.start(host).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).helloworld
-  const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
-  const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
-  client2.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, ':mw1:Hello Bob')
-
-    client4.sayHello({ name: 'Jane' }, (err, response) => {
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).helloworld
+    const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
+    const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
+    client2.sayHello({ name: 'Bob' }, (err, response) => {
       t.falsy(err)
       t.truthy(response)
-      t.is(response.message, ':mw1:Hello Jane')
+      t.is(response.message, ':mw1:Hello Bob')
 
-      client4.sayGoodbye({ name: 'Bill' }, (err, response) => {
+      client4.sayHello({ name: 'Jane' }, (err, response) => {
         t.falsy(err)
         t.truthy(response)
-        t.is(response.message, ':Goodbye Bill')
-        app.close().then(() => t.end())
+        t.is(response.message, ':mw1:Hello Jane')
+
+        client4.sayGoodbye({ name: 'Bill' }, (err, response) => {
+          t.falsy(err)
+          t.truthy(response)
+          t.is(response.message, ':Goodbye Bill')
+          app.close().then(() => t.end())
+        })
       })
     })
   })

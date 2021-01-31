@@ -89,7 +89,7 @@ test('getCallTypeFromDescriptor() should get call type from DUPLEX call', t => {
   t.is(v, CallType.DUPLEX)
 })
 
-test.cb('getCallTypeFromCall() should get call type from UNARY call', async t => {
+test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
   t.plan(1)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -103,18 +103,18 @@ test.cb('getCallTypeFromCall() should get call type from UNARY call', async t =>
 
   const app = new Mali(PROTO_PATH, 'Greeter')
   app.use({ sayHello })
-  await app.start(APP_HOST)
-
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (e_, response) => {
-    t.is(callType, CallType.UNARY)
-    app.close().then(() => t.end())
+  app.start(APP_HOST).then(server => {
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (e_, response) => {
+      t.is(callType, CallType.UNARY)
+      app.close().then(() => t.end())
+    })
   })
 })
 
-test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', async t => {
+test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', t => {
   t.plan(1)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
@@ -132,31 +132,31 @@ test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', 
 
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ listStuff })
-  await app.start(APP_HOST)
+  app.start(APP_HOST).then(server => {
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).argservice
+    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.listStuff({ message: 'Hello' })
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-  const call = client.listStuff({ message: 'Hello' })
+    const resData = []
+    call.on('data', d => {
+      resData.push(d.message)
+    })
 
-  const resData = []
-  call.on('data', d => {
-    resData.push(d.message)
+    call.on('end', () => {
+      _.delay(() => {
+        endTest()
+      }, 200)
+    })
+
+    function endTest () {
+      t.is(callType, CallType.RESPONSE_STREAM)
+      app.close().then(() => t.end())
+    }
   })
-
-  call.on('end', () => {
-    _.delay(() => {
-      endTest()
-    }, 200)
-  })
-
-  function endTest () {
-    t.is(callType, CallType.RESPONSE_STREAM)
-    app.close().then(() => t.end())
-  }
 })
 
-test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', async t => {
+test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t => {
   t.plan(2)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
@@ -188,26 +188,27 @@ test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', a
 
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ writeStuff })
-  await app.start(APP_HOST)
+  app.start(APP_HOST).then(server => {
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-  const call = client.writeStuff((err, res) => {
-    t.falsy(err)
-    t.is(callType, CallType.REQUEST_STREAM)
-    app.close().then(() => t.end())
-  })
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).argservice
+    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.writeStuff((err, res) => {
+      t.falsy(err)
+      t.is(callType, CallType.REQUEST_STREAM)
+      app.close().then(() => t.end())
+    })
 
-  async.eachSeries(getArrayData(), (d, asfn) => {
-    call.write(d)
-    _.delay(asfn, _.random(10, 50))
-  }, () => {
-    call.end()
+    async.eachSeries(getArrayData(), (d, asfn) => {
+      call.write(d)
+      _.delay(asfn, _.random(10, 50))
+    }, () => {
+      call.end()
+    })
   })
 })
 
-test.cb('getCallTypeFromCall() should get call type from DUPLEX call', async t => {
+test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
   t.plan(1)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
@@ -235,33 +236,33 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', async t =
 
   const app = new Mali(PROTO_PATH, 'ArgService')
   app.use({ processStuff })
-  await app.start(APP_HOST)
+  app.start(APP_HOST).then(() => {
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).argservice
+    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.processStuff()
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).argservice
-  const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-  const call = client.processStuff()
+    const resData = []
+    call.on('data', d => {
+      resData.push(d.message)
+    })
 
-  const resData = []
-  call.on('data', d => {
-    resData.push(d.message)
+    call.on('end', () => {
+      endTest()
+    })
+
+    async.eachSeries(getArrayData(), (d, asfn) => {
+      call.write(d)
+      _.delay(asfn, _.random(10, 50))
+    }, () => {
+      call.end()
+    })
+
+    function endTest () {
+      t.is(callType, CallType.DUPLEX)
+      app.close().then(() => t.end())
+    }
   })
-
-  call.on('end', () => {
-    endTest()
-  })
-
-  async.eachSeries(getArrayData(), (d, asfn) => {
-    call.write(d)
-    _.delay(asfn, _.random(10, 50))
-  }, () => {
-    call.end()
-  })
-
-  function endTest () {
-    t.is(callType, CallType.DUPLEX)
-    app.close().then(() => t.end())
-  }
 })
 
 test('getPackageNameFromPath() should get the package name', t => {

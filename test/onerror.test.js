@@ -57,7 +57,7 @@ test('should use err.toString() instad of err.stack', t => {
   t.deepEqual(output, ['\n', '  Error: mock stack null\n', '\n'])
 })
 
-test.cb('should log an error in the handler in req/res app', async t => {
+test.cb('should log an error in the handler in req/res app', t => {
   t.plan(7)
   const APP_HOST = tu.getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
@@ -69,21 +69,22 @@ test.cb('should log an error in the handler in req/res app', async t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = await app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  const inspect = stderr.inspect()
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.truthy(err)
-    t.true(err.message.indexOf('boom') >= 0)
-    t.falsy(response)
-    inspect.restore()
-    const output = Array.isArray(inspect.output) ? inspect.output.join() : inspect.output
-    t.true(output.indexOf('Error: boom') > 0)
-    t.true(output.indexOf('at sayHello') > 0)
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const inspect = stderr.inspect()
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.truthy(err)
+      t.true(err.message.indexOf('boom') >= 0)
+      t.falsy(response)
+      inspect.restore()
+      const output = Array.isArray(inspect.output) ? inspect.output.join() : inspect.output
+      t.true(output.indexOf('Error: boom') > 0)
+      t.true(output.indexOf('at sayHello') > 0)
+      app.close().then(() => t.end())
+    })
   })
 })

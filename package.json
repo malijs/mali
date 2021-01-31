@@ -5,7 +5,7 @@
   "main": "lib/app.js",
   "scripts": {
     "lint": "standard | snazzy",
-    "linttest": "npm run lint && ava -v test/app.context.test.js",
+    "linttest": "ava -v",
     "test": "nyc npm run linttest",
     "coverage": "nyc report --reporter=text-lcov > ./coverage/lcov.info",
     "apidocs": "jsdoc2md lib/*.js >  api2.md",
