@@ -11,7 +11,7 @@ const PROTO_PATH_MULTI = path.resolve(__dirname, './protos/multi.proto')
 
 const apps = []
 
-test.serial('should dynamically create service ', t => {
+test.serial('should dynamically create service ', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -21,12 +21,12 @@ test.serial('should dynamically create service ', t => {
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
   t.is(app.name, 'helloworld.Greeter')
 })
 
-test.serial('should dynamically create service with name', t => {
+test.serial('should dynamically create service with name', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -36,12 +36,12 @@ test.serial('should dynamically create service with name', t => {
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
   t.is(app.name, 'helloworld.Greeter')
 })
 
-test.serial('should dynamically create service without specifying a name and default to the one in proto', t => {
+test.serial('should dynamically create service without specifying a name and default to the one in proto', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -51,14 +51,14 @@ test.serial('should dynamically create service without specifying a name and def
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
   t.is(app.name, 'helloworld.Greeter')
   t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
   t.true(typeof app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0] === 'function')
 })
 
-test.serial('should dynamically create service using addService() without specifying a name and default to the one in proto', t => {
+test.serial('should dynamically create service using addService() without specifying a name and default to the one in proto', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -69,14 +69,14 @@ test.serial('should dynamically create service using addService() without specif
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
   t.is(app.name, 'helloworld.Greeter')
   t.truthy(app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'])
   t.true(typeof app.data['helloworld.Greeter'].handlers['/helloworld.Greeter/SayHello'][0] === 'function')
 })
 
-test.serial('should dynamically create service without a service name', t => {
+test.serial('should dynamically create service without a service name', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -86,11 +86,11 @@ test.serial('should dynamically create service without a service name', t => {
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should statically create service', t => {
+test.serial('should statically create service', async t => {
   const messages = require('./static/helloworld_pb')
   const services = require('./static/helloworld_grpc_pb')
 
@@ -105,11 +105,11 @@ test.serial('should statically create service', t => {
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should statically create service without a service name', t => {
+test.serial('should statically create service without a service name', async t => {
   const messages = require('./static/helloworld_pb')
   const services = require('./static/helloworld_grpc_pb')
 
@@ -124,7 +124,7 @@ test.serial('should statically create service without a service name', t => {
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
@@ -145,7 +145,7 @@ test.serial('should dynamically create service using object specifying root and 
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
   await app.close()
 })
@@ -167,12 +167,12 @@ test.serial('should dynamically create service using object specifying root and 
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
   await app.close()
 })
 
-test.serial('should dynamically create a named service from defition with multiple services', t => {
+test.serial('should dynamically create a named service from defition with multiple services', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -182,11 +182,11 @@ test.serial('should dynamically create a named service from defition with multip
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should dynamically create all named services from defition with multiple services', t => {
+test.serial('should dynamically create all named services from defition with multiple services', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -198,11 +198,11 @@ test.serial('should dynamically create all named services from defition with mul
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should dynamically create all services from defition with multiple services', t => {
+test.serial('should dynamically create all services from defition with multiple services', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -214,11 +214,11 @@ test.serial('should dynamically create all services from defition with multiple 
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should statically create a named service from defition with multiple services', t => {
+test.serial('should statically create a named service from defition with multiple services', async t => {
   const messages = require('./static/multi_pb')
   const services = require('./static/multi_grpc_pb')
 
@@ -233,11 +233,11 @@ test.serial('should statically create a named service from defition with multipl
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should statically create all named services from defition with multiple services', t => {
+test.serial('should statically create all named services from defition with multiple services', async t => {
   const messages = require('./static/multi_pb')
   const services = require('./static/multi_grpc_pb')
 
@@ -254,11 +254,11 @@ test.serial('should statically create all named services from defition with mult
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should statically create all services from defition with multiple services', t => {
+test.serial('should statically create all services from defition with multiple services', async t => {
   const messages = require('./static/multi_pb')
   const services = require('./static/multi_grpc_pb')
 
@@ -275,11 +275,11 @@ test.serial('should statically create all services from defition with multiple s
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
-test.serial('should dynamically create a named service from multi package proto', t => {
+test.serial('should dynamically create a named service from multi package proto', async t => {
   function sayHello (ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -289,7 +289,7 @@ test.serial('should dynamically create a named service from multi package proto'
   apps.push(app)
 
   app.use({ sayHello })
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })
 
@@ -297,7 +297,7 @@ test.after.always('cleanup', async t => {
   await pMap(apps, app => app.close())
 })
 
-test.serial('should dynamically create service from multiple protos', t => {
+test.serial('should dynamically create service from multiple protos', async t => {
   const proto1 = path.resolve(__dirname, './protos/helloworld.proto')
   const proto2 = path.resolve(__dirname, './protos/reqres.proto')
 
@@ -327,6 +327,6 @@ test.serial('should dynamically create service from multiple protos', t => {
   t.true(typeof app.data['argservice.ArgService'].handlers['/argservice.ArgService/DoSomething'][0] === 'function')
   t.is(app.data['argservice.ArgService'].handlers['/argservice.ArgService/DoSomething'][0], doSomething)
 
-  const server = app.start(tu.getHost())
+  const server = await app.start(tu.getHost())
   t.truthy(server)
 })

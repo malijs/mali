@@ -1,6 +1,6 @@
 const test = require('ava')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 const util = require('util')
 const pMap = require('p-map')
 const _ = require('lodash')
@@ -86,7 +86,7 @@ function payloadrot13 (ctx, next) {
   })
 }
 
-test.before('should dynamically create service', t => {
+test.before('should dynamically create service', async t => {
   // Handlers
   async function upper (ctx) {
     ctx.res = {
@@ -140,7 +140,7 @@ test.before('should dynamically create service', t => {
   app.use('rot13', mw1, mw2, mw3, rot13)
   app.use('reverseRot13', reverseMW, mw2, payloadrot13, echo)
   app.use(gmw3)
-  const server = app.start(DYNAMIC_HOST)
+  const server = await app.start(DYNAMIC_HOST)
 
   t.truthy(server)
 })
@@ -272,18 +272,19 @@ test.cb('should compose middleware w/ async functions', t => {
   })
 
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-    t.deepEqual(calls, [1, 2, 3, 4, 5, 6])
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      t.deepEqual(calls, [1, 2, 3, 4, 5, 6])
+      app.close().then(() => t.end())
+    })
   })
 })
 
@@ -315,18 +316,19 @@ test.cb('should not call middleware downstream of one that does not call next', 
   }
 
   app.use('sayHello', fn1, fn2, fn3)
-  const server = app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, 'Hello Bob')
-    t.deepEqual(calls, [1, 2, 5, 6])
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      t.deepEqual(calls, [1, 2, 5, 6])
+      app.close().then(() => t.end())
+    })
   })
 })
 
@@ -361,28 +363,29 @@ test.cb('multi: call multiple services with middleware', t => {
   })
 
   const host = tu.getHost()
-  const server = app.start(host)
-  t.truthy(server)
+  app.start(host).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const proto = grpc.loadPackageDefinition(pd).helloworld
-  const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
-  const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
-  client2.sayHello({ name: 'Bob' }, (err, response) => {
-    t.falsy(err)
-    t.truthy(response)
-    t.is(response.message, ':mw1:Hello Bob')
-
-    client4.sayHello({ name: 'Jane' }, (err, response) => {
+    const pd = pl.loadSync(PROTO_PATH)
+    const proto = grpc.loadPackageDefinition(pd).helloworld
+    const client2 = new proto.Greeter2(host, grpc.credentials.createInsecure())
+    const client4 = new proto.Greeter4(host, grpc.credentials.createInsecure())
+    client2.sayHello({ name: 'Bob' }, (err, response) => {
       t.falsy(err)
       t.truthy(response)
-      t.is(response.message, ':mw1:Hello Jane')
+      t.is(response.message, ':mw1:Hello Bob')
 
-      client4.sayGoodbye({ name: 'Bill' }, (err, response) => {
+      client4.sayHello({ name: 'Jane' }, (err, response) => {
         t.falsy(err)
         t.truthy(response)
-        t.is(response.message, ':Goodbye Bill')
-        app.close().then(() => t.end())
+        t.is(response.message, ':mw1:Hello Jane')
+
+        client4.sayGoodbye({ name: 'Bill' }, (err, response) => {
+          t.falsy(err)
+          t.truthy(response)
+          t.is(response.message, ':Goodbye Bill')
+          app.close().then(() => t.end())
+        })
       })
     })
   })

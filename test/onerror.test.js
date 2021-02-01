@@ -2,7 +2,7 @@ const test = require('ava')
 const { AssertionError } = require('assert')
 const { stderr } = require('test-console')
 const path = require('path')
-const grpc = require('grpc')
+const grpc = require('@grpc/grpc-js')
 
 const Mali = require('../')
 const tu = require('./util')
@@ -69,21 +69,22 @@ test.cb('should log an error in the handler in req/res app', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  const server = app.start(APP_HOST)
-  t.truthy(server)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
 
-  const pd = pl.loadSync(PROTO_PATH)
-  const helloproto = grpc.loadPackageDefinition(pd).helloworld
-  const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-  const inspect = stderr.inspect()
-  client.sayHello({ name: 'Bob' }, (err, response) => {
-    t.truthy(err)
-    t.true(err.message.indexOf('boom') >= 0)
-    t.falsy(response)
-    inspect.restore()
-    const output = Array.isArray(inspect.output) ? inspect.output.join() : inspect.output
-    t.true(output.indexOf('Error: boom') > 0)
-    t.true(output.indexOf('at sayHello') > 0)
-    app.close().then(() => t.end())
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const inspect = stderr.inspect()
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.truthy(err)
+      t.true(err.message.indexOf('boom') >= 0)
+      t.falsy(response)
+      inspect.restore()
+      const output = Array.isArray(inspect.output) ? inspect.output.join() : inspect.output
+      t.true(output.indexOf('Error: boom') > 0)
+      t.true(output.indexOf('at sayHello') > 0)
+      app.close().then(() => t.end())
+    })
   })
 })
