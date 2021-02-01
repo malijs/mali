@@ -60,19 +60,19 @@
     "@grpc/proto-loader": "^0.3.0 || ^0.4.0 || ^0.5.0"
   },
   "devDependencies": {
-    "@grpc/proto-loader": "^0.5.4",
+    "@grpc/proto-loader": "^0.5.6",
     "async": "^3.0.0",
-    "ava": "^3.0.0",
+    "ava": "^3.15.0",
     "coveralls": "^3.0.6",
-    "google-protobuf": "^3.9.1",
+    "google-protobuf": "^3.14.0",
     "grpc": "^1.23.3",
     "highland": "3.0.0-beta.7",
     "is-ci": "^2.0.0",
     "jsdoc-to-markdown": "^6.0.0",
     "lodash": "^4.17.15",
     "nyc": "^15.1.0",
-    "snazzy": "^8.0.0",
-    "standard": "^14.0.0",
+    "snazzy": "^9.0.0",
+    "standard": "^16.0.0",
     "test-console": "^1.1.0"
   },
   "standard": {
