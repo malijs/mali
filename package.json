@@ -56,23 +56,23 @@
     "traverse": "^0.6.6"
   },
   "peerDependencies": {
-    "@grpc/grpc-js": "^1.2.5",
-    "@grpc/proto-loader": "^0.3.0 || ^0.4.0 || ^0.5.0"
+    "@grpc/grpc-js": "^1.2.7",
+    "@grpc/proto-loader": "^0.5.6"
   },
   "devDependencies": {
-    "@grpc/grpc-js": "^1.2.5",
+    "@grpc/grpc-js": "^1.2.7",
     "@grpc/proto-loader": "^0.5.6",
-    "async": "^3.0.0",
+    "async": "^3.2.0",
     "ava": "^3.15.0",
-    "coveralls": "^3.0.6",
+    "coveralls": "^3.1.0",
     "google-protobuf": "^3.14.0",
     "highland": "3.0.0-beta.7",
     "is-ci": "^2.0.0",
-    "jsdoc-to-markdown": "^6.0.0",
-    "lodash": "^4.17.15",
+    "jsdoc-to-markdown": "^6.0.1",
+    "lodash": "^4.17.20",
     "nyc": "^15.1.0",
     "snazzy": "^9.0.0",
-    "standard": "^16.0.0",
+    "standard": "^16.0.3",
     "test-console": "^1.1.0"
   },
   "standard": {
