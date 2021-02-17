@@ -56,8 +56,8 @@
     "traverse": "^0.6.6"
   },
   "peerDependencies": {
-    "@grpc/grpc-js": "^1.2.7",
-    "@grpc/proto-loader": "^0.5.6"
+    "@grpc/grpc-js": "^1.2.0",
+    "@grpc/proto-loader": "^0.3.0 || ^0.4.0 || ^0.5.0"
   },
   "devDependencies": {
     "@grpc/grpc-js": "^1.2.7",
