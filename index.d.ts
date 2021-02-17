@@ -29,7 +29,7 @@ declare class Mali<T> extends EventEmitter implements App<T> {
 
   addService (path: any, name: string | ReadonlyArray<string>, options?: any): void;
   use (service?: any, name?: any, fns?: any): void;
-  start (port: number | string, creds?: any, options?: any): grpc.Server;
+  start (port: number | string, creds?: any, options?: any): Promise<grpc.Server>;
   toJSON (): any;
   close (): Promise<void>;
   inspect (): any;
