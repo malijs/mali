@@ -26,27 +26,27 @@ Represents a gRPC service
 **Extends**: <code>Emitter</code>  
 
 * [Mali](#Mali) ⇐ <code>Emitter</code>
-    * [new Mali(proto, name, options)](#new_Mali_new)
+    * [new Mali(path, name, options)](#new_Mali_new)
     * [.name](#Maliname) : <code>String</code>
     * [.env](#Malienv) : <code>String</code>
     * [.ports](#Maliports) : <code>Array</code>
     * [.silent](#Malisilent) : <code>Boolean</code>
-    * [.addService(proto, name, options)](#MaliaddService)
+    * [.addService(path, name, options)](#MaliaddService)
     * [.use(service, name, ...fns)](#Maliuse)
     * [.onerror(err)](#Malionerror)
-    * [.start(port, creds, options)](#Malistart) ⇒ <code>Object</code>
+    * [.start(port, creds, options)](#Malistart) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [.close()](#Maliclose)
     * [.toJSON()](#MalitoJSON) ⇒ <code>Object</code>
 
 <a name="new_mali_new" id="new_mali_new" data-id="new_mali_new"></a>
 
-#### new Mali(proto, name, options)
+#### new Mali(path, name, options)
 Create a gRPC service
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| proto | <code>String</code> \| <code>Object</code> | Optional path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - Loaded grpc object                              - The static service proto object itself |
+| path | <code>String</code> \| <code>Object</code> | Optional path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - Loaded grpc object                              - The static service proto object itself |
 | name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
@@ -99,7 +99,7 @@ Whether to supress logging errors in <code>onerror</code>. Default: <code>false<
 **Kind**: instance property of [<code>Mali</code>](#Mali)  
 <a name="maliaddservice" id="maliaddservice" data-id="maliaddservice"></a>
 
-#### mali.addService(proto, name, options)
+#### mali.addService(path, name, options)
 Add the service and initialize the app with the proto.
 Basically this can be used if you don't have the data at app construction time for some reason.
 This is different than `grpc.Server.addService()`.
@@ -108,7 +108,7 @@ This is different than `grpc.Server.addService()`.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| proto | <code>String</code> \| <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - Loaded grpc object                              - The static service proto object itself |
+| path | <code>String</code> \| <code>Object</code> | Path to the protocol buffer definition file                              - Object specifying <code>root</code> directory and <code>file</code> to load                              - Loaded grpc object                              - The static service proto object itself |
 | name | <code>Object</code> | Optional name of the service or an array of names. Otherwise all services are used.                      In case of proto path the name of the service as defined in the proto definition.                      In case of proto object the name of the constructor. |
 | options | <code>Object</code> | Options to be passed to <code>grpc.load</code> |
 
@@ -190,12 +190,12 @@ Default error handler.
 
 <a name="malistart" id="malistart" data-id="malistart"></a>
 
-#### mali.start(port, creds, options) ⇒ <code>Object</code>
+#### mali.start(port, creds, options) ⇒ <code>Promise.&lt;Object&gt;</code>
 Start the service. All middleware and handlers have to be set up prior to calling <code>start</code>.
 Throws in case we fail to bind to the given port.
 
 **Kind**: instance method of [<code>Mali</code>](#Mali)  
-**Returns**: <code>Object</code> - server - The <code>grpc.Server</code> instance  
+**Returns**: <code>Promise.&lt;Object&gt;</code> - server - The <code>grpc.Server</code> instance  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -590,7 +590,7 @@ Clients to not create this. Mali does it for us.
     * [.metadata](#Responsemetadata) : <code>Object</code>
     * [.status](#Responsestatus) : <code>Object</code>
     * [.res](#Responseres) : <code>Object</code> \| <code>Stream</code>
-    * [.set(field, val)](#Responseset)
+    * [.set(field, [val])](#Responseset)
     * [.get(field)](#Responseget) ⇒ <code>\*</code>
     * [.getMetadata()](#ResponsegetMetadata) ⇒ <code>Object</code>
     * [.sendMetadata(md)](#ResponsesendMetadata)
@@ -677,7 +677,7 @@ ctx.response.res.push(null);
 ```
 <a name="responseset" id="responseset" data-id="responseset"></a>
 
-#### response.set(field, val)
+#### response.set(field, [val])
 Sets specific response header metadata field value
 
 **Kind**: instance method of [<code>Response</code>](#Response)  
@@ -685,7 +685,7 @@ Sets specific response header metadata field value
 | Param | Type | Description |
 | --- | --- | --- |
 | field | <code>String</code> \| <code>Object</code> | the metadata field name or object for metadata |
-| val | <code>\*</code> | the value of the field |
+| [val] | <code>\*</code> | the value of the field |
 
 **Example** *(Using string field name and value)*  
 ```js
