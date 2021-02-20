@@ -19,6 +19,12 @@
     "name": "Bojan D.",
     "email": "dbojan@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Yagiz Nizipli",
+      "email": "yagiz@nizipli.com"
+    }
+  ],
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/malijs/mali/issues"
