@@ -911,7 +911,7 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        bar: 'biz'
       })
       app.close().then(() => t.end())
     }

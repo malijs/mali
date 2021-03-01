@@ -22,7 +22,7 @@ $ npm install mali @grpc/grpc-js @grpc/proto-loader
 ## Example
 
 ```js
-import Mali from 'mali'
+const Mali = require('mali')
 
 function sayHello (ctx) {
   ctx.res = { message: `Hello ${ctx.req.name}` }
