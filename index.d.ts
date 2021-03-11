@@ -1,18 +1,16 @@
 /// <reference types="node" />
 
 import { EventEmitter } from 'events';
-import { Stream } from 'stream';
 import * as grpc from '@grpc/grpc-js';
-import {Context} from "mali";
 
 type GrpcRequest = any;
 
 type GrpcResponse = any;
 
 type GrpcCall =
-  grpc.ServerUnaryCall<any> |
-  grpc.ServerReadableStream<any> |
-  grpc.ServerWriteableStream<any> |
+  grpc.ServerUnaryCall<any, any> |
+  grpc.ServerReadableStream<any, any> |
+  grpc.ServerWritableStream<any, any> |
   grpc.ServerDuplexStream<any, any>
 
 interface App<T> {
