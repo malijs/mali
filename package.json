@@ -63,10 +63,10 @@
   },
   "peerDependencies": {
     "@grpc/grpc-js": "^1.2.0",
-    "@grpc/proto-loader": "^0.3.0 || ^0.4.0 || ^0.5.0"
+    "@grpc/proto-loader": "^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0"
   },
   "devDependencies": {
-    "@grpc/grpc-js": "^1.2.11",
+    "@grpc/grpc-js": "^1.2.12",
     "@grpc/proto-loader": "^0.5.6",
     "async": "^3.2.0",
     "ava": "^3.15.0",
@@ -74,7 +74,7 @@
     "google-protobuf": "^3.15.6",
     "highland": "3.0.0-beta.7",
     "is-ci": "^3.0.0",
-    "jsdoc-to-markdown": "^7.0.0",
+    "jsdoc-to-markdown": "^7.0.1",
     "lodash": "^4.17.21",
     "nyc": "^15.1.0",
     "snazzy": "^9.0.0",
