@@ -1,4 +1,5 @@
 /* eslint-disable security/detect-object-injection */
+/* eslint-disable security/detect-non-literal-fs-filename */
 import test from 'ava'
 import path from 'path'
 import grpc from '@grpc/grpc-js'
