@@ -49,7 +49,6 @@
     "lodash.camelcase": "^4.3.0",
     "lodash.compact": "^3.0.1",
     "lodash.concat": "^4.5.0",
-    "lodash.find": "^4.6.0",
     "lodash.forown": "^4.4.0",
     "lodash.intersection": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
