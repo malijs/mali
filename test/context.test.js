@@ -1,11 +1,11 @@
-const test = require('ava')
-const CallType = require('@malijs/call-types')
+import test from 'ava'
+import CallType from '@malijs/call-types'
 
-const Request = require('../lib/request')
-const Response = require('../lib/response')
-const Mali = require('../')
+import Request from '../lib/request.js'
+import Response from '../lib/response.js'
+import Mali from '../lib/app.js'
 
-test('createContext should create context for a UNARY call', t => {
+test('createContext should create context for a UNARY call', (t) => {
   const app = new Mali()
   const descriptor = {
     requestStream: false,
@@ -15,15 +15,15 @@ test('createContext should create context for a UNARY call', t => {
     name: 'GetFeature',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/GetFeature'
+    fullName: '/routeguide.RouteGuide/GetFeature',
   }
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const ctx = app._createContext(call, descriptor)
@@ -66,7 +66,7 @@ test('createContext should create context for a UNARY call', t => {
   t.is(ctx.res, ctx.response.res)
 })
 
-test('createContext should create context for a REQUEST_STREAM call', t => {
+test('createContext should create context for a REQUEST_STREAM call', (t) => {
   const app = new Mali()
   const descriptor = {
     requestStream: true,
@@ -76,12 +76,12 @@ test('createContext should create context for a REQUEST_STREAM call', t => {
     name: 'RecordRoute',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/RecordRoute'
+    fullName: '/routeguide.RouteGuide/RecordRoute',
   }
   const call = {
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const ctx = app._createContext(call, descriptor)
@@ -117,7 +117,7 @@ test('createContext should create context for a REQUEST_STREAM call', t => {
   t.falsy(ctx.response.res)
 })
 
-test('createContext should create context for a RESPONSE_STREAM call', t => {
+test('createContext should create context for a RESPONSE_STREAM call', (t) => {
   const app = new Mali()
   const descriptor = {
     requestStream: false,
@@ -127,15 +127,15 @@ test('createContext should create context for a RESPONSE_STREAM call', t => {
     name: 'ListFeatures',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/ListFeatures'
+    fullName: '/routeguide.RouteGuide/ListFeatures',
   }
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const ctx = app._createContext(call, descriptor)
@@ -171,7 +171,7 @@ test('createContext should create context for a RESPONSE_STREAM call', t => {
   t.falsy(ctx.response.res)
 })
 
-test('createContext should create context for a DUPLEX call', t => {
+test('createContext should create context for a DUPLEX call', (t) => {
   const app = new Mali()
   const descriptor = {
     requestStream: true,
@@ -181,12 +181,12 @@ test('createContext should create context for a DUPLEX call', t => {
     name: 'RouteChat',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/RouteChat'
+    fullName: '/routeguide.RouteGuide/RouteChat',
   }
   const call = {
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const ctx = app._createContext(call, descriptor)
@@ -224,7 +224,7 @@ test('createContext should create context for a DUPLEX call', t => {
   t.is(ctx.response.res, ctx.call)
 })
 
-test('context status functions should act on response status', t => {
+test('context status functions should act on response status', (t) => {
   const app = new Mali()
   const descriptor = {
     requestStream: false,
@@ -234,15 +234,15 @@ test('context status functions should act on response status', t => {
     name: 'GetFeature',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/GetFeature'
+    fullName: '/routeguide.RouteGuide/GetFeature',
   }
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const ctx = app._createContext(call, descriptor)
@@ -252,6 +252,6 @@ test('context status functions should act on response status', t => {
   s = ctx.getStatus('baz')
   t.is(s, 'bar')
   t.deepEqual(ctx.response.status, {
-    baz: 'bar'
+    baz: 'bar',
   })
 })

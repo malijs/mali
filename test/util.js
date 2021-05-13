@@ -1,12 +1,9 @@
-const _ = require('lodash')
+import _ from 'lodash'
 
-function getPort () {
+export function getPort() {
   return _.random(1000, 65000)
 }
 
-function getHostport (port) {
+export function getHost(port) {
   return '0.0.0.0:'.concat(port || getPort())
 }
-
-exports.getHost = getHostport
-exports.getPort = getPort

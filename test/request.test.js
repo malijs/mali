@@ -1,14 +1,14 @@
-const test = require('ava')
-const grpc = require('@grpc/grpc-js')
-const CallType = require('@malijs/call-types')
+import test from 'ava'
+import grpc from '@grpc/grpc-js'
+import CallType from '@malijs/call-types'
 
-const Request = require('../lib/request')
+import Request from '../lib/request.js'
 
-test('should create with UNARY type and no metadata', t => {
+test('should create with UNARY type and no metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const req = new Request(call, CallType.UNARY)
@@ -19,14 +19,14 @@ test('should create with UNARY type and no metadata', t => {
   t.falsy(req.metadata)
 })
 
-test('should create with UNARY type with metadata plain object', t => {
+test('should create with UNARY type with metadata plain object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const req = new Request(call, CallType.UNARY)
@@ -38,12 +38,12 @@ test('should create with UNARY type with metadata plain object', t => {
   t.is(req.metadata, call.metadata)
 })
 
-test('should create with UNARY type with metadata object', t => {
+test('should create with UNARY type with metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
-    metadata: new grpc.Metadata()
+    metadata: new grpc.Metadata(),
   }
 
   call.metadata.set('one', 'two')
@@ -57,11 +57,11 @@ test('should create with UNARY type with metadata object', t => {
   t.deepEqual(req.metadata, { one: 'two' })
 })
 
-test('should create with RESPONSE_STREAM type and no metadata', t => {
+test('should create with RESPONSE_STREAM type and no metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const req = new Request(call, CallType.RESPONSE_STREAM)
@@ -72,14 +72,14 @@ test('should create with RESPONSE_STREAM type and no metadata', t => {
   t.falsy(req.metadata)
 })
 
-test('should create with RESPONSE_STREAM type with metadata plain object', t => {
+test('should create with RESPONSE_STREAM type with metadata plain object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const req = new Request(call, CallType.RESPONSE_STREAM)
@@ -91,12 +91,12 @@ test('should create with RESPONSE_STREAM type with metadata plain object', t => 
   t.is(req.metadata, call.metadata)
 })
 
-test('should create with RESPONSE_STREAM type with metadata object', t => {
+test('should create with RESPONSE_STREAM type with metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
-    metadata: new grpc.Metadata()
+    metadata: new grpc.Metadata(),
   }
 
   call.metadata.set('one', 'two')
@@ -110,11 +110,11 @@ test('should create with RESPONSE_STREAM type with metadata object', t => {
   t.deepEqual(req.metadata, { one: 'two' })
 })
 
-test('should create with REQUEST_STREAM type and no metadata', t => {
+test('should create with REQUEST_STREAM type and no metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const req = new Request(call, CallType.REQUEST_STREAM)
@@ -125,14 +125,14 @@ test('should create with REQUEST_STREAM type and no metadata', t => {
   t.falsy(req.metadata)
 })
 
-test('should create with REQUEST_STREAM type with metadata plain object', t => {
+test('should create with REQUEST_STREAM type with metadata plain object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const req = new Request(call, CallType.REQUEST_STREAM)
@@ -144,12 +144,12 @@ test('should create with REQUEST_STREAM type with metadata plain object', t => {
   t.is(req.metadata, call.metadata)
 })
 
-test('should create with REQUEST_STREAM type with metadata object', t => {
+test('should create with REQUEST_STREAM type with metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
-    metadata: new grpc.Metadata()
+    metadata: new grpc.Metadata(),
   }
 
   call.metadata.set('one', 'two')
@@ -163,11 +163,11 @@ test('should create with REQUEST_STREAM type with metadata object', t => {
   t.deepEqual(req.metadata, { one: 'two' })
 })
 
-test('should create with DUPLEX type and no metadata', t => {
+test('should create with DUPLEX type and no metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const req = new Request(call, CallType.DUPLEX)
@@ -178,14 +178,14 @@ test('should create with DUPLEX type and no metadata', t => {
   t.falsy(req.metadata)
 })
 
-test('should create with DUPLEX type with metadata plain object', t => {
+test('should create with DUPLEX type with metadata plain object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const req = new Request(call, CallType.DUPLEX)
@@ -197,12 +197,12 @@ test('should create with DUPLEX type with metadata plain object', t => {
   t.is(req.metadata, call.metadata)
 })
 
-test('should create with DUPLEX type with metadata object', t => {
+test('should create with DUPLEX type with metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
-    metadata: new grpc.Metadata()
+    metadata: new grpc.Metadata(),
   }
 
   call.metadata.set('one', 'two')
@@ -216,11 +216,11 @@ test('should create with DUPLEX type with metadata object', t => {
   t.deepEqual(req.metadata, { one: 'two' })
 })
 
-test('getMetadata() should return undefined when created without metadata', t => {
+test('getMetadata() should return undefined when created without metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const req = new Request(call, CallType.UNARY)
@@ -229,14 +229,14 @@ test('getMetadata() should return undefined when created without metadata', t =>
   t.falsy(md)
 })
 
-test('getMetadata() should return Metadata when created with plain object metadata', t => {
+test('getMetadata() should return Metadata when created with plain object metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const req = new Request(call, CallType.UNARY)
@@ -247,12 +247,12 @@ test('getMetadata() should return Metadata when created with plain object metada
   t.deepEqual(md.getMap(), { one: 'two' })
 })
 
-test('getMetadata() should return Metadata when created with metadata', t => {
+test('getMetadata() should return Metadata when created with metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
-    metadata: new grpc.Metadata()
+    metadata: new grpc.Metadata(),
   }
 
   call.metadata.set('one', 'two')
@@ -265,11 +265,11 @@ test('getMetadata() should return Metadata when created with metadata', t => {
   t.deepEqual(md.getMap(), { one: 'two' })
 })
 
-test('get() should return undefined when created without metadata', t => {
+test('get() should return undefined when created without metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const req = new Request(call, CallType.UNARY)
@@ -278,14 +278,14 @@ test('get() should return undefined when created without metadata', t => {
   t.falsy(v)
 })
 
-test('get() should return Metadata value when created with plain object metadata', t => {
+test('get() should return Metadata value when created with plain object metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
     metadata: {
-      one: 'two'
-    }
+      one: 'two',
+    },
   }
 
   const req = new Request(call, CallType.UNARY)
@@ -297,12 +297,12 @@ test('get() should return Metadata value when created with plain object metadata
   t.falsy(v2)
 })
 
-test('get() should return Metadata value when created with metadata', t => {
+test('get() should return Metadata value when created with metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
+      foo: 'bar',
     },
-    metadata: new grpc.Metadata()
+    metadata: new grpc.Metadata(),
   }
 
   call.metadata.set('one', 'two')

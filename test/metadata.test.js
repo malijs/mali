@@ -1,14 +1,14 @@
-const test = require('ava')
-const path = require('path')
-const grpc = require('@grpc/grpc-js')
-const hl = require('highland')
-const async = require('async')
-const _ = require('lodash')
+import test from 'ava'
+import path from 'path'
+import grpc from '@grpc/grpc-js'
+import hl from 'highland'
+import async from 'async'
+import _ from 'lodash'
 
-const Mali = require('../')
-const tu = require('./util')
+import Mali from '../lib/app.js'
+import { getHost } from './util.js'
 
-const pl = require('@grpc/proto-loader')
+import pl from '@grpc/proto-loader'
 
 const ARRAY_DATA = [
   { message: '1 foo' },
@@ -16,44 +16,59 @@ const ARRAY_DATA = [
   { message: '3 asd' },
   { message: '4 qwe' },
   { message: '5 rty' },
-  { message: '6 zxc' }
+  { message: '6 zxc' },
 ]
 
-function getArrayData () {
+function getArrayData() {
   return _.cloneDeep(ARRAY_DATA)
 }
 
-const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+const PROTO_PATH = path.resolve(
+  path.resolve('./test'),
+  './protos/helloworld.proto',
+)
 const pd = pl.loadSync(PROTO_PATH)
 const helloproto = grpc.loadPackageDefinition(pd).helloworld
 
-const ARG_PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
+const ARG_PROTO_PATH = path.resolve(
+  path.resolve('./test'),
+  './protos/resstream.proto',
+)
 const apd = pl.loadSync(ARG_PROTO_PATH)
 const argproto = grpc.loadPackageDefinition(apd).argservice
 
-const DUPLEX_PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+const DUPLEX_PROTO_PATH = path.resolve(
+  path.resolve('./test'),
+  './protos/duplex.proto',
+)
 const dpd = pl.loadSync(DUPLEX_PROTO_PATH)
 const duplexproto = grpc.loadPackageDefinition(dpd).argservice
 
-test.cb('req/res: no metadata', t => {
+test.cb('req/res: no metadata', (t) => {
   t.plan(14)
-  const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+  const APP_HOST = getHost()
+  const PROTO_PATH = path.resolve(
+    path.resolve('./test'),
+    './protos/helloworld.proto',
+  )
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
 
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
         t.falsy(err)
@@ -74,21 +89,21 @@ test.cb('req/res: no metadata', t => {
       }, 250)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
   })
 })
 
-test.cb('req/res: header metadata set', t => {
+test.cb('req/res: header metadata set', (t) => {
   t.plan(15)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.set('foo', 'bar')
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -96,13 +111,16 @@ test.cb('req/res: header metadata set', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
 
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
         t.falsy(err)
@@ -124,21 +142,21 @@ test.cb('req/res: header metadata set', t => {
       }, 250)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
   })
 })
 
-test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
+test.cb('req/res: header metadata sent using ctx.sendMetadata', (t) => {
   t.plan(15)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.sendMetadata({ baz: 'foo' })
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -146,12 +164,15 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
         t.falsy(err)
@@ -173,72 +194,78 @@ test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
       }, 250)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
   })
 })
 
-test.cb('req/res: header metadata sent using ctx.sendMetadata(Metadata)', t => {
+test.cb(
+  'req/res: header metadata sent using ctx.sendMetadata(Metadata)',
+  (t) => {
+    t.plan(15)
+    const APP_HOST = getHost()
+
+    function sayHello(ctx) {
+      const md = new grpc.Metadata()
+      md.set('foo', 'bar')
+      ctx.sendMetadata(md)
+      ctx.res = { message: 'Hello ' + ctx.req.name }
+    }
+
+    const app = new Mali(PROTO_PATH, 'Greeter')
+    t.truthy(app)
+    app.use({ sayHello })
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
+
+      let metadata
+      let status
+      const client = new helloproto.Greeter(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.sayHello({ name: 'Bob' }, (err, response) => {
+        setTimeout(() => {
+          t.falsy(err)
+          t.truthy(response)
+          t.is(response.message, 'Hello Bob')
+          t.truthy(metadata)
+          t.true(metadata instanceof grpc.Metadata)
+          const header = metadata.getMap()
+          t.is(header.foo, 'bar')
+          t.is(header['content-type'], 'application/grpc+proto')
+          t.truthy(header.date)
+          t.truthy(status)
+          t.true(typeof status.code === 'number')
+          t.truthy(status.metadata)
+          t.true(status.metadata instanceof grpc.Metadata)
+          const trailer = status.metadata.getMap()
+          t.deepEqual(trailer, {})
+          app.close().then(() => t.end())
+        }, 250)
+      })
+
+      call.on('metadata', (md) => {
+        metadata = md
+      })
+
+      call.on('status', (s) => {
+        status = s
+      })
+    })
+  },
+)
+
+test.cb('req/res: header metadata set and sent using ctx.sendMetadata', (t) => {
   t.plan(15)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function sayHello (ctx) {
-    const md = new grpc.Metadata()
-    md.set('foo', 'bar')
-    ctx.sendMetadata(md)
-    ctx.res = { message: 'Hello ' + ctx.req.name }
-  }
-
-  const app = new Mali(PROTO_PATH, 'Greeter')
-  t.truthy(app)
-  app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
-
-    let metadata
-    let status
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.sayHello({ name: 'Bob' }, (err, response) => {
-      setTimeout(() => {
-        t.falsy(err)
-        t.truthy(response)
-        t.is(response.message, 'Hello Bob')
-        t.truthy(metadata)
-        t.true(metadata instanceof grpc.Metadata)
-        const header = metadata.getMap()
-        t.is(header.foo, 'bar')
-        t.is(header['content-type'], 'application/grpc+proto')
-        t.truthy(header.date)
-        t.truthy(status)
-        t.true(typeof status.code === 'number')
-        t.truthy(status.metadata)
-        t.true(status.metadata instanceof grpc.Metadata)
-        const trailer = status.metadata.getMap()
-        t.deepEqual(trailer, {})
-        app.close().then(() => t.end())
-      }, 250)
-    })
-
-    call.on('metadata', md => {
-      metadata = md
-    })
-
-    call.on('status', s => {
-      status = s
-    })
-  })
-})
-
-test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
-  t.plan(15)
-  const APP_HOST = tu.getHost()
-
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.set('foo', 'bar')
     ctx.sendMetadata()
     ctx.res = { message: 'Hello ' + ctx.req.name }
@@ -247,12 +274,15 @@ test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
         t.falsy(err)
@@ -274,74 +304,80 @@ test.cb('req/res: header metadata set and sent using ctx.sendMetadata', t => {
       }, 250)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
-      status = s
-    })
-  })
-})
-
-test.cb('req/res: header metadata set and then new metadata sent using ctx.sendMetadata', t => {
-  t.plan(16)
-  const APP_HOST = tu.getHost()
-
-  function sayHello (ctx) {
-    ctx.set('foo', 'bar')
-    ctx.sendMetadata({ biz: 'baz' })
-    ctx.res = { message: 'Hello ' + ctx.req.name }
-  }
-
-  const app = new Mali(PROTO_PATH, 'Greeter')
-  t.truthy(app)
-  app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
-
-    let metadata
-    let status
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.sayHello({ name: 'Bob' }, (err, response) => {
-      setTimeout(() => {
-        t.falsy(err)
-        t.truthy(response)
-        t.is(response.message, 'Hello Bob')
-        t.truthy(metadata)
-        t.true(metadata instanceof grpc.Metadata)
-        const header = metadata.getMap()
-        t.is(header.biz, 'baz')
-        t.is(header.foo, undefined)
-        t.is(header['content-type'], 'application/grpc+proto')
-        t.truthy(header.date)
-        t.truthy(status)
-        t.true(typeof status.code === 'number')
-        t.truthy(status.metadata)
-        t.true(status.metadata instanceof grpc.Metadata)
-        const trailer = status.metadata.getMap()
-        t.deepEqual(trailer, {})
-        app.close().then(() => t.end())
-      }, 250)
-    })
-
-    call.on('metadata', md => {
-      metadata = md
-    })
-
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
   })
 })
 
 test.cb(
-  'req/res: header metadata ctx.sendMetadata and then set new metadata, should get first',
-  t => {
+  'req/res: header metadata set and then new metadata sent using ctx.sendMetadata',
+  (t) => {
     t.plan(16)
-    const APP_HOST = tu.getHost()
+    const APP_HOST = getHost()
 
-    function sayHello (ctx) {
+    function sayHello(ctx) {
+      ctx.set('foo', 'bar')
+      ctx.sendMetadata({ biz: 'baz' })
+      ctx.res = { message: 'Hello ' + ctx.req.name }
+    }
+
+    const app = new Mali(PROTO_PATH, 'Greeter')
+    t.truthy(app)
+    app.use({ sayHello })
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
+
+      let metadata
+      let status
+      const client = new helloproto.Greeter(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.sayHello({ name: 'Bob' }, (err, response) => {
+        setTimeout(() => {
+          t.falsy(err)
+          t.truthy(response)
+          t.is(response.message, 'Hello Bob')
+          t.truthy(metadata)
+          t.true(metadata instanceof grpc.Metadata)
+          const header = metadata.getMap()
+          t.is(header.biz, 'baz')
+          t.is(header.foo, undefined)
+          t.is(header['content-type'], 'application/grpc+proto')
+          t.truthy(header.date)
+          t.truthy(status)
+          t.true(typeof status.code === 'number')
+          t.truthy(status.metadata)
+          t.true(status.metadata instanceof grpc.Metadata)
+          const trailer = status.metadata.getMap()
+          t.deepEqual(trailer, {})
+          app.close().then(() => t.end())
+        }, 250)
+      })
+
+      call.on('metadata', (md) => {
+        metadata = md
+      })
+
+      call.on('status', (s) => {
+        status = s
+      })
+    })
+  },
+)
+
+test.cb(
+  'req/res: header metadata ctx.sendMetadata and then set new metadata, should get first',
+  (t) => {
+    t.plan(16)
+    const APP_HOST = getHost()
+
+    function sayHello(ctx) {
       ctx.sendMetadata({ biz: 'baz' })
       ctx.set('foo', 'bar')
       ctx.res = { message: 'Hello ' + ctx.req.name }
@@ -350,12 +386,15 @@ test.cb(
     const app = new Mali(PROTO_PATH, 'Greeter')
     t.truthy(app)
     app.use({ sayHello })
-    app.start(APP_HOST).then(server => {
+    app.start(APP_HOST).then((server) => {
       t.truthy(server)
 
       let metadata
       let status
-      const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+      const client = new helloproto.Greeter(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
       const call = client.sayHello({ name: 'Bob' }, (err, response) => {
         setTimeout(() => {
           t.falsy(err)
@@ -378,24 +417,24 @@ test.cb(
         }, 250)
       })
 
-      call.on('metadata', md => {
+      call.on('metadata', (md) => {
         metadata = md
       })
 
-      call.on('status', s => {
+      call.on('status', (s) => {
         status = s
       })
     })
-  }
+  },
 )
 
 test.cb(
   'req/res: header metadata send invalid param usingctx.sendMetadata and then set new metadata, should get 2nd',
-  t => {
+  (t) => {
     t.plan(15)
-    const APP_HOST = tu.getHost()
+    const APP_HOST = getHost()
 
-    function sayHello (ctx) {
+    function sayHello(ctx) {
       ctx.set('foo', 'bar')
       ctx.sendMetadata(1)
       ctx.res = { message: 'Hello ' + ctx.req.name }
@@ -404,12 +443,15 @@ test.cb(
     const app = new Mali(PROTO_PATH, 'Greeter')
     t.truthy(app)
     app.use({ sayHello })
-    app.start(APP_HOST).then(server => {
+    app.start(APP_HOST).then((server) => {
       t.truthy(server)
 
       let metadata
       let status
-      const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+      const client = new helloproto.Greeter(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
       const call = client.sayHello({ name: 'Bob' }, (err, response) => {
         setTimeout(() => {
           t.falsy(err)
@@ -431,22 +473,22 @@ test.cb(
         }, 250)
       })
 
-      call.on('metadata', md => {
+      call.on('metadata', (md) => {
         metadata = md
       })
 
-      call.on('status', s => {
+      call.on('status', (s) => {
         status = s
       })
     })
-  }
+  },
 )
 
-test.cb('req/res: trailer metadata set', t => {
+test.cb('req/res: trailer metadata set', (t) => {
   t.plan(14)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.setStatus('foo', 'bar')
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
@@ -454,12 +496,15 @@ test.cb('req/res: trailer metadata set', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
         t.falsy(err)
@@ -476,27 +521,27 @@ test.cb('req/res: trailer metadata set', t => {
         t.true(status.metadata instanceof grpc.Metadata)
         const trailer = status.metadata.getMap()
         t.deepEqual(trailer, {
-          foo: 'bar'
+          foo: 'bar',
         })
         app.close().then(() => t.end())
       }, 250)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
   })
 })
 
-test.cb('req/res: header and trailer metadata set', t => {
+test.cb('req/res: header and trailer metadata set', (t) => {
   t.plan(15)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.set('asdf', 'qwerty')
     ctx.setStatus('foo', 'bar')
     ctx.res = { message: 'Hello ' + ctx.req.name }
@@ -505,12 +550,15 @@ test.cb('req/res: header and trailer metadata set', t => {
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.sayHello({ name: 'Bob' }, (err, response) => {
       setTimeout(() => {
         t.falsy(err)
@@ -528,28 +576,28 @@ test.cb('req/res: header and trailer metadata set', t => {
         t.true(status.metadata instanceof grpc.Metadata)
         const trailer = status.metadata.getMap()
         t.deepEqual(trailer, {
-          foo: 'bar'
+          foo: 'bar',
         })
         app.close().then(() => t.end())
       }, 250)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
   })
 })
 
-test.cb('res stream: no metadata', t => {
+test.cb('res stream: no metadata', (t) => {
   t.plan(12)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function listStuff (ctx) {
-    ctx.res = hl(getArrayData()).map(d => {
+  function listStuff(ctx) {
+    ctx.res = hl(getArrayData()).map((d) => {
       d.message = d.message.toUpperCase()
       return d
     })
@@ -558,16 +606,19 @@ test.cb('res stream: no metadata', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new argproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.listStuff({ message: 'Hello' })
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -577,16 +628,23 @@ test.cb('res stream: no metadata', t => {
       }, 200)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -603,13 +661,13 @@ test.cb('res stream: no metadata', t => {
   })
 })
 
-test.cb('res stream: header metadata set', t => {
+test.cb('res stream: header metadata set', (t) => {
   t.plan(13)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function listStuff (ctx) {
+  function listStuff(ctx) {
     ctx.set('foo', 'bar')
-    ctx.res = hl(getArrayData()).map(d => {
+    ctx.res = hl(getArrayData()).map((d) => {
       d.message = d.message.toUpperCase()
       return d
     })
@@ -618,16 +676,19 @@ test.cb('res stream: header metadata set', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new argproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.listStuff({ message: 'Hello' })
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -637,16 +698,23 @@ test.cb('res stream: header metadata set', t => {
       }, 200)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -664,13 +732,13 @@ test.cb('res stream: header metadata set', t => {
   })
 })
 
-test.cb('res stream: header metadata sendMetadata(object)', t => {
+test.cb('res stream: header metadata sendMetadata(object)', (t) => {
   t.plan(13)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function listStuff (ctx) {
+  function listStuff(ctx) {
     ctx.sendMetadata({ foo: 'bar' })
-    ctx.res = hl(getArrayData()).map(d => {
+    ctx.res = hl(getArrayData()).map((d) => {
       d.message = d.message.toUpperCase()
       return d
     })
@@ -679,16 +747,19 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new argproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.listStuff({ message: 'Hello' })
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -698,16 +769,23 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
       }, 200)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -727,14 +805,14 @@ test.cb('res stream: header metadata sendMetadata(object)', t => {
 
 test.cb(
   'res stream: header metadata sendMetadata(object) with set after, set should not be sent',
-  t => {
+  (t) => {
     t.plan(13)
-    const APP_HOST = tu.getHost()
+    const APP_HOST = getHost()
 
-    function listStuff (ctx) {
+    function listStuff(ctx) {
       ctx.sendMetadata({ asdf: 'qwerty' })
       ctx.set('biz', 'baz')
-      ctx.res = hl(getArrayData()).map(d => {
+      ctx.res = hl(getArrayData()).map((d) => {
         d.message = d.message.toUpperCase()
         return d
       })
@@ -743,16 +821,19 @@ test.cb(
     const app = new Mali(ARG_PROTO_PATH, 'ArgService')
     t.truthy(app)
     app.use({ listStuff })
-    app.start(APP_HOST).then(server => {
+    app.start(APP_HOST).then((server) => {
       t.truthy(server)
 
       let metadata
       let status
-      const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+      const client = new argproto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
       const call = client.listStuff({ message: 'Hello' })
 
       const resData = []
-      call.on('data', d => {
+      call.on('data', (d) => {
         resData.push(d.message)
       })
 
@@ -762,16 +843,23 @@ test.cb(
         }, 200)
       })
 
-      call.on('metadata', md => {
+      call.on('metadata', (md) => {
         metadata = md
       })
 
-      call.on('status', s => {
+      call.on('status', (s) => {
         status = s
       })
 
-      function endTest () {
-        t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+      function endTest() {
+        t.deepEqual(resData, [
+          '1 FOO',
+          '2 BAR',
+          '3 ASD',
+          '4 QWE',
+          '5 RTY',
+          '6 ZXC',
+        ])
         t.truthy(metadata)
         t.true(metadata instanceof grpc.Metadata)
         const header = metadata.getMap()
@@ -787,16 +875,16 @@ test.cb(
         app.close().then(() => t.end())
       }
     })
-  }
+  },
 )
 
-test.cb('res stream: trailer metadata set', t => {
+test.cb('res stream: trailer metadata set', (t) => {
   t.plan(12)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function listStuff (ctx) {
+  function listStuff(ctx) {
     ctx.setStatus('foo', 'bar')
-    ctx.res = hl(getArrayData()).map(d => {
+    ctx.res = hl(getArrayData()).map((d) => {
       d.message = d.message.toUpperCase()
       return d
     })
@@ -805,16 +893,19 @@ test.cb('res stream: trailer metadata set', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new argproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.listStuff({ message: 'Hello' })
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -824,16 +915,23 @@ test.cb('res stream: trailer metadata set', t => {
       }, 200)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -845,219 +943,258 @@ test.cb('res stream: trailer metadata set', t => {
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        foo: 'bar',
       })
       app.close().then(() => t.end())
     }
   })
 })
 
-test.cb('res stream: trailer metadata set and also sent using res.end() should get 2nd', t => {
-  t.plan(12)
-  const APP_HOST = tu.getHost()
+test.cb(
+  'res stream: trailer metadata set and also sent using res.end() should get 2nd',
+  (t) => {
+    t.plan(12)
+    const APP_HOST = getHost()
 
-  function listStuff (ctx) {
-    ctx.setStatus('foo', 'bar')
-    ctx.res = hl(getArrayData())
-      .map(d => {
-        d.message = d.message.toUpperCase()
-        return d
-      })
-      .on('end', () => {
-        ctx.call.end({ bar: 'biz' })
-      })
-  }
-
-  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
-  t.truthy(app)
-  app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
-
-    let metadata
-    let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.listStuff({ message: 'Hello' })
-
-    const resData = []
-    call.on('data', d => {
-      resData.push(d.message)
-    })
-
-    call.on('end', () => {
-      _.delay(() => {
-        endTest()
-      }, 200)
-    })
-
-    call.on('metadata', md => {
-      metadata = md
-    })
-
-    call.on('status', s => {
-      status = s
-    })
-
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-      t.truthy(metadata)
-      t.true(metadata instanceof grpc.Metadata)
-      const header = metadata.getMap()
-      t.is(header['content-type'], 'application/grpc+proto')
-      t.truthy(header.date)
-      t.truthy(status)
-      t.true(typeof status.code === 'number')
-      t.truthy(status.metadata)
-      t.true(status.metadata instanceof grpc.Metadata)
-      const trailer = status.metadata.getMap()
-      t.deepEqual(trailer, {
-        bar: 'biz'
-      })
-      app.close().then(() => t.end())
+    function listStuff(ctx) {
+      ctx.setStatus('foo', 'bar')
+      ctx.res = hl(getArrayData())
+        .map((d) => {
+          d.message = d.message.toUpperCase()
+          return d
+        })
+        .on('end', () => {
+          ctx.call.end({ bar: 'biz' })
+        })
     }
-  })
-})
 
-test.cb('res stream: trailer metadata set and also use empty res.end() should get 1st', t => {
-  t.plan(12)
-  const APP_HOST = tu.getHost()
+    const app = new Mali(ARG_PROTO_PATH, 'ArgService')
+    t.truthy(app)
+    app.use({ listStuff })
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
 
-  function listStuff (ctx) {
-    ctx.setStatus('foo', 'bar')
-    ctx.res = hl(getArrayData())
-      .map(d => {
-        d.message = d.message.toUpperCase()
-        return d
+      let metadata
+      let status
+      const client = new argproto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.listStuff({ message: 'Hello' })
+
+      const resData = []
+      call.on('data', (d) => {
+        resData.push(d.message)
       })
-      .on('end', () => {
-        ctx.call.end()
+
+      call.on('end', () => {
+        _.delay(() => {
+          endTest()
+        }, 200)
       })
-  }
 
-  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
-  t.truthy(app)
-  app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
-
-    let metadata
-    let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.listStuff({ message: 'Hello' })
-
-    const resData = []
-    call.on('data', d => {
-      resData.push(d.message)
-    })
-
-    call.on('end', () => {
-      _.delay(() => {
-        endTest()
-      }, 200)
-    })
-
-    call.on('metadata', md => {
-      metadata = md
-    })
-
-    call.on('status', s => {
-      status = s
-    })
-
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-      t.truthy(metadata)
-      t.true(metadata instanceof grpc.Metadata)
-      const header = metadata.getMap()
-      t.is(header['content-type'], 'application/grpc+proto')
-      t.truthy(header.date)
-      t.truthy(status)
-      t.true(typeof status.code === 'number')
-      t.truthy(status.metadata)
-      t.true(status.metadata instanceof grpc.Metadata)
-      const trailer = status.metadata.getMap()
-      t.deepEqual(trailer, {
-        foo: 'bar'
+      call.on('metadata', (md) => {
+        metadata = md
       })
-      app.close().then(() => t.end())
+
+      call.on('status', (s) => {
+        status = s
+      })
+
+      function endTest() {
+        t.deepEqual(resData, [
+          '1 FOO',
+          '2 BAR',
+          '3 ASD',
+          '4 QWE',
+          '5 RTY',
+          '6 ZXC',
+        ])
+        t.truthy(metadata)
+        t.true(metadata instanceof grpc.Metadata)
+        const header = metadata.getMap()
+        t.is(header['content-type'], 'application/grpc+proto')
+        t.truthy(header.date)
+        t.truthy(status)
+        t.true(typeof status.code === 'number')
+        t.truthy(status.metadata)
+        t.true(status.metadata instanceof grpc.Metadata)
+        const trailer = status.metadata.getMap()
+        t.deepEqual(trailer, {
+          bar: 'biz',
+        })
+        app.close().then(() => t.end())
+      }
+    })
+  },
+)
+
+test.cb(
+  'res stream: trailer metadata set and also use empty res.end() should get 1st',
+  (t) => {
+    t.plan(12)
+    const APP_HOST = getHost()
+
+    function listStuff(ctx) {
+      ctx.setStatus('foo', 'bar')
+      ctx.res = hl(getArrayData())
+        .map((d) => {
+          d.message = d.message.toUpperCase()
+          return d
+        })
+        .on('end', () => {
+          ctx.call.end()
+        })
     }
-  })
-})
 
-test.cb('res stream: trailer metadata set and also use invalid res.end() should get 1st', t => {
-  t.plan(12)
-  const APP_HOST = tu.getHost()
+    const app = new Mali(ARG_PROTO_PATH, 'ArgService')
+    t.truthy(app)
+    app.use({ listStuff })
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
 
-  function listStuff (ctx) {
-    ctx.setStatus('foo', 'bar')
-    ctx.res = hl(getArrayData())
-      .map(d => {
-        d.message = d.message.toUpperCase()
-        return d
+      let metadata
+      let status
+      const client = new argproto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.listStuff({ message: 'Hello' })
+
+      const resData = []
+      call.on('data', (d) => {
+        resData.push(d.message)
       })
-      .on('end', () => {
-        ctx.call.end(1)
+
+      call.on('end', () => {
+        _.delay(() => {
+          endTest()
+        }, 200)
       })
-  }
 
-  const app = new Mali(ARG_PROTO_PATH, 'ArgService')
-  t.truthy(app)
-  app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
-
-    let metadata
-    let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.listStuff({ message: 'Hello' })
-
-    const resData = []
-    call.on('data', d => {
-      resData.push(d.message)
-    })
-
-    call.on('end', () => {
-      _.delay(() => {
-        endTest()
-      }, 200)
-    })
-
-    call.on('metadata', md => {
-      metadata = md
-    })
-
-    call.on('status', s => {
-      status = s
-    })
-
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-      t.truthy(metadata)
-      t.true(metadata instanceof grpc.Metadata)
-      const header = metadata.getMap()
-      t.is(header['content-type'], 'application/grpc+proto')
-      t.truthy(header.date)
-      t.truthy(status)
-      t.true(typeof status.code === 'number')
-      t.truthy(status.metadata)
-      t.true(status.metadata instanceof grpc.Metadata)
-      const trailer = status.metadata.getMap()
-      t.deepEqual(trailer, {
-        foo: 'bar'
+      call.on('metadata', (md) => {
+        metadata = md
       })
-      app.close().then(() => t.end())
+
+      call.on('status', (s) => {
+        status = s
+      })
+
+      function endTest() {
+        t.deepEqual(resData, [
+          '1 FOO',
+          '2 BAR',
+          '3 ASD',
+          '4 QWE',
+          '5 RTY',
+          '6 ZXC',
+        ])
+        t.truthy(metadata)
+        t.true(metadata instanceof grpc.Metadata)
+        const header = metadata.getMap()
+        t.is(header['content-type'], 'application/grpc+proto')
+        t.truthy(header.date)
+        t.truthy(status)
+        t.true(typeof status.code === 'number')
+        t.truthy(status.metadata)
+        t.true(status.metadata instanceof grpc.Metadata)
+        const trailer = status.metadata.getMap()
+        t.deepEqual(trailer, {
+          foo: 'bar',
+        })
+        app.close().then(() => t.end())
+      }
+    })
+  },
+)
+
+test.cb(
+  'res stream: trailer metadata set and also use invalid res.end() should get 1st',
+  (t) => {
+    t.plan(12)
+    const APP_HOST = getHost()
+
+    function listStuff(ctx) {
+      ctx.setStatus('foo', 'bar')
+      ctx.res = hl(getArrayData())
+        .map((d) => {
+          d.message = d.message.toUpperCase()
+          return d
+        })
+        .on('end', () => {
+          ctx.call.end(1)
+        })
     }
-  })
-})
 
-test.cb('res stream: header and trailer metadata set', t => {
+    const app = new Mali(ARG_PROTO_PATH, 'ArgService')
+    t.truthy(app)
+    app.use({ listStuff })
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
+
+      let metadata
+      let status
+      const client = new argproto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.listStuff({ message: 'Hello' })
+
+      const resData = []
+      call.on('data', (d) => {
+        resData.push(d.message)
+      })
+
+      call.on('end', () => {
+        _.delay(() => {
+          endTest()
+        }, 200)
+      })
+
+      call.on('metadata', (md) => {
+        metadata = md
+      })
+
+      call.on('status', (s) => {
+        status = s
+      })
+
+      function endTest() {
+        t.deepEqual(resData, [
+          '1 FOO',
+          '2 BAR',
+          '3 ASD',
+          '4 QWE',
+          '5 RTY',
+          '6 ZXC',
+        ])
+        t.truthy(metadata)
+        t.true(metadata instanceof grpc.Metadata)
+        const header = metadata.getMap()
+        t.is(header['content-type'], 'application/grpc+proto')
+        t.truthy(header.date)
+        t.truthy(status)
+        t.true(typeof status.code === 'number')
+        t.truthy(status.metadata)
+        t.true(status.metadata instanceof grpc.Metadata)
+        const trailer = status.metadata.getMap()
+        t.deepEqual(trailer, {
+          foo: 'bar',
+        })
+        app.close().then(() => t.end())
+      }
+    })
+  },
+)
+
+test.cb('res stream: header and trailer metadata set', (t) => {
   t.plan(13)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  function listStuff (ctx) {
+  function listStuff(ctx) {
     ctx.set('asdf', 'qwerty')
     ctx.setStatus('foo', 'bar')
-    ctx.res = hl(getArrayData()).map(d => {
+    ctx.res = hl(getArrayData()).map((d) => {
       d.message = d.message.toUpperCase()
       return d
     })
@@ -1066,16 +1203,19 @@ test.cb('res stream: header and trailer metadata set', t => {
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
   t.truthy(app)
   app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new argproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new argproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.listStuff({ message: 'Hello' })
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1085,16 +1225,23 @@ test.cb('res stream: header and trailer metadata set', t => {
       }, 200)
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1107,23 +1254,23 @@ test.cb('res stream: header and trailer metadata set', t => {
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        foo: 'bar',
       })
       app.close().then(() => t.end())
     }
   })
 })
 
-test.cb('duplex: no metadata', t => {
+test.cb('duplex: no metadata', (t) => {
   t.plan(12)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  async function processStuff (ctx) {
-    ctx.req.on('data', d => {
+  async function processStuff(ctx) {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1141,16 +1288,19 @@ test.cb('duplex: no metadata', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1158,11 +1308,11 @@ test.cb('duplex: no metadata', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1174,11 +1324,18 @@ test.cb('duplex: no metadata', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1195,17 +1352,17 @@ test.cb('duplex: no metadata', t => {
   })
 })
 
-test.cb('duplex: header metadata set', t => {
+test.cb('duplex: header metadata set', (t) => {
   t.plan(13)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  async function processStuff (ctx) {
+  async function processStuff(ctx) {
     ctx.set('foo', 'bar')
-    ctx.req.on('data', d => {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1223,16 +1380,19 @@ test.cb('duplex: header metadata set', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1240,11 +1400,11 @@ test.cb('duplex: header metadata set', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1256,11 +1416,18 @@ test.cb('duplex: header metadata set', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1278,16 +1445,16 @@ test.cb('duplex: header metadata set', t => {
   })
 })
 
-test.cb('duplex: header metadata sendMetadata(object)', t => {
+test.cb('duplex: header metadata sendMetadata(object)', (t) => {
   t.plan(13)
-  const APP_HOST = tu.getHost()
-  async function processStuff (ctx) {
+  const APP_HOST = getHost()
+  async function processStuff(ctx) {
     ctx.sendMetadata({ foo: 'bar' })
-    ctx.req.on('data', d => {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1305,16 +1472,19 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1322,11 +1492,11 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1338,11 +1508,18 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1360,100 +1537,113 @@ test.cb('duplex: header metadata sendMetadata(object)', t => {
   })
 })
 
-test.cb('duplex: header metadata sendMetadata(object) with set after, set no effect', t => {
-  t.plan(13)
-  const APP_HOST = tu.getHost()
-  async function processStuff (ctx) {
-    ctx.sendMetadata({ asdf: 'qwerty' })
-    ctx.set('foo', 'bar')
-    ctx.req.on('data', d => {
-      ctx.req.pause()
-      _.delay(() => {
-        const ret = {
-          message: d.message.toUpperCase()
-        }
-        ctx.res.write(ret)
-        ctx.req.resume()
-      }, _.random(50, 150))
-    })
+test.cb(
+  'duplex: header metadata sendMetadata(object) with set after, set no effect',
+  (t) => {
+    t.plan(13)
+    const APP_HOST = getHost()
+    async function processStuff(ctx) {
+      ctx.sendMetadata({ asdf: 'qwerty' })
+      ctx.set('foo', 'bar')
+      ctx.req.on('data', (d) => {
+        ctx.req.pause()
+        _.delay(() => {
+          const ret = {
+            message: d.message.toUpperCase(),
+          }
+          ctx.res.write(ret)
+          ctx.req.resume()
+        }, _.random(50, 150))
+      })
 
-    ctx.req.on('end', () => {
-      _.delay(() => {
-        ctx.res.end()
-      }, 200)
-    })
-  }
-
-  const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
-  t.truthy(app)
-
-  app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
-
-    let metadata
-    let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.processStuff()
-
-    const resData = []
-    call.on('data', d => {
-      resData.push(d.message)
-    })
-
-    call.on('end', () => {
-      endTest()
-    })
-
-    call.on('metadata', md => {
-      metadata = md
-    })
-
-    call.on('status', s => {
-      status = s
-    })
-
-    async.eachSeries(
-      getArrayData(),
-      (d, asfn) => {
-        call.write(d)
-        _.delay(asfn, _.random(10, 50))
-      },
-      () => {
-        call.end()
-      }
-    )
-
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
-      t.truthy(metadata)
-      t.true(metadata instanceof grpc.Metadata)
-      const header = metadata.getMap()
-      t.is(header.asdf, 'qwerty')
-      t.is(header['content-type'], 'application/grpc+proto')
-      t.truthy(header.date)
-      t.truthy(status)
-      t.true(typeof status.code === 'number')
-      t.truthy(status.metadata)
-      t.true(status.metadata instanceof grpc.Metadata)
-      const trailer = status.metadata.getMap()
-      t.deepEqual(trailer, {})
-      app.close().then(() => t.end())
+      ctx.req.on('end', () => {
+        _.delay(() => {
+          ctx.res.end()
+        }, 200)
+      })
     }
-  })
-})
 
-test.cb('duplex: trailer metadata', t => {
+    const app = new Mali(DUPLEX_PROTO_PATH, 'ArgService')
+    t.truthy(app)
+
+    app.use({ processStuff })
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
+
+      let metadata
+      let status
+      const client = new duplexproto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.processStuff()
+
+      const resData = []
+      call.on('data', (d) => {
+        resData.push(d.message)
+      })
+
+      call.on('end', () => {
+        endTest()
+      })
+
+      call.on('metadata', (md) => {
+        metadata = md
+      })
+
+      call.on('status', (s) => {
+        status = s
+      })
+
+      async.eachSeries(
+        getArrayData(),
+        (d, asfn) => {
+          call.write(d)
+          _.delay(asfn, _.random(10, 50))
+        },
+        () => {
+          call.end()
+        },
+      )
+
+      function endTest() {
+        t.deepEqual(resData, [
+          '1 FOO',
+          '2 BAR',
+          '3 ASD',
+          '4 QWE',
+          '5 RTY',
+          '6 ZXC',
+        ])
+        t.truthy(metadata)
+        t.true(metadata instanceof grpc.Metadata)
+        const header = metadata.getMap()
+        t.is(header.asdf, 'qwerty')
+        t.is(header['content-type'], 'application/grpc+proto')
+        t.truthy(header.date)
+        t.truthy(status)
+        t.true(typeof status.code === 'number')
+        t.truthy(status.metadata)
+        t.true(status.metadata instanceof grpc.Metadata)
+        const trailer = status.metadata.getMap()
+        t.deepEqual(trailer, {})
+        app.close().then(() => t.end())
+      }
+    })
+  },
+)
+
+test.cb('duplex: trailer metadata', (t) => {
   t.plan(12)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  async function processStuff (ctx) {
+  async function processStuff(ctx) {
     ctx.setStatus('foo', 'bar')
-    ctx.req.on('data', d => {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1471,16 +1661,19 @@ test.cb('duplex: trailer metadata', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1488,11 +1681,11 @@ test.cb('duplex: trailer metadata', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1504,11 +1697,18 @@ test.cb('duplex: trailer metadata', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1520,23 +1720,23 @@ test.cb('duplex: trailer metadata', t => {
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        foo: 'bar',
       })
       app.close().then(() => t.end())
     }
   })
 })
 
-test.cb('duplex: trailer metadata using end()', t => {
+test.cb('duplex: trailer metadata using end()', (t) => {
   t.plan(12)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  async function processStuff (ctx) {
-    ctx.req.on('data', d => {
+  async function processStuff(ctx) {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1554,16 +1754,19 @@ test.cb('duplex: trailer metadata using end()', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1571,11 +1774,11 @@ test.cb('duplex: trailer metadata using end()', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1587,11 +1790,18 @@ test.cb('duplex: trailer metadata using end()', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1603,24 +1813,24 @@ test.cb('duplex: trailer metadata using end()', t => {
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        foo: 'bar',
       })
       app.close().then(() => t.end())
     }
   })
 })
 
-test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
+test.cb('duplex: trailer metadata valid setStatus() and invalid end()', (t) => {
   t.plan(12)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
 
-  async function processStuff (ctx) {
+  async function processStuff(ctx) {
     ctx.setStatus('foo', 'bar')
-    ctx.req.on('data', d => {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1638,16 +1848,19 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1655,11 +1868,11 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1671,11 +1884,18 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1687,24 +1907,24 @@ test.cb('duplex: trailer metadata valid setStatus() and invalid end()', t => {
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        foo: 'bar',
       })
       app.close().then(() => t.end())
     }
   })
 })
 
-test.cb('duplex: header and trailer metadata', t => {
+test.cb('duplex: header and trailer metadata', (t) => {
   t.plan(13)
-  const APP_HOST = tu.getHost()
-  async function processStuff (ctx) {
+  const APP_HOST = getHost()
+  async function processStuff(ctx) {
     ctx.set('asdf', 'qwerty')
     ctx.setStatus('foo', 'bar')
-    ctx.req.on('data', d => {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -1722,16 +1942,19 @@ test.cb('duplex: header and trailer metadata', t => {
   t.truthy(app)
 
   app.use({ processStuff })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     let metadata
     let status
-    const client = new duplexproto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new duplexproto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -1739,11 +1962,11 @@ test.cb('duplex: header and trailer metadata', t => {
       endTest()
     })
 
-    call.on('metadata', md => {
+    call.on('metadata', (md) => {
       metadata = md
     })
 
-    call.on('status', s => {
+    call.on('status', (s) => {
       status = s
     })
 
@@ -1755,11 +1978,18 @@ test.cb('duplex: header and trailer metadata', t => {
       },
       () => {
         call.end()
-      }
+      },
     )
 
-    function endTest () {
-      t.deepEqual(resData, ['1 FOO', '2 BAR', '3 ASD', '4 QWE', '5 RTY', '6 ZXC'])
+    function endTest() {
+      t.deepEqual(resData, [
+        '1 FOO',
+        '2 BAR',
+        '3 ASD',
+        '4 QWE',
+        '5 RTY',
+        '6 ZXC',
+      ])
       t.truthy(metadata)
       t.true(metadata instanceof grpc.Metadata)
       const header = metadata.getMap()
@@ -1772,7 +2002,7 @@ test.cb('duplex: header and trailer metadata', t => {
       t.true(status.metadata instanceof grpc.Metadata)
       const trailer = status.metadata.getMap()
       t.deepEqual(trailer, {
-        foo: 'bar'
+        foo: 'bar',
       })
       app.close().then(() => t.end())
     }

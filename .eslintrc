@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "plugin:prettier/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:security/recommended"
+  ],
+  "plugins": ["prettier", "import", "security"],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    },
+    "ecmaVersion": 2020
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "import/extensions": ["error", "always", { "ignorePackages": true }]
+  }
+}

@@ -1,14 +1,14 @@
-const test = require('ava')
-const path = require('path')
-const grpc = require('@grpc/grpc-js')
-const CallType = require('@malijs/call-types')
-const hl = require('highland')
-const _ = require('lodash')
-const async = require('async')
+import test from 'ava'
+import path from 'path'
+import grpc from '@grpc/grpc-js'
+import CallType from '@malijs/call-types'
+import hl from 'highland'
+import _ from 'lodash'
+import async from 'async'
 
-const tu = require('./util')
-const Mali = require('../')
-const utils = require('../lib/utils')
+import { getHost, getPort } from './util.js'
+import Mali from '../lib/app.js'
+import utils from '../lib/utils.js'
 
 const pl = require('@grpc/proto-loader')
 
@@ -18,14 +18,14 @@ const ARRAY_DATA = [
   { message: '3 asd' },
   { message: '4 qwe' },
   { message: '5 rty' },
-  { message: '6 zxc' }
+  { message: '6 zxc' },
 ]
 
-function getArrayData () {
+function getArrayData() {
   return _.cloneDeep(ARRAY_DATA)
 }
 
-test('getCallTypeFromDescriptor() should get call type from UNARY call', t => {
+test('getCallTypeFromDescriptor() should get call type from UNARY call', (t) => {
   const desc = {
     requestStream: false,
     responseStream: false,
@@ -34,14 +34,14 @@ test('getCallTypeFromDescriptor() should get call type from UNARY call', t => {
     name: 'GetFeature',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/GetFeature'
+    fullName: '/routeguide.RouteGuide/GetFeature',
   }
 
   const v = utils.getCallTypeFromDescriptor(desc)
   t.is(v, CallType.UNARY)
 })
 
-test('getCallTypeFromDescriptor() should get call type from REQUEST_STREAM call', t => {
+test('getCallTypeFromDescriptor() should get call type from REQUEST_STREAM call', (t) => {
   const desc = {
     requestStream: true,
     responseStream: false,
@@ -50,14 +50,14 @@ test('getCallTypeFromDescriptor() should get call type from REQUEST_STREAM call'
     name: 'RecordRoute',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/RecordRoute'
+    fullName: '/routeguide.RouteGuide/RecordRoute',
   }
 
   const v = utils.getCallTypeFromDescriptor(desc)
   t.is(v, CallType.REQUEST_STREAM)
 })
 
-test('getCallTypeFromDescriptor() should get call type from RESPONSE_STREAM call', t => {
+test('getCallTypeFromDescriptor() should get call type from RESPONSE_STREAM call', (t) => {
   const desc = {
     requestStream: false,
     responseStream: true,
@@ -66,14 +66,14 @@ test('getCallTypeFromDescriptor() should get call type from RESPONSE_STREAM call
     name: 'ListFeatures',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/ListFeatures'
+    fullName: '/routeguide.RouteGuide/ListFeatures',
   }
 
   const v = utils.getCallTypeFromDescriptor(desc)
   t.is(v, CallType.RESPONSE_STREAM)
 })
 
-test('getCallTypeFromDescriptor() should get call type from DUPLEX call', t => {
+test('getCallTypeFromDescriptor() should get call type from DUPLEX call', (t) => {
   const desc = {
     requestStream: true,
     responseStream: true,
@@ -82,31 +82,34 @@ test('getCallTypeFromDescriptor() should get call type from DUPLEX call', t => {
     name: 'RouteChat',
     service: 'RouteGuide',
     package: 'routeguide',
-    fullName: '/routeguide.RouteGuide/RouteChat'
+    fullName: '/routeguide.RouteGuide/RouteChat',
   }
 
   const v = utils.getCallTypeFromDescriptor(desc)
   t.is(v, CallType.DUPLEX)
 })
 
-test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
+test.cb('getCallTypeFromCall() should get call type from UNARY call', (t) => {
   t.plan(1)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   let callType
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     callType = utils.getCallTypeFromCall(ctx.call)
     ctx.res = { message: 'Hello ' + ctx.req.name }
   }
 
   const app = new Mali(PROTO_PATH, 'Greeter')
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     const pd = pl.loadSync(PROTO_PATH)
     const helloproto = grpc.loadPackageDefinition(pd).helloworld
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     client.sayHello({ name: 'Bob' }, (e_, response) => {
       t.is(callType, CallType.UNARY)
       app.close().then(() => t.end())
@@ -114,112 +117,127 @@ test.cb('getCallTypeFromCall() should get call type from UNARY call', t => {
   })
 })
 
-test.cb('getCallTypeFromCall() should get call type from RESPONSE_STREAM call', t => {
-  t.plan(1)
-  const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
+test.cb(
+  'getCallTypeFromCall() should get call type from RESPONSE_STREAM call',
+  (t) => {
+    t.plan(1)
+    const APP_HOST = getHost()
+    const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
 
-  let callType
+    let callType
 
-  function listStuff (ctx) {
-    callType = utils.getCallTypeFromCall(ctx.call)
-    ctx.res = hl(getArrayData())
-      .map(d => {
+    function listStuff(ctx) {
+      callType = utils.getCallTypeFromCall(ctx.call)
+      ctx.res = hl(getArrayData()).map((d) => {
         d.message = d.message.toUpperCase()
         return d
       })
-  }
-
-  const app = new Mali(PROTO_PATH, 'ArgService')
-  app.use({ listStuff })
-  app.start(APP_HOST).then(server => {
-    const pd = pl.loadSync(PROTO_PATH)
-    const proto = grpc.loadPackageDefinition(pd).argservice
-    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.listStuff({ message: 'Hello' })
-
-    const resData = []
-    call.on('data', d => {
-      resData.push(d.message)
-    })
-
-    call.on('end', () => {
-      _.delay(() => {
-        endTest()
-      }, 200)
-    })
-
-    function endTest () {
-      t.is(callType, CallType.RESPONSE_STREAM)
-      app.close().then(() => t.end())
     }
-  })
-})
 
-test.cb('getCallTypeFromCall() should get call type from REQUEST_STREAM call', t => {
-  t.plan(2)
-  const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
+    const app = new Mali(PROTO_PATH, 'ArgService')
+    app.use({ listStuff })
+    app.start(APP_HOST).then((server) => {
+      const pd = pl.loadSync(PROTO_PATH)
+      const proto = grpc.loadPackageDefinition(pd).argservice
+      const client = new proto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.listStuff({ message: 'Hello' })
 
-  async function doWork (inputStream) {
-    return new Promise((resolve, reject) => {
-      hl(inputStream)
-        .map(d => {
-          return d.message.toUpperCase()
-        })
-        .collect()
-        .toCallback((err, r) => {
-          if (err) {
-            return reject(err)
-          }
+      const resData = []
+      call.on('data', (d) => {
+        resData.push(d.message)
+      })
 
-          resolve({
-            message: r.join(':')
+      call.on('end', () => {
+        _.delay(() => {
+          endTest()
+        }, 200)
+      })
+
+      function endTest() {
+        t.is(callType, CallType.RESPONSE_STREAM)
+        app.close().then(() => t.end())
+      }
+    })
+  },
+)
+
+test.cb(
+  'getCallTypeFromCall() should get call type from REQUEST_STREAM call',
+  (t) => {
+    t.plan(2)
+    const APP_HOST = getHost()
+    const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
+
+    async function doWork(inputStream) {
+      return new Promise((resolve, reject) => {
+        hl(inputStream)
+          .map((d) => {
+            return d.message.toUpperCase()
           })
-        })
+          .collect()
+          .toCallback((err, r) => {
+            if (err) {
+              return reject(err)
+            }
+
+            resolve({
+              message: r.join(':'),
+            })
+          })
+      })
+    }
+
+    let callType
+    async function writeStuff(ctx) {
+      callType = utils.getCallTypeFromCall(ctx.call)
+      ctx.res = await doWork(ctx.req)
+    }
+
+    const app = new Mali(PROTO_PATH, 'ArgService')
+    app.use({ writeStuff })
+    app.start(APP_HOST).then((server) => {
+      const pd = pl.loadSync(PROTO_PATH)
+      const proto = grpc.loadPackageDefinition(pd).argservice
+      const client = new proto.ArgService(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      const call = client.writeStuff((err, res) => {
+        t.falsy(err)
+        t.is(callType, CallType.REQUEST_STREAM)
+        app.close().then(() => t.end())
+      })
+
+      async.eachSeries(
+        getArrayData(),
+        (d, asfn) => {
+          call.write(d)
+          _.delay(asfn, _.random(10, 50))
+        },
+        () => {
+          call.end()
+        },
+      )
     })
-  }
+  },
+)
 
-  let callType
-  async function writeStuff (ctx) {
-    callType = utils.getCallTypeFromCall(ctx.call)
-    ctx.res = await doWork(ctx.req)
-  }
-
-  const app = new Mali(PROTO_PATH, 'ArgService')
-  app.use({ writeStuff })
-  app.start(APP_HOST).then(server => {
-    const pd = pl.loadSync(PROTO_PATH)
-    const proto = grpc.loadPackageDefinition(pd).argservice
-    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
-    const call = client.writeStuff((err, res) => {
-      t.falsy(err)
-      t.is(callType, CallType.REQUEST_STREAM)
-      app.close().then(() => t.end())
-    })
-
-    async.eachSeries(getArrayData(), (d, asfn) => {
-      call.write(d)
-      _.delay(asfn, _.random(10, 50))
-    }, () => {
-      call.end()
-    })
-  })
-})
-
-test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
+test.cb('getCallTypeFromCall() should get call type from DUPLEX call', (t) => {
   t.plan(1)
-  const APP_HOST = tu.getHost()
+  const APP_HOST = getHost()
   const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
 
   let callType
-  async function processStuff (ctx) {
+  async function processStuff(ctx) {
     callType = utils.getCallTypeFromCall(ctx.call)
-    ctx.req.on('data', d => {
+    ctx.req.on('data', (d) => {
       ctx.req.pause()
       _.delay(() => {
         const ret = {
-          message: d.message.toUpperCase()
+          message: d.message.toUpperCase(),
         }
         ctx.res.write(ret)
         ctx.req.resume()
@@ -238,11 +256,14 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
   app.start(APP_HOST).then(() => {
     const pd = pl.loadSync(PROTO_PATH)
     const proto = grpc.loadPackageDefinition(pd).argservice
-    const client = new proto.ArgService(APP_HOST, grpc.credentials.createInsecure())
+    const client = new proto.ArgService(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     const call = client.processStuff()
 
     const resData = []
-    call.on('data', d => {
+    call.on('data', (d) => {
       resData.push(d.message)
     })
 
@@ -250,46 +271,56 @@ test.cb('getCallTypeFromCall() should get call type from DUPLEX call', t => {
       endTest()
     })
 
-    async.eachSeries(getArrayData(), (d, asfn) => {
-      call.write(d)
-      _.delay(asfn, _.random(10, 50))
-    }, () => {
-      call.end()
-    })
+    async.eachSeries(
+      getArrayData(),
+      (d, asfn) => {
+        call.write(d)
+        _.delay(asfn, _.random(10, 50))
+      },
+      () => {
+        call.end()
+      },
+    )
 
-    function endTest () {
+    function endTest() {
       t.is(callType, CallType.DUPLEX)
       app.close().then(() => t.end())
     }
   })
 })
 
-test('getPackageNameFromPath() should get the package name', t => {
-  const testData = [{
-    input: '/helloworld.Greeter/SayHello',
-    expected: 'helloworld'
-  }, {
-    input: '/Greeter/SayHello',
-    expected: ''
-  }]
+test('getPackageNameFromPath() should get the package name', (t) => {
+  const testData = [
+    {
+      input: '/helloworld.Greeter/SayHello',
+      expected: 'helloworld',
+    },
+    {
+      input: '/Greeter/SayHello',
+      expected: '',
+    },
+  ]
 
-  testData.forEach(td => {
+  testData.forEach((td) => {
     const { input, expected } = td
     const actual = utils.getPackageNameFromPath(input)
     t.is(actual, expected)
   })
 })
 
-test('getShortServiceNameFromPath() should get the short service name name', t => {
-  const testData = [{
-    input: '/helloworld.Greeter/SayHello',
-    expected: 'Greeter'
-  }, {
-    input: '/Greeter/SayHello',
-    expected: 'Greeter'
-  }]
+test('getShortServiceNameFromPath() should get the short service name name', (t) => {
+  const testData = [
+    {
+      input: '/helloworld.Greeter/SayHello',
+      expected: 'Greeter',
+    },
+    {
+      input: '/Greeter/SayHello',
+      expected: 'Greeter',
+    },
+  ]
 
-  testData.forEach(td => {
+  testData.forEach((td) => {
     const { input, expected } = td
     const actual = utils.getShortServiceNameFromPath(input)
     t.is(actual, expected)

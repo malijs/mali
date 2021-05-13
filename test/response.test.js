@@ -1,14 +1,14 @@
-const test = require('ava')
-const grpc = require('@grpc/grpc-js')
-const CallType = require('@malijs/call-types')
+import test from 'ava'
+import grpc from '@grpc/grpc-js'
+import CallType from '@malijs/call-types'
 
-const Response = require('../lib/response')
+import Response from '../lib/response.js'
 
-test('should create with UNARY type', t => {
+test('should create with UNARY type', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -19,11 +19,11 @@ test('should create with UNARY type', t => {
   t.falsy(res.metadata)
 })
 
-test('should create with RESPONSE_STREAM type', t => {
+test('should create with RESPONSE_STREAM type', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.RESPONSE_STREAM)
@@ -34,11 +34,11 @@ test('should create with RESPONSE_STREAM type', t => {
   t.falsy(res.metadata)
 })
 
-test('should create with REQUEST_STREAM type', t => {
+test('should create with REQUEST_STREAM type', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.REQUEST_STREAM)
@@ -49,11 +49,11 @@ test('should create with REQUEST_STREAM type', t => {
   t.falsy(res.metadata)
 })
 
-test('should create with DUPLEX type', t => {
+test('should create with DUPLEX type', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.DUPLEX)
@@ -65,11 +65,11 @@ test('should create with DUPLEX type', t => {
   t.falsy(res.metadata)
 })
 
-test('set() should create metadata from simple key and value', t => {
+test('set() should create metadata from simple key and value', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -80,11 +80,11 @@ test('set() should create metadata from simple key and value', t => {
   t.deepEqual(res.metadata, { one: 'two' })
 })
 
-test('set() should create metadata from plain object', t => {
+test('set() should create metadata from plain object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -93,17 +93,17 @@ test('set() should create metadata from plain object', t => {
   t.falsy(res.metadata)
   const md = {
     one: 'two',
-    three: 'four'
+    three: 'four',
   }
   res.set(md)
   t.deepEqual(res.metadata, md)
 })
 
-test('set() should create metadata from Metadata object', t => {
+test('set() should create metadata from Metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -116,15 +116,15 @@ test('set() should create metadata from Metadata object', t => {
   res.set(md)
   t.deepEqual(res.metadata, {
     one: 'two',
-    three: 'four'
+    three: 'four',
   })
 })
 
-test('set() should not set any metadata if passed an invalid value', t => {
+test('set() should not set any metadata if passed an invalid value', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -135,11 +135,11 @@ test('set() should not set any metadata if passed an invalid value', t => {
   t.falsy(res.metadata)
 })
 
-test('get() should return proper values', t => {
+test('get() should return proper values', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -155,11 +155,11 @@ test('get() should return proper values', t => {
   t.falsy(v)
 })
 
-test('getMetadata() should return undefined when no metadata', t => {
+test('getMetadata() should return undefined when no metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -169,11 +169,11 @@ test('getMetadata() should return undefined when no metadata', t => {
   t.falsy(md)
 })
 
-test('getMetadata() should return metadata object', t => {
+test('getMetadata() should return metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -188,11 +188,11 @@ test('getMetadata() should return metadata object', t => {
   t.deepEqual(md.getMap(), { one: 'two', three: 'four' })
 })
 
-test('setStatus() should create status metadata from simple key and value', t => {
+test('setStatus() should create status metadata from simple key and value', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -203,11 +203,11 @@ test('setStatus() should create status metadata from simple key and value', t =>
   t.deepEqual(res.status, { one: 'two' })
 })
 
-test('setStatus() should create status metadata from plain object', t => {
+test('setStatus() should create status metadata from plain object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -216,17 +216,17 @@ test('setStatus() should create status metadata from plain object', t => {
   t.falsy(res.status)
   const md = {
     one: 'two',
-    three: 'four'
+    three: 'four',
   }
   res.setStatus(md)
   t.deepEqual(res.status, md)
 })
 
-test('setStatus() should create status metadata from Metadata object', t => {
+test('setStatus() should create status metadata from Metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -239,15 +239,15 @@ test('setStatus() should create status metadata from Metadata object', t => {
   res.setStatus(md)
   t.deepEqual(res.status, {
     one: 'two',
-    three: 'four'
+    three: 'four',
   })
 })
 
-test('setStatus() should not set any status metadata if passed an invalid value', t => {
+test('setStatus() should not set any status metadata if passed an invalid value', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -256,7 +256,7 @@ test('setStatus() should not set any status metadata if passed an invalid value'
   t.falsy(res.status)
   const md = {
     one: 'two',
-    three: 'four'
+    three: 'four',
   }
   res.setStatus(md)
   t.deepEqual(res.status, md)
@@ -264,11 +264,11 @@ test('setStatus() should not set any status metadata if passed an invalid value'
   t.deepEqual(res.status, md)
 })
 
-test('getStatus() should return proper values', t => {
+test('getStatus() should return proper values', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -284,11 +284,11 @@ test('getStatus() should return proper values', t => {
   t.falsy(v)
 })
 
-test('getStatusMetadata() should return undefined when no metadata', t => {
+test('getStatusMetadata() should return undefined when no metadata', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)
@@ -298,11 +298,11 @@ test('getStatusMetadata() should return undefined when no metadata', t => {
   t.falsy(md)
 })
 
-test('getStatusMetadata() should return metadata object', t => {
+test('getStatusMetadata() should return metadata object', (t) => {
   const call = {
     request: {
-      foo: 'bar'
-    }
+      foo: 'bar',
+    },
   }
 
   const res = new Response(call, CallType.UNARY)

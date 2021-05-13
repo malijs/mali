@@ -1,77 +1,82 @@
-const test = require('ava')
-const path = require('path')
-const grpc = require('@grpc/grpc-js')
-const util = require('util')
-const pMap = require('p-map')
-const _ = require('lodash')
-const fs = require('fs')
+import test from 'ava'
+import path from 'path'
+import grpc from '@grpc/grpc-js'
+import { promisify } from 'util'
+import pMap from 'p-map'
+import _ from 'lodash'
+import fs from 'fs'
 
-const Mali = require('../')
-const tu = require('./util')
+import Mali from '../lib/app.js'
+import { getHost } from './util.js'
 
-const pl = require('@grpc/proto-loader')
+import pl from '@grpc/proto-loader'
 
-const readFileAsync = util.promisify(fs.readFile)
+const readFileAsync = promisify(fs.readFile)
 
-const PROTO_PATH = path.resolve(__dirname, './protos/transform.proto')
+const PROTO_PATH = path.resolve(
+  path.resolve('./test'),
+  './protos/transform.proto',
+)
 
 const apps = []
 
-const DYNAMIC_HOST = tu.getHost()
+const DYNAMIC_HOST = getHost()
 
 const gmwcalled = {}
 
 // util
-function strrot13 (s) {
+function strrot13(s) {
   return s.replace(/[a-zA-Z]/g, function (c) {
-    return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26)
+    return String.fromCharCode(
+      (c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26,
+    )
   })
 }
 
-function reverseString (s) {
+function reverseString(s) {
   return s.split('').reverse().join('')
 }
 
 // Middleware
-async function gmw1 (ctx, next) {
+async function gmw1(ctx, next) {
   ctx.mw = (ctx.mw || '').concat('gmw1')
   await next()
   gmwcalled[ctx.req.id] = (gmwcalled[ctx.req.id] || '').concat(':gmw1')
 }
 
-async function gmw2 (ctx, next) {
+async function gmw2(ctx, next) {
   ctx.mw = (ctx.mw || '').concat(':gmw2')
   await next()
   gmwcalled[ctx.req.id] = (gmwcalled[ctx.req.id] || '').concat(':gmw2')
 }
 
-async function gmw3 (ctx, next) {
+async function gmw3(ctx, next) {
   ctx.mw = (ctx.mw || '').concat(':gmw3')
   await next()
   gmwcalled[ctx.req.id] = (gmwcalled[ctx.req.id] || '').concat(':gmw3')
 }
 
-async function mw1 (ctx, next) {
+async function mw1(ctx, next) {
   ctx.value = 'MW1'
   ctx.mw = (ctx.mw || '').concat(':mw1')
   await next()
 }
 
-async function mw2 (ctx, next) {
-  const filepath = path.resolve(__dirname, './static/mw2.txt')
+async function mw2(ctx, next) {
+  const filepath = path.resolve(path.resolve('./test'), './static/mw2.txt')
   const v = await readFileAsync(filepath, 'utf8')
   ctx.value = v ? v.trim() : ''
   ctx.mw = (ctx.mw || '').concat(':mw2')
   await next()
 }
 
-async function mw3 (ctx, next) {
+async function mw3(ctx, next) {
   ctx.value = 'mw3'
   ctx.mw = (ctx.mw || '').concat(':mw3')
   await next()
 }
 
-async function reverseMW (ctx, next) {
+async function reverseMW(ctx, next) {
   if (ctx.req.message) {
     ctx.req.message = reverseString(ctx.req.message)
   }
@@ -79,52 +84,52 @@ async function reverseMW (ctx, next) {
   await next()
 }
 
-function payloadrot13 (ctx, next) {
+function payloadrot13(ctx, next) {
   ctx.mw = (ctx.mw || '').concat(':rot13')
   return next().then(() => {
     ctx.res.message = strrot13(ctx.res.message)
   })
 }
 
-test.before('should dynamically create service', async t => {
+test.before('should dynamically create service', async (t) => {
   // Handlers
-  async function upper (ctx) {
+  async function upper(ctx) {
     ctx.res = {
       message: ctx.req.message.toUpperCase(),
       value: ctx.value,
-      mw: ctx.mw
+      mw: ctx.mw,
     }
   }
 
-  async function lower (ctx) {
+  async function lower(ctx) {
     ctx.res = {
       message: ctx.req.message.toLowerCase(),
       value: ctx.value,
-      mw: ctx.mw
+      mw: ctx.mw,
     }
   }
 
-  async function reverse (ctx) {
+  async function reverse(ctx) {
     ctx.res = {
       message: reverseString(ctx.req.message),
       value: ctx.value,
-      mw: ctx.mw
+      mw: ctx.mw,
     }
   }
 
-  async function rot13 (ctx) {
+  async function rot13(ctx) {
     ctx.res = {
       message: strrot13(ctx.req.message),
       value: ctx.value,
-      mw: ctx.mw
+      mw: ctx.mw,
     }
   }
 
-  async function echo (ctx) {
+  async function echo(ctx) {
     ctx.res = {
       message: ctx.req.message,
       value: ctx.value,
-      mw: ctx.mw
+      mw: ctx.mw,
     }
   }
 
@@ -145,11 +150,14 @@ test.before('should dynamically create service', async t => {
   t.truthy(server)
 })
 
-test.cb('single sync middleware', t => {
+test.cb('single sync middleware', (t) => {
   t.plan(8)
   const pd = pl.loadSync(PROTO_PATH)
   const ts = grpc.loadPackageDefinition(pd).Transform
-  const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
+  const client = new ts.TransformService(
+    DYNAMIC_HOST,
+    grpc.credentials.createInsecure(),
+  )
   const id = _.random(10, 10000).toString()
   client.upper({ id, message: 'hello world' }, (err, response) => {
     t.falsy(err)
@@ -164,11 +172,14 @@ test.cb('single sync middleware', t => {
   })
 })
 
-test.cb('single async middleware', t => {
+test.cb('single async middleware', (t) => {
   t.plan(8)
   const pd = pl.loadSync(PROTO_PATH)
   const ts = grpc.loadPackageDefinition(pd).Transform
-  const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
+  const client = new ts.TransformService(
+    DYNAMIC_HOST,
+    grpc.credentials.createInsecure(),
+  )
   const id = _.random(10, 10000).toString()
   client.lower({ id, message: 'HELLO WORLD' }, (err, response) => {
     t.falsy(err)
@@ -183,11 +194,14 @@ test.cb('single async middleware', t => {
   })
 })
 
-test.cb('sync + async middleware', t => {
+test.cb('sync + async middleware', (t) => {
   t.plan(8)
   const pd = pl.loadSync(PROTO_PATH)
   const ts = grpc.loadPackageDefinition(pd).Transform
-  const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
+  const client = new ts.TransformService(
+    DYNAMIC_HOST,
+    grpc.credentials.createInsecure(),
+  )
   const id = _.random(10, 10000).toString()
   client.reverse({ id, message: 'Hello WORLD' }, (err, response) => {
     t.falsy(err)
@@ -202,11 +216,14 @@ test.cb('sync + async middleware', t => {
   })
 })
 
-test.cb('multiple sync + async middleware', t => {
+test.cb('multiple sync + async middleware', (t) => {
   t.plan(8)
   const pd = pl.loadSync(PROTO_PATH)
   const ts = grpc.loadPackageDefinition(pd).Transform
-  const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
+  const client = new ts.TransformService(
+    DYNAMIC_HOST,
+    grpc.credentials.createInsecure(),
+  )
   const id = _.random(10, 10000).toString()
   client.rot13({ id, message: 'HELLO world' }, (err, response) => {
     t.falsy(err)
@@ -221,11 +238,14 @@ test.cb('multiple sync + async middleware', t => {
   })
 })
 
-test.cb('mutate + payload middleware', t => {
+test.cb('mutate + payload middleware', (t) => {
   t.plan(8)
   const pd = pl.loadSync(PROTO_PATH)
   const ts = grpc.loadPackageDefinition(pd).Transform
-  const client = new ts.TransformService(DYNAMIC_HOST, grpc.credentials.createInsecure())
+  const client = new ts.TransformService(
+    DYNAMIC_HOST,
+    grpc.credentials.createInsecure(),
+  )
   const id = _.random(10, 10000).toString()
   client.reverseRot13({ id, message: 'hello WORLD' }, (err, response) => {
     t.falsy(err)
@@ -240,13 +260,16 @@ test.cb('mutate + payload middleware', t => {
   })
 })
 
-test.cb('should compose middleware w/ async functions', t => {
+test.cb('should compose middleware w/ async functions', (t) => {
   t.plan(6)
-  const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+  const APP_HOST = getHost()
+  const PROTO_PATH = path.resolve(
+    path.resolve('./test'),
+    './protos/helloworld.proto',
+  )
   const calls = []
 
-  function sayHello (ctx) {
+  function sayHello(ctx) {
     ctx.res = { message: 'Hello '.concat(ctx.req.name) }
   }
 
@@ -272,12 +295,15 @@ test.cb('should compose middleware w/ async functions', t => {
   })
 
   app.use({ sayHello })
-  app.start(APP_HOST).then(server => {
+  app.start(APP_HOST).then((server) => {
     t.truthy(server)
 
     const pd = pl.loadSync(PROTO_PATH)
     const helloproto = grpc.loadPackageDefinition(pd).helloworld
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const client = new helloproto.Greeter(
+      APP_HOST,
+      grpc.credentials.createInsecure(),
+    )
     client.sayHello({ name: 'Bob' }, (err, response) => {
       t.falsy(err)
       t.truthy(response)
@@ -288,64 +314,76 @@ test.cb('should compose middleware w/ async functions', t => {
   })
 })
 
-test.cb('should not call middleware downstream of one that does not call next', t => {
-  t.plan(6)
-  const APP_HOST = tu.getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
-  const calls = []
+test.cb(
+  'should not call middleware downstream of one that does not call next',
+  (t) => {
+    t.plan(6)
+    const APP_HOST = getHost()
+    const PROTO_PATH = path.resolve(
+      path.resolve('./test'),
+      './protos/helloworld.proto',
+    )
+    const calls = []
 
-  const app = new Mali(PROTO_PATH, 'Greeter')
-  t.truthy(app)
+    const app = new Mali(PROTO_PATH, 'Greeter')
+    t.truthy(app)
 
-  async function fn1 (ctx, next) {
-    calls.push(1)
-    await next()
-    calls.push(6)
-  }
+    async function fn1(ctx, next) {
+      calls.push(1)
+      await next()
+      calls.push(6)
+    }
 
-  async function fn2 (ctx, next) {
-    calls.push(2)
-    ctx.res = { message: 'Hello '.concat(ctx.req.name) }
-    calls.push(5)
-  }
+    async function fn2(ctx, next) {
+      calls.push(2)
+      ctx.res = { message: 'Hello '.concat(ctx.req.name) }
+      calls.push(5)
+    }
 
-  async function fn3 (ctx, next) {
-    calls.push(3)
-    await next()
-    calls.push(4)
-  }
+    async function fn3(ctx, next) {
+      calls.push(3)
+      await next()
+      calls.push(4)
+    }
 
-  app.use('sayHello', fn1, fn2, fn3)
-  app.start(APP_HOST).then(server => {
-    t.truthy(server)
+    app.use('sayHello', fn1, fn2, fn3)
+    app.start(APP_HOST).then((server) => {
+      t.truthy(server)
 
-    const pd = pl.loadSync(PROTO_PATH)
-    const helloproto = grpc.loadPackageDefinition(pd).helloworld
-    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
-    client.sayHello({ name: 'Bob' }, (err, response) => {
-      t.falsy(err)
-      t.truthy(response)
-      t.is(response.message, 'Hello Bob')
-      t.deepEqual(calls, [1, 2, 5, 6])
-      app.close().then(() => t.end())
+      const pd = pl.loadSync(PROTO_PATH)
+      const helloproto = grpc.loadPackageDefinition(pd).helloworld
+      const client = new helloproto.Greeter(
+        APP_HOST,
+        grpc.credentials.createInsecure(),
+      )
+      client.sayHello({ name: 'Bob' }, (err, response) => {
+        t.falsy(err)
+        t.truthy(response)
+        t.is(response.message, 'Hello Bob')
+        t.deepEqual(calls, [1, 2, 5, 6])
+        app.close().then(() => t.end())
+      })
     })
-  })
-})
+  },
+)
 
-test.cb('multi: call multiple services with middleware', t => {
-  const PROTO_PATH = path.resolve(__dirname, './protos/multi.proto')
+test.cb('multi: call multiple services with middleware', (t) => {
+  const PROTO_PATH = path.resolve(
+    path.resolve('./test'),
+    './protos/multi.proto',
+  )
 
-  function hello (ctx) {
+  function hello(ctx) {
     const msg = ctx.message || ''
     ctx.res = { message: msg + ':Hello ' + ctx.req.name }
   }
 
-  function goodbye (ctx) {
+  function goodbye(ctx) {
     const msg = ctx.message || ''
     ctx.res = { message: msg + ':Goodbye ' + ctx.req.name }
   }
 
-  async function mw1 (ctx, next) {
+  async function mw1(ctx, next) {
     ctx.message = ':mw1'
     await next()
   }
@@ -357,13 +395,13 @@ test.cb('multi: call multiple services with middleware', t => {
   app.use({
     Greeter4: {
       sayGoodbye: goodbye,
-      sayHello: [mw1, hello]
+      sayHello: [mw1, hello],
     },
-    Greeter2: { sayHello: hello }
+    Greeter2: { sayHello: hello },
   })
 
-  const host = tu.getHost()
-  app.start(host).then(server => {
+  const host = getHost()
+  app.start(host).then((server) => {
     t.truthy(server)
 
     const pd = pl.loadSync(PROTO_PATH)
@@ -391,6 +429,6 @@ test.cb('multi: call multiple services with middleware', t => {
   })
 })
 
-test.after.always('cleanup', async t => {
-  await pMap(apps, app => app.close())
+test.after.always('cleanup', async (t) => {
+  await pMap(apps, (app) => app.close())
 })

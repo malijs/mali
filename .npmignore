@@ -9,3 +9,5 @@ npm-debug.log
 test
 API.md
 mali-logo.png
+.eslintrc
+.prettierrc
