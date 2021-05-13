@@ -1003,4 +1003,4 @@ proto.routeguide.RouteSummary.prototype.setElapsedTime = function (value) {
   return jspb.Message.setProto3IntField(this, 4, value)
 }
 
-goog.object.extend(exports, proto.routeguide)
+export default proto.routeguide

@@ -92,10 +92,7 @@ test.cb('should not affect the original prototype', (t) => {
 
 test('should have correct properties for req / res', async (t) => {
   const APP_HOST = getHost()
-  const PROTO_PATH = path.resolve(
-    path.resolve('./test'),
-    './protos/helloworld.proto',
-  )
+  const PROTO_PATH = path.resolve('./test/protos/helloworld.proto')
 
   function sayHello(ctx) {
     t.truthy(ctx)
@@ -117,8 +114,6 @@ test('should have correct properties for req / res', async (t) => {
   }
 
   const app = new Mali(PROTO_PATH, 'Greeter')
-  t.teardown(() => app.close())
-
   t.truthy(app)
   app.use({ sayHello })
   const server = await app.start(APP_HOST)
@@ -134,6 +129,7 @@ test('should have correct properties for req / res', async (t) => {
     t.falsy(err)
     t.truthy(response)
     t.is(response.message, 'Hello Bob')
+    t.teardown(() => app.close())
   })
 })
 

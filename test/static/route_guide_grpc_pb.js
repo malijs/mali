@@ -16,8 +16,8 @@
 // limitations under the License.
 //
 'use strict'
-var grpc = require('@grpc/grpc-js')
-var route_guide_pb = require('./route_guide_pb.js')
+import grpc from '@grpc/grpc-js'
+import route_guide_pb from './route_guide_pb.js'
 
 function serialize_routeguide_Feature(arg) {
   if (!(arg instanceof route_guide_pb.Feature)) {
@@ -77,7 +77,7 @@ function deserialize_routeguide_RouteSummary(buffer_arg) {
 }
 
 // Interface exported by the server.
-var RouteGuideService = (exports.RouteGuideService = {
+export const RouteGuideService = {
   // A simple RPC.
   //
   // Obtains the feature at a given position.
@@ -142,6 +142,7 @@ var RouteGuideService = (exports.RouteGuideService = {
     responseSerialize: serialize_routeguide_RouteNote,
     responseDeserialize: deserialize_routeguide_RouteNote,
   },
-})
+}
 
-exports.RouteGuideClient = grpc.makeGenericClientConstructor(RouteGuideService)
+export const RouteGuideClient =
+  grpc.makeGenericClientConstructor(RouteGuideService)
