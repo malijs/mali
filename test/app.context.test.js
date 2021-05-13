@@ -7,7 +7,6 @@ import pl from '@grpc/proto-loader'
 import hl from 'highland'
 import async from 'async'
 import _ from 'lodash'
-import pMap from 'p-map'
 
 import Mali from '../lib/app.js'
 import { getHost } from './util.js'
@@ -477,5 +476,5 @@ test.cb('should reset locals in context req / res', (t) => {
 })
 
 test.after.always('cleanup', async (t) => {
-  await pMap(apps, (app) => app.close())
+  await Promise.all(apps.map((app) => app.close()))
 })

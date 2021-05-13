@@ -6,7 +6,7 @@ import async from 'async'
 import _ from 'lodash'
 
 import Mali from '../lib/app.js'
-import { getHost, getPort } from './util.js'
+import { getHost } from './util.js'
 
 import pl from '@grpc/proto-loader'
 import CallType from '@malijs/call-types'

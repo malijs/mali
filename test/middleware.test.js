@@ -2,7 +2,6 @@
 import test from 'ava'
 import path from 'path'
 import grpc from '@grpc/grpc-js'
-import pMap from 'p-map'
 import _ from 'lodash'
 import fs from 'fs'
 
@@ -428,5 +427,5 @@ test.cb('multi: call multiple services with middleware', (t) => {
 })
 
 test.after.always('cleanup', async (t) => {
-  await pMap(apps, (app) => app.close())
+  await Promise.all(apps.map((app) => app.close()))
 })

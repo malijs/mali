@@ -1,10 +1,9 @@
 import test from 'ava'
 import path from 'path'
 import _ from 'lodash'
-import pMap from 'p-map'
 
 import Mali from '../lib/app.js'
-import { getHost, getPort } from './util.js'
+import { getHost } from './util.js'
 
 const PROTO_PATH = path.resolve(
   path.resolve('./test'),
@@ -360,7 +359,7 @@ test.serial(
 )
 
 test.after.always('cleanup', async (t) => {
-  await pMap(apps, (app) => app.close())
+  await Promise.all(apps.map((app) => app.close()))
 })
 
 test.serial(
