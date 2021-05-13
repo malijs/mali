@@ -76,15 +76,13 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-security": "^1.4.0",
-    "google-protobuf": "^3.16.0",
+    "google-protobuf": "^3.17.0",
     "highland": "3.0.0-beta.10",
     "is-ci": "^3.0.0",
     "jsdoc-to-markdown": "^7.0.1",
     "lodash": "^4.17.21",
     "nyc": "^15.1.0",
     "prettier": "^2.3.0",
-    "protoc": "^1.0.4",
-    "protoc-gen-ts": "^0.3.6-rc4",
     "test-console": "^1.1.0"
   },
   "standard": {
