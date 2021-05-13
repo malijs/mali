@@ -44,7 +44,7 @@ function deserialize_helloworld_HelloRequest(buffer_arg) {
 }
 
 // The greeting service definition.
-var GreeterService = (exports.GreeterService = {
+export const GreeterService = {
   // Sends a greeting
   sayHello: {
     path: '/helloworld.Greeter/SayHello',
@@ -57,6 +57,6 @@ var GreeterService = (exports.GreeterService = {
     responseSerialize: serialize_helloworld_HelloReply,
     responseDeserialize: deserialize_helloworld_HelloReply,
   },
-})
+}
 
 export const GreeterClient = grpc.makeGenericClientConstructor(GreeterService)
