@@ -10,7 +10,7 @@ import _ from 'lodash'
 import pMap from 'p-map'
 
 import Mali from '../lib/app.js'
-import { getPort, getHost } from './util.js'
+import { getHost } from './util.js'
 
 const ARRAY_DATA = [
   { message: '1 foo' },
@@ -91,8 +91,7 @@ test.cb('should not affect the original prototype', (t) => {
   })
 })
 
-test.cb('should have correct properties for req / res', (t) => {
-  t.plan(20)
+test('should have correct properties for req / res', async (t) => {
   const APP_HOST = getHost()
   const PROTO_PATH = path.resolve(
     path.resolve('./test'),
@@ -119,35 +118,34 @@ test.cb('should have correct properties for req / res', (t) => {
   }
 
   const app = new Mali(PROTO_PATH, 'Greeter')
+  t.teardown(() => app.close())
+
   t.truthy(app)
   app.use({ sayHello })
-  app.start(APP_HOST).then((server) => {
-    t.truthy(server)
+  const server = await app.start(APP_HOST)
+  t.truthy(server)
 
-    const pd = pl.loadSync(PROTO_PATH)
-    const helloproto = grpc.loadPackageDefinition(pd).helloworld
-    const client = new helloproto.Greeter(
-      APP_HOST,
-      grpc.credentials.createInsecure(),
-    )
-    client.sayHello({ name: 'Bob' }, (err, response) => {
-      t.falsy(err)
-      t.truthy(response)
-      t.is(response.message, 'Hello Bob')
-      app.close().then(() => t.end())
-    })
+  const pd = pl.loadSync(PROTO_PATH)
+  const helloproto = grpc.loadPackageDefinition(pd).helloworld
+  const client = new helloproto.Greeter(
+    APP_HOST,
+    grpc.credentials.createInsecure(),
+  )
+  client.sayHello({ name: 'Bob' }, (err, response) => {
+    t.falsy(err)
+    t.truthy(response)
+    t.is(response.message, 'Hello Bob')
   })
 })
 
 test('should have correct properties for req / res with proto', async (t) => {
-  t.plan(20)
   const APP_HOST = getHost()
   const PROTO_PATH = path.resolve(
     path.resolve('./test'),
     './protos/helloworld.proto',
   )
 
-  const messages = await import('./static/helloworld_pb.js')
+  const { default: messages } = await import('./static/helloworld_pb.js')
 
   function sayHello(ctx) {
     t.truthy(ctx)
@@ -170,8 +168,9 @@ test('should have correct properties for req / res with proto', async (t) => {
     ctx.res = reply
   }
 
-  const services = await import('./static/helloworld_grpc_pb')
+  const services = await import('./static/helloworld_grpc_pb.js')
   const app = new Mali(services)
+  t.teardown(() => app.close())
   t.truthy(app)
   app.use({ sayHello })
   app.start(APP_HOST).then((server) => {
@@ -187,7 +186,6 @@ test('should have correct properties for req / res with proto', async (t) => {
       t.falsy(err)
       t.truthy(response)
       t.is(response.message, 'Hello Bob')
-      app.close().then(() => t.end())
     })
   })
 })

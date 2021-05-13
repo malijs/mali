@@ -6,11 +6,11 @@ import hl from 'highland'
 import _ from 'lodash'
 import async from 'async'
 
-import { getHost, getPort } from './util.js'
+import { getHost } from './util.js'
 import Mali from '../lib/app.js'
 import utils from '../lib/utils.js'
 
-const pl = require('@grpc/proto-loader')
+import pl from '@grpc/proto-loader'
 
 const ARRAY_DATA = [
   { message: '1 foo' },
@@ -92,7 +92,10 @@ test('getCallTypeFromDescriptor() should get call type from DUPLEX call', (t) =>
 test.cb('getCallTypeFromCall() should get call type from UNARY call', (t) => {
   t.plan(1)
   const APP_HOST = getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+  const PROTO_PATH = path.resolve(
+    path.resolve('./test'),
+    './protos/helloworld.proto',
+  )
 
   let callType
 
@@ -122,7 +125,10 @@ test.cb(
   (t) => {
     t.plan(1)
     const APP_HOST = getHost()
-    const PROTO_PATH = path.resolve(__dirname, './protos/resstream.proto')
+    const PROTO_PATH = path.resolve(
+      path.resolve('./test'),
+      './protos/resstream.proto',
+    )
 
     let callType
 
@@ -169,7 +175,10 @@ test.cb(
   (t) => {
     t.plan(2)
     const APP_HOST = getHost()
-    const PROTO_PATH = path.resolve(__dirname, './protos/reqstream.proto')
+    const PROTO_PATH = path.resolve(
+      path.resolve('./test'),
+      './protos/reqstream.proto',
+    )
 
     async function doWork(inputStream) {
       return new Promise((resolve, reject) => {
@@ -228,7 +237,10 @@ test.cb(
 test.cb('getCallTypeFromCall() should get call type from DUPLEX call', (t) => {
   t.plan(1)
   const APP_HOST = getHost()
-  const PROTO_PATH = path.resolve(__dirname, './protos/duplex.proto')
+  const PROTO_PATH = path.resolve(
+    path.resolve('./test'),
+    './protos/duplex.proto',
+  )
 
   let callType
   async function processStuff(ctx) {
