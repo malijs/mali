@@ -2,7 +2,6 @@
 import test from 'ava'
 import path from 'path'
 import grpc from '@grpc/grpc-js'
-import { promisify } from 'util'
 import pMap from 'p-map'
 import _ from 'lodash'
 import fs from 'fs'
@@ -11,8 +10,6 @@ import Mali from '../lib/app.js'
 import { getHost } from './util.js'
 
 import pl from '@grpc/proto-loader'
-
-const readFileAsync = promisify(fs.readFile)
 
 const PROTO_PATH = path.resolve(
   path.resolve('./test'),
@@ -65,7 +62,7 @@ async function mw1(ctx, next) {
 
 async function mw2(ctx, next) {
   const filepath = path.resolve(path.resolve('./test'), './static/mw2.txt')
-  const v = await readFileAsync(filepath, 'utf8')
+  const v = fs.readFileSync(filepath, 'utf8')
   ctx.value = v ? v.trim() : ''
   ctx.mw = (ctx.mw || '').concat(':mw2')
   await next()
