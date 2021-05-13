@@ -41,7 +41,6 @@
   "dependencies": {
     "@malijs/call-types": "~0.4.0",
     "@malijs/compose": "^1.3.2",
-    "ascallback": "^1.1.1",
     "delegates": "^1.0.0",
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
