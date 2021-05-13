@@ -46,7 +46,6 @@
     "ee-first": "^1.1.1",
     "error-inject": "^1.0.0",
     "grpc-create-metadata": "^4.0.0",
-    "is-stream": "^2.0.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.compact": "^3.0.1",
     "lodash.concat": "^4.5.0",
