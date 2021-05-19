@@ -1,7 +1,6 @@
 const test = require('ava')
 const path = require('path')
 const _ = require('lodash')
-const pMap = require('p-map')
 
 const Mali = require('../')
 const tu = require('./util')
@@ -293,8 +292,8 @@ test.serial('should dynamically create a named service from multi package proto'
   t.truthy(server)
 })
 
-test.after.always('cleanup', async t => {
-  await pMap(apps, app => app.close())
+test.after.always('cleanup', async () => {
+  await Promise.all(apps.map(a => a.close()))
 })
 
 test.serial('should dynamically create service from multiple protos', async t => {

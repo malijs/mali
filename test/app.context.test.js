@@ -5,7 +5,6 @@ const CallType = require('@malijs/call-types')
 const hl = require('highland')
 const async = require('async')
 const _ = require('lodash')
-const pMap = require('p-map')
 
 const Mali = require('../')
 const tu = require('./util')
@@ -413,5 +412,5 @@ test.cb('should reset locals in context req / res', t => {
 })
 
 test.after.always('cleanup', async t => {
-  await pMap(apps, app => app.close())
+  await Promise.all(apps.map(app => app.close()))
 })
