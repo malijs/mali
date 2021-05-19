@@ -4,7 +4,7 @@
   "description": "Minimalistic gRPC microservice framework",
   "main": "lib/app.js",
   "scripts": {
-    "lint": "standard | snazzy",
+    "lint": "standard --ext lib/*.js test/*.js | snazzy",
     "linttest": "npm run lint && ava -v",
     "test": "nyc npm run linttest",
     "coverage": "nyc report --reporter=text-lcov > ./coverage/lcov.info",
