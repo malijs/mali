@@ -4,6 +4,7 @@ const grpc = require('@grpc/grpc-js')
 const hl = require('highland')
 const async = require('async')
 const _ = require('lodash')
+const Stream = require('stream')
 
 const Mali = require('../')
 const tu = require('./util')
@@ -858,14 +859,14 @@ test.cb('res stream: trailer metadata set and also sent using res.end() should g
 
   function listStuff (ctx) {
     ctx.setStatus('foo', 'bar')
-    ctx.res = hl(getArrayData())
-      .map(d => {
-        d.message = d.message.toUpperCase()
-        return d
-      })
-      .on('end', () => {
-        ctx.call.end({ bar: 'biz' })
-      })
+    const readable = new Stream.Readable({ objectMode: true, read () { return true } })
+    const writable = new Stream.Writable({ objectMode: true })
+    writable._write = (data, encoding, done) => done()
+    readable.pipe(writable)
+    readable.on('end', () => ctx.call.end({ bar: 'biz' }))
+    ctx.res = readable
+    getArrayData().map(i => readable.push({ message: i.message.toUpperCase() }))
+    readable.push(null) // end readable stream by sending a null chunk
   }
 
   const app = new Mali(ARG_PROTO_PATH, 'ArgService')
