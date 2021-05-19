@@ -2,7 +2,6 @@ const test = require('ava')
 const path = require('path')
 const grpc = require('@grpc/grpc-js')
 const util = require('util')
-const pMap = require('p-map')
 const _ = require('lodash')
 const fs = require('fs')
 
@@ -392,5 +391,5 @@ test.cb('multi: call multiple services with middleware', t => {
 })
 
 test.after.always('cleanup', async t => {
-  await pMap(apps, app => app.close())
+  await Promise.all(apps.map(app => app.close()))
 })
