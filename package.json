@@ -45,7 +45,6 @@
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
     "grpc-create-metadata": "^4.0.0",
-    "is-stream": "^2.0.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.concat": "^4.5.0",
     "lodash.forown": "^4.4.0",
