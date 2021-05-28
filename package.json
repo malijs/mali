@@ -73,6 +73,9 @@
     "standard": "^16.0.3",
     "test-console": "^1.1.0"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "standard": {
     "ignore": [
       "test/protos/*.*",
