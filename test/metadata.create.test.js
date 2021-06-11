@@ -17,13 +17,10 @@ test('should return grpc.Metadata', (t) => {
 })
 
 test('should handle buffers', (t) => {
-  const meta = create({ 'john-bin': Buffer.from('snow'), 'non-existing': null, john: [] }, { addEmpty: true })
+  const meta = create({ 'john-bin': Buffer.from('snow'), 'non-existing': null, john: [] })
   t.deepEqual(meta.get('john-bin'), [Buffer.from('snow')])
   t.deepEqual(meta.get('non-existing'), [])
-  t.deepEqual(meta.get('john'), [''])
-
-  const empty = create({ john: [] }, { addEmpty: false })
-  t.deepEqual(empty.get('john'), [])
+  t.deepEqual(meta.get('john'), [])
 
   try {
     create({ john: Buffer.from('snow') })
