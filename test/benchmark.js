@@ -1,5 +1,7 @@
 const Benchmark = require('benchmark')
 const metaCreate = require('../lib/metadata')
+const Mali = require('../lib/app')
+const path = require('path')
 
 const suite = new Benchmark.Suite()
 
@@ -15,6 +17,10 @@ for (let i = 0; i < 5000; i++) {
 suite
   .add('metadata.create', () => {
     metaCreate(largeMetadata)
+  })
+  .add('mali.addService', () => {
+    const app = new Mali()
+    app.addService(path.join(__dirname, './protos/helloworld.proto'), 'Greeter')
   })
   .on('cycle', (event) => console.log(event.target.toString()))
   .run({ async: true })
