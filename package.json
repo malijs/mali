@@ -46,7 +46,6 @@
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
     "lodash.camelcase": "^4.3.0",
-    "lodash.concat": "^4.5.0",
     "lodash.forown": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.pick": "^4.4.0",
@@ -59,7 +58,7 @@
   },
   "devDependencies": {
     "@grpc/grpc-js": "^1.3.2",
-    "@grpc/proto-loader": "^0.6.1",
+    "@grpc/proto-loader": "^0.6.2",
     "async": "^3.2.0",
     "ava": "^3.15.0",
     "benchmarkify": "^2.1.3",
