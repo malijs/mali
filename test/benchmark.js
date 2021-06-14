@@ -35,4 +35,10 @@ suite.add('mali.use', () => {
   })
 })
 
+suite.add('mali.use as global middleware', () => {
+  const app = new Mali()
+  app.addService(path.join(__dirname, './protos/helloworld.proto'), 'Greeter')
+  app.use((ctx, next) => next())
+})
+
 suite.run()
