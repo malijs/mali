@@ -1,5 +1,5 @@
 const Benchmark = require('benchmarkify')
-const metaCreate = require('../lib/metadata')
+const Metadata = require('../lib/metadata')
 const Mali = require('../lib/app')
 const path = require('path')
 
@@ -17,7 +17,7 @@ for (let i = 0; i < 5000; i++) {
 
 suite
   .add('metadata.create', () => {
-    metaCreate(largeMetadata)
+    Metadata.create(largeMetadata)
   })
 
 suite.add('mali.addService', () => {

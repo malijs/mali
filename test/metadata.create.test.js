@@ -1,6 +1,6 @@
 const test = require('ava')
 const grpc = require('@grpc/grpc-js')
-const create = require('../lib/metadata')
+const { create } = require('../lib/metadata')
 
 test('should return undefined if not-object', (t) => {
   t.is(create('hello'), undefined)
