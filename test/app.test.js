@@ -249,6 +249,70 @@ test.cb('should handle req/res request', t => {
   })
 })
 
+test.cb('should handle multiple protos request', t => {
+  t.plan(5)
+  const APP_HOST = tu.getHost()
+  const PROTO_ROOT_FOLDER = path.resolve(__dirname, './protos')
+  const PROTO_ROOT_MULTIPLE = path.resolve(__dirname, './protosnewroute')
+  const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
+
+  function sayHello (ctx) {
+    ctx.res = { message: 'Hello ' + ctx.req.name }
+  }
+
+  const app = new Mali()
+  t.truthy(app)
+  console.log(PROTO_ROOT_MULTIPLE)
+  console.log(PROTO_ROOT_FOLDER)
+  app.addService({ root: [PROTO_ROOT_MULTIPLE, PROTO_ROOT_FOLDER], file: 'helloworld.proto' }, 'helloworld.Greeter')
+  app.use('helloworld.Greeter', 'SayHello', sayHello)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
+
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).helloworld
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    client.sayHello({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Bob')
+      app.close().then(() => t.end())
+    })
+  })
+})
+
+test.cb('should handle multiple protos with second folder definitions request', t => {
+  t.plan(5)
+  const APP_HOST = tu.getHost()
+  const PROTO_ROOT_FOLDER = path.resolve(__dirname, './protos')
+  const PROTO_ROOT_MULTIPLE = path.resolve(__dirname, './protosnewroute')
+  const PROTO_PATH = path.resolve(__dirname, './protosnewroute/hellomultiple.proto')
+
+  function sayMultiple (ctx) {
+    ctx.res = { message: 'Hello Multiple ' + ctx.req.name }
+  }
+
+  const app = new Mali()
+  t.truthy(app)
+  console.log(PROTO_ROOT_MULTIPLE)
+  console.log(PROTO_ROOT_FOLDER)
+  app.addService({ root: [PROTO_ROOT_MULTIPLE, PROTO_ROOT_FOLDER], file: 'hellomultiple.proto' }, 'multiple.hello.GreeterMultiple')
+  app.use('multiple.hello.GreeterMultiple', 'SayMultiple', sayMultiple)
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
+
+    const pd = pl.loadSync(PROTO_PATH)
+    const helloproto = grpc.loadPackageDefinition(pd).multiple.hello
+    const client = new helloproto.GreeterMultiple(APP_HOST, grpc.credentials.createInsecure())
+    client.sayMultiple({ name: 'Bob' }, (err, response) => {
+      t.falsy(err)
+      t.truthy(response)
+      t.is(response.message, 'Hello Multiple Bob')
+      app.close().then(() => t.end())
+    })
+  })
+})
+
 test.cb('should handle req/res request where res is a promise', t => {
   t.plan(5)
   const APP_HOST = tu.getHost()
