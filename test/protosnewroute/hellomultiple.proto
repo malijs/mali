@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package multiple.hello;
+
+
+// The greeting service definition.
+service GreeterMultiple {
+    // Sends a greeting
+    rpc SayMultiple (HelloMultipleRequest) returns (HelloMultipleReply) {}
+  }
+  
+  // The request message containing the user's name.
+  message HelloMultipleRequest {
+    string name = 1;
+  }
+  
+  // The response message containing the greetings
+  message HelloMultipleReply {
+    string message = 1;
+  }
+  
