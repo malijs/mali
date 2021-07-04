@@ -253,7 +253,7 @@ test.cb('should handle multiple protos request', t => {
   t.plan(5)
   const APP_HOST = tu.getHost()
   const PROTO_ROOT_FOLDER = path.resolve(__dirname, './protos')
-  const PROTO_ROOT_MULTIPLE = path.resolve(__dirname, './protosnewroute')
+  const PROTO_ROOT_MULTIPLE = path.resolve(__dirname, './protosmultiple')
   const PROTO_PATH = path.resolve(__dirname, './protos/helloworld.proto')
 
   function sayHello (ctx) {
