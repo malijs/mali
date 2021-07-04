@@ -262,8 +262,6 @@ test.cb('should handle multiple protos request', t => {
 
   const app = new Mali()
   t.truthy(app)
-  console.log(PROTO_ROOT_MULTIPLE)
-  console.log(PROTO_ROOT_FOLDER)
   app.addService({ root: [PROTO_ROOT_MULTIPLE, PROTO_ROOT_FOLDER], file: 'helloworld.proto' }, 'helloworld.Greeter')
   app.use('helloworld.Greeter', 'SayHello', sayHello)
   app.start(APP_HOST).then(server => {
@@ -285,8 +283,8 @@ test.cb('should handle multiple protos with second folder definitions request', 
   t.plan(5)
   const APP_HOST = tu.getHost()
   const PROTO_ROOT_FOLDER = path.resolve(__dirname, './protos')
-  const PROTO_ROOT_MULTIPLE = path.resolve(__dirname, './protosnewroute')
-  const PROTO_PATH = path.resolve(__dirname, './protosnewroute/hellomultiple.proto')
+  const PROTO_ROOT_MULTIPLE = path.resolve(__dirname, './protosmultiple')
+  const PROTO_PATH = path.resolve(__dirname, './protosmultiple/hellomultiple.proto')
 
   function sayMultiple (ctx) {
     ctx.res = { message: 'Hello Multiple ' + ctx.req.name }
@@ -294,8 +292,6 @@ test.cb('should handle multiple protos with second folder definitions request', 
 
   const app = new Mali()
   t.truthy(app)
-  console.log(PROTO_ROOT_MULTIPLE)
-  console.log(PROTO_ROOT_FOLDER)
   app.addService({ root: [PROTO_ROOT_MULTIPLE, PROTO_ROOT_FOLDER], file: 'hellomultiple.proto' }, 'multiple.hello.GreeterMultiple')
   app.use('multiple.hello.GreeterMultiple', 'SayMultiple', sayMultiple)
   app.start(APP_HOST).then(server => {
