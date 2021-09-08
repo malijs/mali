@@ -45,7 +45,6 @@
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
     "lodash.camelcase": "^4.3.0",
-    "lodash.pick": "^4.4.0",
     "lodash.pull": "^4.1.0",
     "traverse": "^0.6.6"
   },
@@ -59,7 +58,6 @@
     "async": "^3.2.1",
     "ava": "^3.15.0",
     "benchmarkify": "^2.1.3",
-    "coveralls": "^3.1.1",
     "google-protobuf": "^3.17.3",
     "highland": "3.0.0-beta.10",
     "is-ci": "^3.0.0",
