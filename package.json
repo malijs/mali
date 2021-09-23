@@ -58,7 +58,7 @@
     "async": "^3.2.1",
     "ava": "^3.15.0",
     "benchmarkify": "^3.0.0",
-    "google-protobuf": "^3.17.3",
+    "google-protobuf": "^3.18.0",
     "highland": "3.0.0-beta.10",
     "is-ci": "^3.0.0",
     "jsdoc-to-markdown": "^7.0.1",
