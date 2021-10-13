@@ -45,8 +45,7 @@
     "destroy": "^1.0.4",
     "ee-first": "^1.1.1",
     "lodash.camelcase": "^4.3.0",
-    "lodash.pull": "^4.1.0",
-    "traverse": "^0.6.6"
+    "lodash.pull": "^4.1.0"
   },
   "peerDependencies": {
     "@grpc/grpc-js": "^1.3.7",
