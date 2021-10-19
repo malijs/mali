@@ -96,7 +96,6 @@
   },
   "publishConfig": {
     "access": "public",
-    "cache": "~/.npm",
     "tag": "latest"
   }
 }
