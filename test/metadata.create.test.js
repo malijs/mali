@@ -26,6 +26,6 @@ test('should handle buffers', (t) => {
     create({ john: Buffer.from('snow') })
     t.fail()
   } catch (error) {
-    t.is(error.message, 'Metadata key "john" should end with "-bin" since it has a non-string value.')
+    t.is(error.message, "keys that don't end with '-bin' must have String values")
   }
 })
