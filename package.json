@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@grpc/grpc-js": "^1.5.5",
-    "@grpc/proto-loader": "^0.6.9",
+    "@grpc/proto-loader": "^0.7.0",
     "async": "^3.2.3",
     "ava": "^3.15.0",
     "benchmarkify": "^3.0.0",
