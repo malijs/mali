@@ -64,7 +64,7 @@
     "lodash": "^4.17.21",
     "nyc": "^15.1.0",
     "snazzy": "^9.0.0",
-    "standard": "^16.0.4",
+    "standard": "^17.0.0",
     "test-console": "^2.0.0"
   },
   "engines": {
