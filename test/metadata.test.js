@@ -136,7 +136,7 @@ test.cb('req/res: header metadata set', t => {
 })
 
 test.cb('req/res: header metadata set even if error occurred', t => {
-  t.plan(15)
+  t.plan(16)
   const APP_HOST = tu.getHost()
 
   function sayHello (ctx) {
@@ -146,6 +146,11 @@ test.cb('req/res: header metadata set even if error occurred', t => {
 
   const app = new Mali(PROTO_PATH, 'Greeter')
   t.truthy(app)
+
+  app.on('error', (err, _ctx) => {
+    t.is(err.message, 'boom')
+  })
+
   app.use({ sayHello })
   app.start(APP_HOST).then(server => {
     t.truthy(server)
