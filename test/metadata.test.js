@@ -135,6 +135,56 @@ test.cb('req/res: header metadata set', t => {
   })
 })
 
+test.cb('req/res: header metadata set even if error occurred', t => {
+  t.plan(15)
+  const APP_HOST = tu.getHost()
+
+  function sayHello (ctx) {
+    ctx.set('foo', 'bar')
+    throw Error('boom')
+  }
+
+  const app = new Mali(PROTO_PATH, 'Greeter')
+  t.truthy(app)
+  app.use({ sayHello })
+  app.start(APP_HOST).then(server => {
+    t.truthy(server)
+
+    let metadata
+    let status
+
+    const client = new helloproto.Greeter(APP_HOST, grpc.credentials.createInsecure())
+    const call = client.sayHello({ name: 'Bob' }, (err, response) => {
+      setTimeout(() => {
+        t.truthy(err)
+        t.true(err.message.indexOf('boom') >= 0)
+        t.falsy(response)
+        t.truthy(metadata)
+        t.true(metadata instanceof grpc.Metadata)
+        const header = metadata.getMap()
+        t.is(header.foo, 'bar')
+        t.is(header['content-type'], 'application/grpc+proto')
+        t.truthy(header.date)
+        t.truthy(status)
+        t.true(typeof status.code === 'number')
+        t.truthy(status.metadata)
+        t.true(status.metadata instanceof grpc.Metadata)
+        const trailer = status.metadata.getMap()
+        t.deepEqual(trailer, {})
+        app.close().then(() => t.end())
+      }, 250)
+    })
+
+    call.on('metadata', md => {
+      metadata = md
+    })
+
+    call.on('status', s => {
+      status = s
+    })
+  })
+})
+
 test.cb('req/res: header metadata sent using ctx.sendMetadata', t => {
   t.plan(15)
   const APP_HOST = tu.getHost()
