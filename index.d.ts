@@ -47,7 +47,7 @@ declare namespace Mali {
     res: GrpcResponse;
     type: string;
     metadata: any;
-    locals: object;
+    locals: Record<string, any>;
     get (field: string): any;
     set (field: any, val?: any): void;
     sendMetadata (md: any): void;
